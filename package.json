@@ -4,8 +4,6 @@
   "description": "Data explorer for Venice Time Machine project",
   "main": "app.js",
   "scripts": {
-    "start": "node start",
-    "postinstall": "bower install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MGrin",
