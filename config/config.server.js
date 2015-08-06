@@ -6,7 +6,6 @@ var rootPath = path.normalize(__dirname + '/..');
 
 var config = {
   development: {
-    sparql: 'http://128.178.21.39:8890/',
     port: 7890,
     root: rootPath,
     serverUrl: 'http://localhost:7890/',
@@ -14,10 +13,9 @@ var config = {
   },
 
   production: {
-    sparql: 'http://128.178.21.39:8890/',
     port: 7890,
     root: rootPath,
-    serverUrl: 'http://localhost:7890/',
+    serverUrl: 'http://128.178.21.39:7890/',
     name: 'Garzoni Data Explorer'
   }
 };

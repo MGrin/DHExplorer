@@ -2,8 +2,14 @@
 
 (function (window) {
   console.log('App.js script loaded');
-  
+
   var app = window.app = {};
+  if (window.location.href.indexOf('localhost') === -1 && window.location.href.indexOf('127.0.0.1') === -1) {
+    app.env = 'production';
+  } else {
+    app.env = 'development';
+  }
+
   app.models = {};
   app.views = {};
 
