@@ -1,0 +1,30 @@
+{
+  "apps" : [
+    {
+      "name"      : "Data Explorer",
+      "script"    : "app.js",
+      "exec_interpreter": "/home/grishin/.nvm/versions/node/v0.12.7/bin/node",
+      "env": {},
+      "env_production" : {
+        "NODE_ENV": "production"
+      }
+    },
+  ],
+
+
+  /**
+   * PM2 help you to deploy apps over your servers
+   * For more help go to :
+   * https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md#deployment-pm2--090
+   */
+  "deploy" : {
+    "production" : {
+      "user" : "grishin",
+      "host" : "128.178.21.39",
+      "ref"  : "origin/master",
+      "repo" : "/home/grishin/git/data-explorer.git",
+      "path" : "/home/grishin/data-explorer",
+      "post-deploy" : "npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
+    }
+  }
+}
