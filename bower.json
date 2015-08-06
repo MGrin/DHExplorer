@@ -1,0 +1,12 @@
+{
+  "name": "Data Explorer",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "latest",
+    "socket.io-client": "latest",
+    "d3": "latest",
+    "object-hash": "https://github.com/puleos/object-hash.git#latest",
+    "react": "latest",
+    "Chart.js": "latest"
+  }
+}

@@ -1,0 +1,136 @@
+'use strict';
+
+// (function (app) {
+//   var statistics = app.views.Statistics = {};
+//   statistics.charts = {};
+
+//   console.log('Statistics viewmodel loaded');
+  
+//   Chart.defaults.global.responsive = true;
+
+//   statistics.update = function (stats, cb) {
+//     statistics.clear();
+
+//     statistics.showGeneralStatistics(stats);
+
+//     for (var key in stats) {
+//       if (key !== 'overview' && stats[key]) {
+//         var id = 'hist-' + key;
+
+//         statistics.charts[id] = {};
+//         statistics.charts[id].chartType = stats[key].chartType;
+
+//         switch (stats[key].chartType) {
+//           case 'PolarArea': {
+//             statistics.addChart(id, stats[key].label, true);
+//             // statistics.charts[id].context = document.getElementById(id).getContext("2d");
+
+//             statistics.charts[id].data = statistics.transformToPolarArea(stats[key].data, stats[key].label);
+//             // statistics.charts[id].chart = new Chart(statistics.charts[id].context).PolarArea(data);
+//             break;
+//           }
+//           case 'BarPlot': {
+//             statistics.addChart(id, stats[key].label);
+//             // statistics.charts[id].context = document.getElementById(id).getContext("2d");
+
+//             statistics.charts[id].data = statistics.transformToBarPlot(stats[key].data, stats[key].label, {
+//               barValueSpacing: 1
+//             });
+//             // statistics.charts[id].chart = new Chart(statistics.charts[id].context).Bar(data);
+//             break;
+//           }
+//         }
+//       }
+//     }
+
+//     for (var id in statistics.charts) {
+//       if (statistics.charts[id]) {
+//         statistics.charts[id].context = document.getElementById(id).getContext("2d");
+
+//         switch (statistics.charts[id].chartType) {
+//           case 'PolarArea': {
+//             statistics.charts[id].chart = new Chart(statistics.charts[id].context).PolarArea(statistics.charts[id].data);
+//             break;
+//           }
+//           case 'BarPlot': {
+//             statistics.charts[id].chart = new Chart(statistics.charts[id].context).Bar(statistics.charts[id].data);
+//             break;
+//           }
+//         }
+//       }
+//     }
+
+//     if (cb) cb();
+//     return;
+//   };
+
+//   statistics.clear = function () {
+//     $('#general-statistics').html('');
+//     $('#statistics-charts').html('');
+//   };
+
+//   statistics.showGeneralStatistics = function (stats) {
+//     var overview = stats.overview;
+//     for (var i = 0; i < overview.length; i++) {
+//       $('#general-statistics').append('<p><strong>' + overview[i].label + ':</strong> ' + overview[i].value + '</p>');
+//     }
+//   };
+
+//   statistics.addChart = function (id, label) {
+//     $('#statistics-charts').append('<div class="column">' +
+//                                         '<div class="row">' +
+//                                           '<h1>' + label + '</h1>' +
+//                                         '</div>' +
+//                                         '<div class="row">' +
+//                                           '<canvas id="' + id + '"></canvas>' +
+//                                         '</div>' +
+//                                       '</div>');
+//   };
+
+//   statistics.transformToBarPlot = function (data, label) {
+//     var d = {
+//       labels: [],
+//       datasets: [{
+//         label: label,
+//         fillColor: 'rgba(151,187,205,0.5)',
+//         strokeColor: 'rgba(151,187,205,0.8)',
+//         highlightFill: 'rgba(151,187,205,0.75)',
+//         highlightStroke: 'rgba(151,187,205,1)',
+//         data: []
+//       }]
+//     };
+//     for (var key in data) {
+//       if (data[key]) {
+//         d.labels.push(key);
+//         d.datasets[0].data.push(data[key]);
+//       }
+//     }
+
+//     return d;
+//   };
+
+//   statistics.transformToPolarArea = function (data) {
+//     var d = [];
+
+//     for (var key in data) {
+//       if (data[key]) {
+//         d.push({
+//           value: data[key],
+//           color: getRandomColor(),
+//           label: key
+//         });
+//       }
+//     }
+
+//     return d;
+//   };
+
+//   var getRandomColor = function () {
+//     var letters = '0123456789ABCDEF'.split('');
+//     var color = '#';
+//     for (var i = 0; i < 6; i++ ) {
+//       color += letters[Math.floor(Math.random() * 16)];
+//     }
+//     return color;
+//   };
+// })(window.app);

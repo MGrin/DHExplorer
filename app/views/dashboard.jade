@@ -1,0 +1,120 @@
+doctype html
+html
+  head
+    title Data Explorer
+    link(rel="stylesheet", href="/lib/semantic/dist/semantic.min.css")
+    link(rel="stylesheet", href="/css/styles.css")
+    link(rel="stylesheet", href="/lib/semantic/dist/components/menu.min.css")
+
+    script(src="/lib/react/react.js")
+    script(src="/lib/react/JSXTransformer.js")
+    script(src="/lib/jquery/dist/jquery.min.js")
+    script(src="/lib/semantic/dist/semantic.min.js")
+    script(src="/lib/d3/d3.min.js")
+    script(src="/lib/socket.io-client/socket.io.js")
+    script(src="/lib/object-hash/dist/object_hash.js")
+    script(src="/lib/Chart.js/Chart.min.js")
+
+    script(src="/cdn/js/app.js")
+    script(src="/cdn/js/services/config.service.js")
+    script(src="/cdn/js/services/Socket.service.js")
+    script(src="/cdn/js/services/Storage.service.js")
+
+    script(src="/cdn/js/models/Node.model.js")
+    script(src="/cdn/js/models/Edge.model.js")
+    script(src="/cdn/js/models/NodeType.model.js")
+    script(src="/cdn/js/models/Entity.model.js")
+    script(src="/cdn/js/models/Graph.model.js")
+
+    script(src="/cdn/js/viewModels/Statistics.viewmodel.js")
+    script(src="/cdn/js/viewModels/Legend.viewmodel.js")
+    script(src="/cdn/js/viewModels/D3Graph.viewmodel.js")
+    script(src="/cdn/js/viewModels/Entity.viewmodel.js")
+
+    script(src="/cdn/js/controllers/DomController.controller.js")
+    script(src="/cdn/js/controllers/QueryController.controller.js")
+
+    script(src="/cdn/js/controllers/GraphController.controller.js")
+    script(src="/cdn/js/controllers/EntityController.controller.js")
+    script(src="/cdn/js/controllers/StatisticsController.controller.js")
+
+    script(src="/cdn/js/controllers/LegendController.controller.js")
+    script(src="/cdn/js/controllers/StatusController.controller.js")
+    
+
+  body
+    #sidebar.ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu
+      .item.link(data-toggle-view="entity")
+        i.grid.layout.icon
+        span.text Entity view
+      .item.link.active(data-toggle-view="graph")
+        i.fork.icon
+        span.text Graph view
+      .item.link(data-toggle-view="statistics")
+        i.bar.chart.icon
+        span.text Statistics view
+
+    .pusher
+      .explorer-view(data-view="entity")
+        .top-menu.ui.top.attached.inverted.menu
+        .content.explorer-view-content#entity-container(style="overflow-y: auto")
+          .row
+            .column
+
+      .explorer-view(data-view="graph")
+        .top-menu.ui.top.attached.inverted.menu
+          .ui.dropdown.item.hover.link
+            i.icon.sidebar
+            span.text Legend
+            #legend.menu
+          .ui.dropdown.item.hover.link
+            i.icon.fork
+            span.text Graph
+            .menu
+              .item
+                #clear-graph.text Clear
+              .item
+                #expand-nodes.text Expand all nodes
+
+        .content.explorer-view-content#graph-container
+
+      .explorer-view(data-view="statistics")
+        .top-menu.ui.top.attached.inverted.menu
+          .ui.dropdown.item.hover.link
+            i.icon.lab
+            span.text Query Constructor
+            .menu
+              .item
+                span.text Open Constructor
+              .item
+                span.text Show Saved Queries
+        .content.explorer-view-content.ui.equal.width.grid#statistics-container
+          .row
+            .column#graph-overview
+            .column
+
+          
+
+      #bottom-menu.ui.bottom.attached.inverted.menu.borderless
+        #sidebar-toggle.item.icon.link
+          i.block.layout.icon.inverted
+        .item(style="width: 60%")
+          .ui.transparent.action.input.inverted
+            input#query-input.prompt(type="text", placeholder="Query")
+            #query-btn.ui.button.inverted Query
+        .item
+          #status-loader.ui.loader.inverted
+        .item
+          #status-text.text.inverted Status
+
+    #loader-dimmer.ui.dimmer
+      .content
+        .center
+          h2.ui.inverted.icon.header
+            .ui.loader.inverted.text.active
+              span.text Loading...
+
+    #entity-modal.ui.modal
+      i.close.icon
+      .header
+      .content.ui.grid.container
