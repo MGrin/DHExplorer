@@ -13,31 +13,27 @@
     app.Socket.requestStatistics(function () {
       if (cb) cb();
       app.views.Statistics.init();
+      app.StatusController.completeTask(scope.task);
     }, scope.handlersFactory, function () {
       scope.computed = true;
     });
   };
 
   scope.handlersFactory = function (status, data) {
+    console.log(status, data);
     switch (status) {
       case 'GraphOverview': {
-        console.log(data);
-        data = scope.transformGraphOverview(data);
         app.views.Statistics.showGraphOverview(data);
-        
-        app.StatusController.completeTask(scope.task);
         break;
       }
+      case 'ClassesOverview': {
+        app.views.Statistics.showClassesOverview(data);
+        break;
+      }
+      case 'PropertiesOverview': {
+        app.views.Statistics.showPropertiesOverview(data);
+      }
     }
-  };
-
-  scope.transformGraphOverview = function (data) {
-    var res = {
-      graphs: [],
-      values: []
-    }
-
-    return res;
   };
 })(window.app);
 

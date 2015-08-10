@@ -28,25 +28,61 @@ exports.compute = function (socket) {
 
     fireResponse('initial');
 
-    var generalInformation = {};
+    var graphOverview = {};
+    var classesOverview = {};
+    var propertiesOverview = {};
 
-    async.series([
+    async.parallel([
       function (next) {
         endpoint.query(queries.GRAPH_OVERVIEW, function (err, result) {
           if (err) return next(err[2] || 'Virtuoso is not running');
 
-          generalInformation.GRAPH_OVERVIEW = {
-            data: result.results.bindings,
-            vars: result.head.vars
-          };
+          var data = result.results.bindings;
+          // var vars = result.head.vars;
 
+          _.each(data, function (d) {
+            graphOverview[d.graphName ? d.graphName.value : 'Default graph'] = _.mapObject(
+              _.omit(d, 'graphName'), function (el) {
+                return el.value;
+              }
+            );
+          });
+          fireResponse('GraphOverview', graphOverview);
           return next();
         });
       },
-
       function (next) {
-        fireResponse('general-statistics', generalInformation);
-        return next();
+        endpoint.query(queries.CLASSES_OVERVIEW, function (err, result) {
+          if (err) return next(err[2] || 'Virtuoso is not running');
+
+          var data = result.results.bindings;
+          // var vars = result.head.vars;
+
+          _.each(data, function (d) {
+            classesOverview[d.class.value] = {
+              value: d.count.value
+            };
+          });
+
+          fireResponse('ClassesOverview', classesOverview);
+          return next();
+        });
+      },
+      function (next) {
+        endpoint.query(queries.PROPERTIES_OVERVIEW, function (err, result) {
+          if (err) return next(err[2] || 'Virtuoso is not running');
+
+          var data = result.results.bindings;
+          // var vars = result.head.vars;
+
+          _.each(data, function (d) {
+            propertiesOverview[d.property.value] = {
+              value: d.count.value
+            };
+          });
+          fireResponse('PropertiesOverview', propertiesOverview);
+          return next();
+        });
       }
     ], function (err) {
       if (err) return socket.emit('res:err', err);

@@ -80,18 +80,10 @@ html
 
       .explorer-view(data-view="statistics")
         .top-menu.ui.top.attached.inverted.menu
-          .ui.dropdown.item.hover.link
-            i.icon.lab
-            span.text Query Constructor
-            .menu
-              .item
-                span.text Open Constructor
-              .item
-                span.text Show Saved Queries
         .content.explorer-view-content.ui.equal.width.grid#statistics-container
           .row
             .column#graph-overview
-            .column
+            .column#classes-properties-overview
 
           
 
@@ -117,4 +109,9 @@ html
     #entity-modal.ui.modal
       i.close.icon
       .header
-      .content.ui.grid.container(style="pading-left: 0; padding-right: 0")
+      .content.ui.grid.container
+
+    #statistics-modal.ui.modal
+      i.close.icon
+      .header
+      .content.ui.grid.container

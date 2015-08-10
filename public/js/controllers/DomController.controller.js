@@ -42,9 +42,6 @@
     app.dom.legendMenu = $('.top-menu #legend');
     app.dom.entityModal = $('#entity-modal');
 
-    app.dom.statistics = {
-      graphOverview: $('#graph-overview')
-    };
     dom.onSidebarClick('graph')('onPageLoad');
     app.QueryController.notify();
   };
