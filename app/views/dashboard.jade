@@ -83,14 +83,14 @@ html
       .explorer-view(data-view="statistics")
         .top-menu.ui.top.attached.inverted.menu
         .content.explorer-view-content.grid.container#statistics-container(style="overflow-y: auto; overflow-x: hidden")
-          .ui.stackable.page.grid.hide#statistics-dashboard(style="margin: 0;")
+          .ui.stackable.equal.width.page.grid.hide#statistics-dashboard(style="margin: 0;")
             .row
               .column#graph-overview
             .equal.width.row
               .column#classes-overview
               .column#properties-overview
 
-          .ui.two.column.stackable.grid.hide#statistics-archives
+          .ui.equal.width.stackable.grid.hide#statistics-archives
             //- Distribution of contracts per year and per register
             .row
               .column#archives-contracts-year
