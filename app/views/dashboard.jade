@@ -15,6 +15,8 @@ html
     script(src="/lib/object-hash/dist/object_hash.js")
     script(src="/lib/Chart.js/Chart.min.js")
 
+    script(src="/cdn/js/viewModels/React.components.js")
+
     script(src="/cdn/js/app.js")
     script(src="/cdn/js/services/config.service.js")
     script(src="/cdn/js/services/Socket.service.js")
@@ -80,20 +82,59 @@ html
 
       .explorer-view(data-view="statistics")
         .top-menu.ui.top.attached.inverted.menu
-        .content.explorer-view-content.ui.equal.width.grid#statistics-container
-          .row
-            .column#graph-overview
-            .column#classes-properties-overview
+        .content.explorer-view-content.grid.container#statistics-container(style="overflow-y: auto; overflow-x: hidden")
+          .ui.stackable.page.grid.hide#statistics-dashboard(style="margin: 0;")
+            .row
+              .column#graph-overview
+            .equal.width.row
+              .column#classes-overview
+              .column#properties-overview
+
+          .ui.two.column.stackable.grid.hide#statistics-archives
+            //- Distribution of contracts per year and per register
+            .row
+              .column#archives-contracts-year
+              .column#archives-contracts-register
+
+            //- Distribution of folia per year and per register
+            .row
+              .column#archives-folia-year
+              .column#archives-folia-register
+          .ui.two.column.stackable.page.grid.hide#statistics-people
 
           
 
       #bottom-menu.ui.bottom.attached.inverted.menu.borderless
         #sidebar-toggle.item.icon.link
           i.block.layout.icon.inverted
-        .item(style="width: 60%")
+        #query.item(style="width: 60%")
           .ui.transparent.action.input.inverted
             input#query-input.prompt(type="text", placeholder="Query")
             #query-btn.ui.button.inverted Query
+        .item.statistics-selection.link.active(stats-click="dashboard")
+          i.dashboard.icon
+          span.text Dashboard
+        .item.statistics-selection.link(stats-click="archives")
+          i.book.icon
+          span.text Archives
+        .item.statistics-selection.link(stats-click="people")
+          i.users.icon
+          span.text People
+        .item.statistics-selection.link(stats-click="professions")
+          i.spy.icon
+          span.text Proffessions
+        .item.statistics-selection.link(stats-click="economics")
+          i.euro.icon
+          span.text Economics
+        .item.statistics-selection.link(stats-click="charges")
+          i.retweet.icon
+          span.text Charges
+        .item.statistics-selection.link(stats-click="events")
+          i.calendar.icon
+          span.text Events
+        .item.statistics-selection.link(stats-click="geographics")
+          i.marker.icon
+          span.text Geographics
         .item
           #status-loader.ui.loader.inverted
         .item

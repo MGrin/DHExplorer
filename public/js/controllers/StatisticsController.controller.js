@@ -4,19 +4,13 @@
   var scope = app.StatisticsController = {};
   console.log('Statistics controller loaded');
 
+  scope.animationOut = 'slide right';
+  scope.animationIn = 'slide left';
+
+  scope.inited = {};
+
   scope.open = function (cb) {
-    if (scope.computed) return app.views.Statistics.showDashboard(cb);
-
-    scope.task = app.StatusController.createTask('StatisticsController', 'Computing statistics...', app.dom.view === 'statistics');
-    app.StatusController.addTask(scope.task);
-
-    app.Socket.requestStatistics(function () {
-      if (cb) cb();
-      app.views.Statistics.init();
-      app.StatusController.completeTask(scope.task);
-    }, scope.handlersFactory, function () {
-      scope.computed = true;
-    });
+    return scope.switchView(scope.view || 'dashboard', cb);
   };
 
   scope.handlersFactory = function (status, data) {
@@ -32,42 +26,71 @@
       }
       case 'PropertiesOverview': {
         app.views.Statistics.showPropertiesOverview(data);
+        break;
+      }
+      case 'ContractsPerYear': {
+        app.views.Statistics.showContractsPerYear(data);
+        break;
+      }
+      case 'ContractsPerRegister' : {
+        app.views.Statistics.showContractsPerRegister(data);
+        break;
+      }
+      case 'FoliaPerYear': {
+        app.views.Statistics.showFoliaPerYear(data);
+        break;
+      }
+      case 'FoliaPerRegister': {
+        app.views.Statistics.showFoliaPerRegister(data);
+        break;
       }
     }
   };
+
+  scope.switchView = function (newView, cb) {
+    if (scope.view === newView) return cb();
+
+    scope.view = newView;
+    if (scope.domview) {
+      scope.domview.transition(scope.animationOut, function () {
+        scope.domview = $('#statistics-' + newView);
+        scope.domview.transition(scope.animationIn);
+      });
+      
+    } else {
+      scope.domview = $('#statistics-' + newView);
+    }
+    scope.domview.removeClass('hide');
+
+    if (!scope.inited[newView]) {
+      app.views.Statistics.init(newView);
+      scope.inited[newView] = true;
+      scope.compute(newView, function () {
+        if (cb) cb();
+      });
+    } else {
+      if (cb) cb();
+    }
+  };
+
+  scope.compute = function (view, cb) {
+    scope.task = app.StatusController.createTask('StatisticsController', 'Computing statistics...', true);
+    app.StatusController.addTask(scope.task);
+
+    app.Socket.requestStatistics(view, function () {
+      if (cb) cb();
+      app.StatusController.completeTask(scope.task);
+    },scope.handlersFactory, function () {
+        
+    });
+  };
+
+  scope.sectionClick = function (el, section) {
+    return function () {
+      scope.switchView(section, function () {
+        $('#bottom-menu .statistics-selection').removeClass('active');
+        el.addClass('active');
+      });
+    };
+  };
 })(window.app);
-
-// (function (app) {
-//   var scope = app.StatisticsController = {};
-//   console.log('Statistics controller loaded');
-
-//   scope.loadStatistics = function () {
-//     if (app.offline) return;
-    
-//     scope.task = app.StatusController.createTask('GraphController', 'Computing statistics...', app.dom.view === 'statistics');
-//     app.StatusController.addTask(scope.task);
-//     app.Socket.requestStatisticsOnQuery();
-//     scope.onOpen = null;
-//   };
-
-//   app.QueryController.registerListener(function () {
-//     if (app.dom.view === 'statistics') {
-//       scope.loadStatistics();
-//     } else {
-//       scope.onOpen = scope.loadStatistics;
-//     }
-//   });
-
-//   app.Socket.registerGlobalListener('res:statistics', function (stats) {
-//     app.views.Statistics.update(stats, function () {
-//       app.StatusController.completeTask(scope.task);
-//     });
-//   });
-
-//   scope.open = function (cb) {
-//     if (scope.onOpen) scope.onOpen();
-//     if (cb) cb();
-//     return;
-//   };
-
-// })(window.app, window.app.models.NodeType);

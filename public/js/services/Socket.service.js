@@ -13,7 +13,7 @@
     app.offline = true;
   });
   Socket.io.on('connect', function () {
-    app.dom.hideError();
+    if (app.dom) app.dom.hideError();
     app.offline = false;
   });
 
@@ -112,16 +112,14 @@
     Socket.io.emit('req:graph', message);
   };
 
-  Socket.requestStatistics = function (initCb, cbFactory, finalCb) {
+  Socket.requestStatistics = function (view, initCb, cbFactory, finalCb) {
     var message = {
       id: generateMessageId(),
       sparql: app.QueryController.sparql
     };
 
-    Socket.io.emit('req:statistics', message);
+    Socket.io.emit('req:statistics:' + view, message);
     Socket.io.on('res:' + message.id, function (resMessage) {
-      // console.log(resMessage);
-      
       if (resMessage.status === 'initial') return initCb(resMessage.data);
 
       if (resMessage.status === 'final') {
@@ -133,16 +131,16 @@
     });
   };
 
-  Socket.requestStatisticsOnQuery = function () {
-    var message = {
-      query: app.QueryController.query,
-      sparql: app.QueryController.sparql,
-      graphName: app.QueryController.graphName
-    };
+  // Socket.requestStatisticsOnQuery = function () {
+  //   var message = {
+  //     query: app.QueryController.query,
+  //     sparql: app.QueryController.sparql,
+  //     graphName: app.QueryController.graphName
+  //   };
 
-    Socket.running.push('statistics');
-    Socket.io.emit('req:statistics:query', message);
-  };
+  //   Socket.running.push('statistics');
+  //   Socket.io.emit('req:statistics:query', message);
+  // };
 
   var generateMessageId = function () {
     var text = '';

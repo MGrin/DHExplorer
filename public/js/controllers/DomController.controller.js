@@ -33,6 +33,10 @@
 
     $('#query-input').val(app.QueryController.query);
 
+    $('[stats-click]').each(function () {
+      $(this).click(app.StatisticsController.sectionClick($(this), $(this).attr('stats-click')));
+    });
+
     app.dom.status = $('#status-text');
     app.dom.loader = $('#status-loader');
 
@@ -66,14 +70,23 @@
 
       switch (view) {
         case 'entity': {
+          $('#bottom-menu #query').removeClass('hide');
+          $('#bottom-menu .statistics-selection').addClass('hide');
+
           app.EntityController.open(onSwitchDone);
           break;
         }
         case 'graph': {
+          $('#bottom-menu #query').removeClass('hide');
+          $('#bottom-menu .statistics-selection').addClass('hide');
+
           app.GraphController.open(onSwitchDone);
           break;
         }
         case 'statistics': {
+          $('#bottom-menu #query').addClass('hide');
+          $('#bottom-menu .statistics-selection').removeClass('hide');
+
           app.StatisticsController.open(onSwitchDone);
           break;
         }
@@ -82,12 +95,19 @@
   };
 
   dom.showError = function (err) {
-    dom.status.html('<span class="ui red horizontal label"><i class="icon warning sign"></i>' + err + '</span>');
+    if (err.length < 20) dom.status.html('<span class="ui red horizontal label"><i class="icon warning sign"></i>' + err + '</span>');
+    else {
+      dom.status.html('<span id="error-span" class="ui red horizontal label link" data-content="' + err + '"><i class="icon warning sign"></i>Error. Click for details</span>');
+      $('#error-span').popup({
+        on: 'click'
+      });
+    }
   };
 
   dom.hideError = function () {
     dom.status.html('');
-  } 
+  };
+
   dom.setStatusText = function (text) {
     dom.status.text(text);
   };
