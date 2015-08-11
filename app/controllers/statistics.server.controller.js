@@ -11,6 +11,46 @@ exports.init = function (myApp) {
   app = myApp;
 };
 
+var getRegisterNumber = function (reg) {
+  return parseFloat(reg.label.split('_')[1]);
+};
+
+var constructResult = function (data, map) {
+  var res = [];
+  _.each(data, function (d) {
+    res.push({
+      label: d.label.value,
+      count: d.count.value
+    });
+  });
+
+  if (map) map(res);
+  return res;
+};
+
+var sortByYear = function (data) {
+  data.sort(function (a, b) {
+    return a.label - b.label;
+  });
+};
+
+var completeMissing = function (data) {
+  var i = 1;
+  var previousYear = data[0].label;
+
+  while (i < data.length) {
+    previousYear++;
+    if (data[i].label !== previousYear) {
+      data.splice(i, 0, {
+        label: previousYear,
+        count: 0
+      });
+      i++;
+    }
+    i++;
+  }
+};
+
 exports.computeDashboard = function (socket) {
   return function (message) {
     var messageId = message.id;
@@ -29,8 +69,6 @@ exports.computeDashboard = function (socket) {
     fireResponse('initial');
 
     var graphOverview = {};
-    var classesOverview = {};
-    var propertiesOverview = {};
 
     async.parallel([
       function (next) {
@@ -57,14 +95,8 @@ exports.computeDashboard = function (socket) {
 
           var data = result.results.bindings;
           // var vars = result.head.vars;
-
-          _.each(data, function (d) {
-            classesOverview[d.class.value] = {
-              value: d.count.value
-            };
-          });
-
-          fireResponse('ClassesOverview', classesOverview);
+          var res = constructResult(data);
+          fireResponse('ClassesOverview', res);
           return next();
         });
       },
@@ -75,12 +107,8 @@ exports.computeDashboard = function (socket) {
           var data = result.results.bindings;
           // var vars = result.head.vars;
 
-          _.each(data, function (d) {
-            propertiesOverview[d.property.value] = {
-              value: d.count.value
-            };
-          });
-          fireResponse('PropertiesOverview', propertiesOverview);
+          var res= constructResult(data);
+          fireResponse('PropertiesOverview', res);
           return next();
         });
       }
@@ -108,44 +136,18 @@ exports.computeArchives = function (socket) {
 
     fireResponse('initial');
 
-    var contractYearHist = [];
-    var contractRegisterHist = [];
-    var foliaYearHist = [];
-    var foliaRegisterHist = [];
-
     async.parallel([
       function (next) {
         endpoint.query(queries.CONTRACT_DISTRIBUTION_YEAR, function (err, result) {
           if (err) return next(err[2] || 'Virtuoso is not running');
 
           var data = result.results.bindings;
-          _.each(data, function (d) {
-            contractYearHist.push({
-              label: parseInt(d.year.value),
-              count: parseInt(d.count.value)
-            });
+          var res = constructResult(data, function (contractYearHist) {
+            sortByYear(contractYearHist);
+            completeMissing(contractYearHist);
           });
 
-          contractYearHist.sort(function (a, b) {
-            return a.label - b.label;
-          });
-
-          var i = 1;
-          var previousYear = contractYearHist[0].label;
-
-          while (i < contractYearHist.length) {
-            previousYear++;
-            if (contractYearHist[i].label !== previousYear) {
-              contractYearHist.splice(i, 0, {
-                label: previousYear,
-                count: 0
-              });
-              i++;
-            }
-            i++;
-          }
-
-          fireResponse('ContractsPerYear', contractYearHist);
+          fireResponse('ContractsPerYear', res);
           return next();
         });
       }, function (next) {
@@ -153,33 +155,12 @@ exports.computeArchives = function (socket) {
           if (err) return next(err[2] || 'Virtuoso is not running');
 
           var data = result.results.bindings;
-          _.each(data, function (d) {
-            foliaYearHist.push({
-              label: parseInt(d.year.value),
-              count: parseInt(d.count.value)
-            });
+          var res = constructResult(data, function (foliaYearHist) {
+            sortByYear(foliaYearHist);
+            completeMissing(foliaYearHist);
           });
 
-          foliaYearHist.sort(function (a, b) {
-            return a.label - b.label;
-          });
-
-          var i = 1;
-          var previousYear = foliaYearHist[0].label;
-
-          while (i < foliaYearHist.length) {
-            previousYear++;
-            if (foliaYearHist[i].label !== previousYear) {
-              foliaYearHist.splice(i, 0, {
-                label: previousYear,
-                count: 0
-              });
-              i++;
-            }
-            i++;
-          }
-
-          fireResponse('FoliaPerYear', foliaYearHist);
+          fireResponse('FoliaPerYear', res);
           return next();
         });
       }, function (next) {
@@ -187,25 +168,16 @@ exports.computeArchives = function (socket) {
           if (err) return next(err[2] || 'Virtuoso is not running');
 
           var data = result.results.bindings;
-          _.each(data, function (d) {
-            contractRegisterHist.push({
-              label: d.reg.value.substring(d.reg.value.indexOf(app.config.garzoniGraphName) + app.config.garzoniGraphName.length),
-              count: parseInt(d.count.value)
+          var res = constructResult(data, function (contractRegisterHist) {
+            contractRegisterHist.sort(function (a, b) {
+              var regA = getRegisterNumber(a);
+              var regB = getRegisterNumber(b);
+
+              return regA - regB;
             });
-          });
+          });         
 
-          var getRegisterNumber = function (reg) {
-            return parseFloat(reg.label.split('_')[1]);
-          };
-
-          contractRegisterHist.sort(function (a, b) {
-            var regA = getRegisterNumber(a);
-            var regB = getRegisterNumber(b);
-
-            return regA - regB;
-          });
-
-          fireResponse('ContractsPerRegister', contractRegisterHist);
+          fireResponse('ContractsPerRegister', res);
           return next();
         });
       }, function (next) {
@@ -213,25 +185,16 @@ exports.computeArchives = function (socket) {
           if (err) return next(err[2] || 'Virtuoso is not running');
 
           var data = result.results.bindings;
-          _.each(data, function (d) {
-            foliaRegisterHist.push({
-              label: d.reg.value.substring(d.reg.value.indexOf(app.config.garzoniGraphName) + app.config.garzoniGraphName.length),
-              count: parseInt(d.count.value)
+          var res = constructResult(data, function (foliaRegisterHist) {
+            foliaRegisterHist.sort(function (a, b) {
+              var regA = getRegisterNumber(a);
+              var regB = getRegisterNumber(b);
+
+              return regA - regB;
             });
           });
 
-          var getRegisterNumber = function (reg) {
-            return parseFloat(reg.label.split('_')[1]);
-          };
-
-          foliaRegisterHist.sort(function (a, b) {
-            var regA = getRegisterNumber(a);
-            var regB = getRegisterNumber(b);
-
-            return regA - regB;
-          });
-
-          fireResponse('FoliaPerRegister', foliaRegisterHist);
+          fireResponse('FoliaPerRegister', res);
           return next();
         });
       }

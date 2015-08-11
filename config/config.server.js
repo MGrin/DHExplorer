@@ -9,16 +9,14 @@ var config = {
     port: 7890,
     root: rootPath,
     serverUrl: 'http://localhost:7890/',
-    name: 'Garzoni Data Explorer',
-    garzoniGraphName: 'http://128.178.21.39:8080/garzoni-data/'
+    name: 'Garzoni Data Explorer'
   },
 
   production: {
     port: 7890,
     root: rootPath,
     serverUrl: 'http://128.178.21.39:7890/',
-    name: 'Garzoni Data Explorer',
-    garzoniGraphName: 'http://128.178.21.39:8080/garzoni-data/'
+    name: 'Garzoni Data Explorer'
   }
 };
 

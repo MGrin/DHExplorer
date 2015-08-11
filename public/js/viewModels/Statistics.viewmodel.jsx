@@ -3,6 +3,31 @@
 (function (app) {
   var statistics = app.views.Statistics = {};
 
+  var showAsTableCb = function (title) {
+    return function (data) {
+      return function () {
+        $('#statistics-modal .header').text(title);
+        React.render(
+          <StatsTable data={data} />,
+          $('#statistics-modal .content').get(0)
+        );
+        $('#statistics-modal').modal('show');
+      };
+    };
+  };
+
+  var transformRDFLabel = function (sym) {
+    return function (value) {
+      var spl = value.split(sym);
+      return spl[spl.length - 1];
+    };    
+  };
+  var transformRegisterLabel = function (value) {
+    var index = value.indexOf(app.config.default_graph_name);
+    if (index === -1) return value;
+    return value.substring(index + app.config.default_graph_name.length);
+  };
+
   statistics.init = function (view) {
     switch (view) {
       case 'dashboard' : {
@@ -30,14 +55,8 @@
     statistics.ClassesOverviewSegment.setState({
       data: statistics.ClassesOverviewSegment.state.data,
       title: 'Classes overview',
-      showAsTable: function () {
-        $('#statistics-modal .header').text('Classes overview');
-        React.render(
-          <OverviewTable data={statistics.ClassesOverviewSegment.state.data} />,
-          $('#statistics-modal .content').get(0)
-        );
-        $('#statistics-modal').modal('show');
-      }
+      showAsTable: showAsTableCb('Classes overview'),
+      labelMap: transformRDFLabel('#')
     });
 
     statistics.PropertiesOverviewSegment = React.render(
@@ -48,14 +67,8 @@
     statistics.PropertiesOverviewSegment.setState({
       data: statistics.PropertiesOverviewSegment.state.data,
       title: 'Properties overview',
-      showAsTable: function () {
-        $('#statistics-modal .header').text('Properties overview');
-        React.render(
-          <OverviewTable data={statistics.PropertiesOverviewSegment.state.data} />,
-          $('#statistics-modal .content').get(0)
-        );
-        $('#statistics-modal').modal('show');
-      }
+      showAsTable: showAsTableCb('Properties overview'),
+      labelMap: transformRDFLabel('#')
     });
   };
 
@@ -67,7 +80,12 @@
 
     statistics.ContractsHistYearSegment.setState({
       data: statistics.ContractsHistYearSegment.state.data,
-      title: 'Contracts distribution per year'
+      title: 'Contracts distribution per year',
+      showAsTable: showAsTableCb('Contracts number per year'),
+      scale: 20,
+      'sort-labels': function (a, b) {
+        return parseInt(a.label) - parseInt(b.label);
+      }
     });
 
     statistics.ContractsHistRegisterSegment = React.render(
@@ -77,7 +95,15 @@
 
     statistics.ContractsHistRegisterSegment.setState({
       data: statistics.ContractsHistRegisterSegment.state.data,
-      title: 'Contracts distribution per register'
+      title: 'Contracts distribution per register',
+      showAsTable: showAsTableCb('Contracts number per register'),
+      labelMap: transformRegisterLabel,
+      'sort-labels': function (a, b) {
+        var regA = parseFloat(a.label.split('_')[1]);
+        var regB = parseFloat(b.label.split('_')[1]);
+
+        return regA - regB;
+      }
     });
 
     statistics.FoliaHistYearSegment = React.render(
@@ -87,7 +113,12 @@
 
     statistics.FoliaHistYearSegment.setState({
       data: statistics.FoliaHistYearSegment.state.data,
-      title: 'Folia distribution per year'
+      title: 'Folia distribution per year',
+      showAsTable: showAsTableCb('Folia number per year'),
+      scale: 20,
+      'sort-labels': function (a, b) {
+        return parseInt(a.label) - parseInt(b.label);
+      }
     })
 
     statistics.FoliaHistRegisterSegment = React.render(
@@ -97,7 +128,15 @@
 
     statistics.FoliaHistRegisterSegment.setState({
       data: statistics.FoliaHistRegisterSegment.state.data,
-      title: 'Folia distribution per register'
+      title: 'Folia distribution per register',
+      showAsTable: showAsTableCb('Folia number per register'),
+      labelMap: transformRegisterLabel,
+      'sort-labels': function (a, b) {
+        var regA = parseFloat(a.label.split('_')[1]);
+        var regB = parseFloat(b.label.split('_')[1]);
+
+        return regA - regB;
+      }
     });
   };
 
@@ -109,65 +148,37 @@
 
   statistics.showClassesOverview = function (data) {
     statistics.ClassesOverviewSegment.setState({
-      data: data,
-      title: statistics.ClassesOverviewSegment.state.title,
-      showAsTable: statistics.ClassesOverviewSegment.state.showAsTable
+      data: data
     });
   };
 
   statistics.showPropertiesOverview = function (data) {
     statistics.PropertiesOverviewSegment.setState({
-      data: data,
-      title: statistics.PropertiesOverviewSegment.state.title,
-      showAsTable: statistics.PropertiesOverviewSegment.state.showAsTable
+      data: data
     });
   };
 
   statistics.showContractsPerYear = function (data) {
     statistics.ContractsHistYearSegment.setState({
-      title: statistics.ContractsHistYearSegment.state.title,
-      data: data,
-      scale: 20,
-      'sort-labels': function (a, b) {
-        return parseInt(a.label) - parseInt(b.label);
-      },
+      data: data
     });
   };
 
   statistics.showContractsPerRegister = function (data) {
     statistics.ContractsHistRegisterSegment.setState({
-      title: statistics.ContractsHistRegisterSegment.state.title,
-      data: data,
-      'sort-labels': function (a, b) {
-        var regA = parseFloat(a.label.split('_')[1]);
-        var regB = parseFloat(b.label.split('_')[1]);
-
-        return regA - regB;
-      },
+      data: data
     });
   };
 
   statistics.showFoliaPerYear = function (data) {
     statistics.FoliaHistYearSegment.setState({
-      title: statistics.FoliaHistYearSegment.state.title,
-      data: data,
-      scale: 20,
-      'sort-labels': function (a, b) {
-        return parseInt(a.label) - parseInt(b.label);
-      },
+      data: data      
     });
   };
 
   statistics.showFoliaPerRegister = function (data) {
     statistics.FoliaHistRegisterSegment.setState({
-      title: statistics.FoliaHistRegisterSegment.state.title,
-      data: data,
-      'sort-labels': function (a, b) {
-        var regA = parseFloat(a.label.split('_')[1]);
-        var regB = parseFloat(b.label.split('_')[1]);
-
-        return regA - regB;
-      },
+      data: data
     });
   }
 })(window.app);

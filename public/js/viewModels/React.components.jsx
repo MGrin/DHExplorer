@@ -2,6 +2,7 @@ var entitiesPerPage = 30;
 var entityPredicate = function (entity) {
   return entity.variable ? true : false;
 };
+
 Chart.defaults.global.responsive = true;
 
 // Chart.js components
@@ -39,7 +40,6 @@ var HistogramChart = React.createClass({
     that.props.values.map(function (el) {
       if (el > maxValue) maxValue = el;
     });
-    console.log(maxValue);
 
     var chartConfig = {
       barStrokeWidth : 0,
@@ -62,14 +62,6 @@ var PieChart = React.createClass({
   },
   componentDidMount: function () {
     var that = this;
-    for (var key in this.props.data) {
-      if (this.props.data[key]) {
-        var labelSplit = key.split('#');
-        this.props.data[key].label = labelSplit[labelSplit.length - 1];
-
-        this.props.data[key].color = getRandomColor();
-      }
-    }
     that.chart = new Chart(React.findDOMNode(that).getContext('2d')).Doughnut(that.props.data);
   }
 });
@@ -79,10 +71,13 @@ var HistogramSegment = React.createClass({
   getInitialState: function () {
     return {
       title: null,
-      data: null
+      data: null,
+      labelMap: null
     }
   },
   render: function () {
+    var that = this;
+
     var className = 'ui segment basic';
     if (!this.state.data) className += ' loading';
 
@@ -95,6 +90,7 @@ var HistogramSegment = React.createClass({
         data.sort(this.state['sort-labels']);
       }
       labels = data.map(function (el) {
+        if (that.state.labelMap) return that.state.labelMap(el.label);
         return el.label;
       });
       values = data.map(function (el) {
@@ -117,7 +113,9 @@ var HistogramSegment = React.createClass({
               )
             })(this.state)}
           </div>
-          <a href="#">Show as table</a>
+          {(function (state) {
+            if (state.data) return (<a href="#" onClick={state.showAsTable(state.data)}>Show as table</a>)
+          })(this.state)}
         </div>
       </div>
     )
@@ -129,12 +127,24 @@ var PieSegment = React.createClass({
     return {
       data: null,
       title: null,
-      showAsTable: function () {}
+      labelMap: null
     };
   },
   render: function () {
+    var that = this;
+
     var className = 'ui segment basic';
     if (!this.state.data) className += ' loading';
+    
+    if (this.state.data) {
+      this.state.data = this.state.data.map(function (el) {
+        return {
+          label: that.state.labelMap ? that.state.labelMap(el.label) : el.label,
+          value: el.count,
+          color: getRandomColor()
+        };
+      })
+    };
 
     return (
       <div className="ui center aligned segment">
@@ -149,7 +159,9 @@ var PieSegment = React.createClass({
               return (<PieChart data={state.data}/>)
             })(this.state)}
           </div>
-          <a href="#" onClick={this.state.showAsTable}>Show as table</a>
+          {(function (state) {
+            if (state.data) return (<a href="#" onClick={state.showAsTable(state.data)}>Show as table</a>)
+          })(this.state)}
         </div>
       </div>
     )
@@ -216,19 +228,9 @@ var GraphOverviewSegment = React.createClass({
 });
 
 // Table components
-var OverviewTable = React.createClass({
+var StatsTable = React.createClass({
   render: function () {
-    var data = [];
-    var counter = 0;
-    for (var key in this.props.data) {
-      if (this.props.data[key]) {
-        var labelSplit = key.split('#');
-        var label = labelSplit[labelSplit.length - 1];
-        data.push({label: label, value: this.props.data[key].value, key: counter});
-        counter++;
-      }
-    }
-
+    console.log(this.props.data);
     return (
       <div className="row">
         <div className="column">
@@ -240,11 +242,11 @@ var OverviewTable = React.createClass({
               </tr>
             </thead>
             <tbody>
-              {data.map(function (el) {
+              {this.props.data.map(function (el) {
                 return (
-                  <tr key={el.counter}>
+                  <tr key={objectHash(el.label + " " + el.value || el.count)}>
                     <td>{el.label}</td>
-                    <td>{el.value}</td>
+                    <td>{el.value || el.count}</td>
                   </tr>
                 )
               })}
