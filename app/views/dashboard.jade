@@ -42,7 +42,7 @@ html
 
     script(src="/cdn/js/controllers/LegendController.controller.js")
     script(src="/cdn/js/controllers/StatusController.controller.js")
-    
+
 
   body
     #sidebar.ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu
@@ -91,7 +91,8 @@ html
               .column#properties-overview
 
           .ui.equal.width.stackable.grid.hide#statistics-archives
-            //- Distribution of contracts per year and per register
+            .centered.row#archives-numeric-info
+
             .row
               .column#archives-contracts-year
               .column#archives-contracts-register
@@ -100,9 +101,14 @@ html
             .row
               .column#archives-folia-year
               .column#archives-folia-register
-          .ui.two.column.stackable.page.grid.hide#statistics-people
+          .ui.equal.width.stackable.grid.hide#statistics-people
+            .centered.row#people-numeric-info
 
-          
+            .row
+              .column#people-roles-mentions
+              .column#people-mentions-entity
+
+
 
       #bottom-menu.ui.bottom.attached.inverted.menu.borderless
         #sidebar-toggle.item.icon.link

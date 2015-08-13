@@ -44,6 +44,22 @@
         app.views.Statistics.showFoliaPerRegister(data);
         break;
       }
+      case 'ArchivesOverview': {
+        app.views.Statistics.updateArchivesOverview(data);
+        break;
+      }
+      case 'PeopleOverview': {
+        app.views.Statistics.updatePeopleOverview(data);
+        break;
+      }
+      case 'RolesPerPersonMention': {
+        app.views.Statistics.showRolesPerPersonMention(data);
+        break;
+      }
+      case 'PersonMentionPerEntity': {
+        app.views.Statistics.showPersonMentionPerEntity(data);
+        break;
+      }
     }
   };
 
@@ -56,7 +72,7 @@
         scope.domview = $('#statistics-' + newView);
         scope.domview.transition(scope.animationIn);
       });
-      
+
     } else {
       scope.domview = $('#statistics-' + newView);
     }
@@ -81,7 +97,7 @@
       if (cb) cb();
       app.StatusController.completeTask(scope.task);
     },scope.handlersFactory, function () {
-        
+
     });
   };
 

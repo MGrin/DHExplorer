@@ -20,12 +20,33 @@
     return function (value) {
       var spl = value.split(sym);
       return spl[spl.length - 1];
-    };    
+    };
   };
   var transformRegisterLabel = function (value) {
     var index = value.indexOf(app.config.default_graph_name);
     if (index === -1) return value;
     return value.substring(index + app.config.default_graph_name.length);
+  };
+  var computeMean = function (data) {
+    var sum = 0;
+    for (var i = 0; i < data.length; i++) {
+      sum += parseInt(data[i].value || data[i].count);
+    }
+
+    return sum / data.length;
+  };
+
+  var computeTop = function (threshold) {
+    return function (data) {
+      var max = Math.max.apply(null, data.map(function (el) {
+        return parseInt(el.value || el.count);
+      }));
+
+      console.log(max);
+      return function (el) {
+        return parseInt(el.value || el.count) > threshold * max;
+      };
+    };
   };
 
   statistics.init = function (view) {
@@ -36,6 +57,10 @@
       }
       case 'archives' : {
         statistics.initArchives();
+        break;
+      }
+      case 'people' : {
+        statistics.initPeople();
         break;
       }
     }
@@ -73,13 +98,21 @@
   };
 
   statistics.initArchives = function () {
+    statistics.ArchivesOverviewSegment = React.render(
+      <OverviewSegment />,
+      $('#archives-numeric-info').get(0)
+    );
+
+    statistics.ArchivesOverviewSegment.setState({
+      title: 'Archives overview'
+    });
+
     statistics.ContractsHistYearSegment = React.render(
       <HistogramSegment />,
       $('#archives-contracts-year').get(0)
     );
 
     statistics.ContractsHistYearSegment.setState({
-      data: statistics.ContractsHistYearSegment.state.data,
       title: 'Contracts distribution per year',
       showAsTable: showAsTableCb('Contracts number per year'),
       scale: 20,
@@ -94,7 +127,6 @@
     );
 
     statistics.ContractsHistRegisterSegment.setState({
-      data: statistics.ContractsHistRegisterSegment.state.data,
       title: 'Contracts distribution per register',
       showAsTable: showAsTableCb('Contracts number per register'),
       labelMap: transformRegisterLabel,
@@ -112,7 +144,6 @@
     );
 
     statistics.FoliaHistYearSegment.setState({
-      data: statistics.FoliaHistYearSegment.state.data,
       title: 'Folia distribution per year',
       showAsTable: showAsTableCb('Folia number per year'),
       scale: 20,
@@ -127,7 +158,6 @@
     );
 
     statistics.FoliaHistRegisterSegment.setState({
-      data: statistics.FoliaHistRegisterSegment.state.data,
       title: 'Folia distribution per register',
       showAsTable: showAsTableCb('Folia number per register'),
       labelMap: transformRegisterLabel,
@@ -139,6 +169,48 @@
       }
     });
   };
+
+  statistics.initPeople = function () {
+    statistics.PeopleOverviewSegment = React.render(
+      <OverviewSegment />,
+      $('#people-numeric-info').get(0)
+    );
+
+    statistics.PeopleOverviewSegment.setState({
+      title: 'People overview'
+    });
+
+    statistics.RolesHistPersonMention = React.render(
+      <HistogramSegment />,
+      $('#people-roles-mentions').get(0)
+    );
+
+    statistics.RolesHistPersonMention.setState({
+      title: 'Roles distribution per person mention',
+      showAsTable: showAsTableCb('Role vs person mention'),
+      labelMap: transformRDFLabel('#'),
+      fillColor: 'rgba(151,205,187,0.5)',
+      highlightFill: 'rgba(151,205,187,0.75)',
+      barValueSpacing: 5
+    });
+
+    statistics.PersonMentionsHistEntity = React.render(
+      <HistogramSegment />,
+      $('#people-mentions-entity').get(0)
+    );
+
+    statistics.PersonMentionsHistEntity.setState({
+      title: 'Top mentioned persons',
+      showAsTable: showAsTableCb('Person mentions per entity'),
+      fillColor: 'rgba(151,205,187,0.5)',
+      highlightFill: 'rgba(151,205,187,0.75)',
+      barValueSpacing: 0,
+      filter: computeTop(0.55),
+      onBarClick: function () {
+        console.log('clicked');
+      }
+    });
+  }
 
   statistics.showGraphOverview = function (data) {
     statistics.GraphOverviewSegment.setState({
@@ -172,12 +244,36 @@
 
   statistics.showFoliaPerYear = function (data) {
     statistics.FoliaHistYearSegment.setState({
-      data: data      
+      data: data
     });
   };
 
   statistics.showFoliaPerRegister = function (data) {
     statistics.FoliaHistRegisterSegment.setState({
+      data: data
+    });
+  };
+
+  statistics.updateArchivesOverview = function (data) {
+    statistics.ArchivesOverviewSegment.setState({
+      data: data
+    });
+  };
+
+  statistics.updatePeopleOverview = function (data) {
+    statistics.PeopleOverviewSegment.setState({
+      data: data
+    });
+  };
+
+  statistics.showRolesPerPersonMention = function (data) {
+    statistics.RolesHistPersonMention.setState({
+      data: data
+    });
+  };
+
+  statistics.showPersonMentionPerEntity = function (data) {
+    statistics.PersonMentionsHistEntity.setState({
       data: data
     });
   }

@@ -20,7 +20,8 @@ var constructResult = function (data, map) {
   _.each(data, function (d) {
     res.push({
       label: d.label.value,
-      count: d.count.value
+      count: d.count.value,
+      metadata: d
     });
   });
 
@@ -138,6 +139,50 @@ exports.computeArchives = function (socket) {
 
     async.parallel([
       function (next) {
+        var overview = [];
+
+        async.series([
+          function (_next) {
+            endpoint.query(queries.AVERAGE_CONTRACTS_NUMBER, function (err, result) {
+              if (err) return _next(err[2] || 'Virtuoso is not running');
+
+              var data = result.results.bindings[0];
+              overview.push({
+                label: 'Average number of contracts per year',
+                value: data.count.value
+              });
+              return _next();
+            });
+          },
+          function (_next) {
+            endpoint.query(queries.TOTAL_CONTRACTS_COUNT, function (err, result) {
+              if (err) return _next(err[2] || 'Virtuoso is not running');
+
+              var data = result.results.bindings[0];
+              overview.push({
+                label: 'Number of contracts',
+                value: data.count.value
+              });
+              return _next();
+            });
+          }, function (_next) {
+            endpoint.query(queries.TOTAL_FOLIA_COUNT, function (err, result) {
+              if (err) return _next(err[2] || 'Virtuoso is not running');
+
+              var data = result.results.bindings[0];
+              overview.push({
+                label: 'Number of folias',
+                value: data.count.value
+              });
+              return _next();
+            });
+          }
+        ], function (err) {
+          if (err) return next(err);
+          fireResponse('ArchivesOverview', overview);
+          return next();
+        });
+      }, function (next) {
         endpoint.query(queries.CONTRACT_DISTRIBUTION_YEAR, function (err, result) {
           if (err) return next(err[2] || 'Virtuoso is not running');
 
@@ -175,7 +220,7 @@ exports.computeArchives = function (socket) {
 
               return regA - regB;
             });
-          });         
+          });
 
           fireResponse('ContractsPerRegister', res);
           return next();
@@ -208,130 +253,97 @@ exports.computeArchives = function (socket) {
   };
 };
 
-// exports.computeOnQuery = function (socket) {
-//   return function (message) {
-//     var query = message.query;
-//     var endpoint = new sparql.Client(message.sparql);
-//     var graphName = message.graphName;
+exports.computePeople = function (socket) {
+  return function (message) {
+    var messageId = message.id;
+    var endpoint = new sparql.Client(message.sparql);
 
-//     var describeQueries = [];
-//     var stats;
-//     var descriptions = [];
+    var fireResponse = function (status, data) {
+      var msg = {
+        id: messageId,
+        status: status,
+        data: data
+      };
 
-//     var done = function (data) {
-//       return socket.emit('res:statistics', data);
-//     };
+      socket.emit('res:' + msg.id, msg);
+    };
 
-//     var datasetSize = 0;
+    fireResponse('initial');
 
-//     async.series([
-//       function (next) {
-//         endpoint.query(query, function (err, result) {
-//           if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+    async.parallel([
+      function (next) {
+        var overview = [];
 
-//           var vars = result.head.vars;
-//           var data = result.results.bindings;
-//           datasetSize = data.length;
+        async.series([
+          function (_next) {
+            endpoint.query(queries.AVERAGE_PERSON_MENTION_PER_ENTITY, function (err, result) {
+              if (err) return _next(err[2] || 'Virtuoso is not running');
 
-//           if (data.length === 0) return done({
-//             length: 0
-//           });
+              var data = result.results.bindings[0];
+              overview.push({
+                label: 'Average number of person mentions per person entity',
+                value: data.count.value
+              });
 
-//           var queryCount = 0;
-//           var numberPerQuery = 500;
+              return _next();
+            });
+          }, function (_next) {
+            endpoint.query(queries.TOTAL_PERSONS_MENTION_COUNT, function (err, result) {
+              if (err) return _next(err[2] || 'Virtuoso is not running');
 
-//           for (var d = 0; d < data.length; d++) {
-//             if (d % numberPerQuery === 0) {
-//               queryCount++;
-//               describeQueries[queryCount-1] = 'describe ';
-//             }
-//             for (var v = 0; v < vars.length; v++) {
-//               var binding = data[d];
-//               var variable = vars[v];
+              var data = result.results.bindings[0];
+              overview.push({
+                label: 'Total number of person mentions',
+                value: data.count.value
+              });
 
-//               var resource = binding[variable];
-//               if (!resource) continue;
-//               if (resource.type !== 'uri') continue;
+              return _next();
+            });
+          }, function (_next) {
+            endpoint.query(queries.TOTAL_PERSONS_ENTITIES_COUNT, function (err, result) {
+              if (err) return _next(err[2] || 'Virtuoso is not running');
 
-//               describeQueries[queryCount-1] += '<' + resource.value + '> ';
-//             }
-//           }
+              var data = result.results.bindings[0];
+              overview.push({
+                label: 'Total number of person entities',
+                value: data.count.value
+              });
 
-//           return next();
-//         });
-//       }, function (next) {
-//         var parallelTasks = [];
-//         _.each(describeQueries, function (describeQuery, queryIndex) {
-//           if (describeQuery === 'describe ') return;
+              return _next();
+            });
+          }
+        ], function (err) {
+          if (err) return next(err);
+          fireResponse('PeopleOverview', overview);
+          return next();
+        });
+      }, function (next) {
+        endpoint.query(queries.PERSON_MENTION_DISTRIBUTION_ROLE, function (err, result) {
+          if (err) return next(err[2] || 'Virtuoso is not running');
 
-//           parallelTasks.push(function (_next) {
-//             endpoint.query(describeQuery, function (err, result) {
-//               if (err) {
-//                 console.log(describeQuery);
-//                 return _next(queryIndex + ': ' + (err[2] || 'Virtuoso is not running'));
-//               }
+          var data = result.results.bindings;
+          var res = constructResult(data);
 
-//               if (!result) console.log('No result for query ' + queryIndex);
-//               if (!result.head) console.log('No head for query ' + queryIndex);
-//               if (!result.results) console.log('No result.results for query ' + queryIndex);
+          fireResponse('RolesPerPersonMention', res);
+          return next();
+        });
+      }, function (next) {
+        endpoint.query(queries.PERSON_MENTION_DISTRIBUTION_ENTITY, function (err, result) {
+          if (err) return next(err[2] || 'Virtuoso is not running');
 
-//               descriptions = descriptions.concat(result.results.bindings);
+          var data = result.results.bindings;
+          var res = constructResult(data);
 
-//               return _next();
-//             });
-//           });
-//         });
-      
-//         async.parallel(parallelTasks, function (err) {
-//           return next(err);
-//         });
-//       }, function (next) {
-//         stats = {
-//           types: {
-//             chartType: 'PolarArea',
-//             label: 'Entity types',
-//             data: {}
-//           },
-//           predicates: {
-//             chartType: 'BarPlot',
-//             label: 'Relations histogram',
-//             data: {}
-//           },
-//           overview: [{
-//             label: 'Dataset size',
-//             value: datasetSize
-//           }]
-//         };
-
-//         for (var i = 0; i < descriptions.length; i++) {
-//           var description = descriptions[i];
-
-//           var subject = description.s;
-//           var predicate = description.p;
-//           var object = description.o;
-
-//           var relation = transformLabel(predicate.value, '#');
-//           if (!stats.predicates.data[relation]) stats.predicates.data[relation] = 0;
-//           stats.predicates.data[relation]++;
-
-//           if (predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-//             var type = object.value;
-
-//             if (!stats.types.data[type]) stats.types.data[type] = 0;
-//             stats.types.data[type]++;
-//           }
-//         }
-
-//         return next();
-//       }
-//     ], function (err) {
-//       if (err) return socket.emit('res:err', err);
-//       return done(stats);
-//     });
-//   };
-// };
-
-// var transformLabel = function (l, s) {
-//   var lsplit = l.split(s);
-//   return lsplit[lsplit.length - 1];
-// };
+          fireResponse('PersonMentionPerEntity', res);
+          return next();
+        });
+      }
+    ], function (err) {
+      if (err) {
+        console.log(err);
+        return socket.emit('res:err', err);
+      }
+      return fireResponse('final');
+    });
+  };
+};

@@ -3,6 +3,17 @@ var entityPredicate = function (entity) {
   return entity.variable ? true : false;
 };
 
+var saveAsImage = function (node) {
+  return function () {
+    var n = $(React.findDOMNode(node));
+    var dataUrl;
+    n.find('canvas').each(function () {
+      dataUrl = $(this).get(0).toDataURL('image/png');
+    });
+    window.open(dataUrl);
+  };
+};
+
 Chart.defaults.global.responsive = true;
 
 // Chart.js components
@@ -23,15 +34,17 @@ var HistogramChart = React.createClass({
         return '';
       });
     }
+
+    var fillColor = that.props.fillColor || 'rgba(151,187,205,0.5)';
+    var highlightFill = that.props.highlightFill || 'rgba(151,187,205,0.75)';
+
     var data = {
       labels: labels,
       datasets: [{
-        label: 'Contracts per year',
-        fillColor: 'rgba(151,187,205,0.5)',
-        strokeColor: 'rgba(151,187,205,0.8)',
-        highlightFill: 'rgba(151,187,205,0.75)',
-        highlightStroke: 'rgba(151,187,205,1)',
-        data: that.props.values
+        fillColor: fillColor,
+        highlightFill: highlightFill,
+        data: that.props.values,
+        metadata: that.props.metadata
       }]
     };
 
@@ -43,15 +56,21 @@ var HistogramChart = React.createClass({
 
     var chartConfig = {
       barStrokeWidth : 0,
-      barValueSpacing : 0,
+      barValueSpacing : that.props.barValueSpacing || 1,
       scaleOverride : true,
       scaleSteps : 10,
       scaleStepWidth : Math.ceil(maxValue / 10),
-      scaleStartValue : 0 
+      scaleStartValue : 0
     };
 
     setTimeout(function () {
       that.chart = new Chart(React.findDOMNode(that).getContext('2d')).Bar(data, chartConfig);
+      if (that.props.onBarClick) {
+        that.chart.chart.canvas.onclick = function (e) {
+          var activePoints = that.chart.getBarsAtEvent(e);
+          console.log(activePoints);
+        };
+      }
     }, 1000);
   }
 });
@@ -72,7 +91,12 @@ var HistogramSegment = React.createClass({
     return {
       title: null,
       data: null,
-      labelMap: null
+      labelMap: null,
+      fillColor: null,
+      highlightFill: null,
+      barValueSpacing: null,
+      filter: null,
+      onBarClick: null
     }
   },
   render: function () {
@@ -84,11 +108,25 @@ var HistogramSegment = React.createClass({
     var data = this.state.data;
     var labels;
     var values;
+    var metadata;
 
     if (data) {
       if (this.state['sort-labels']) {
         data.sort(this.state['sort-labels']);
       }
+
+      if (that.state.filter) {
+        var res = that.state.filter(data);
+        if (typeof(res) === 'function') {
+          data = data.filter(res)
+        } else {
+          res = Math.ceil(res) + 1;
+          data = data.filter(function (el) {
+            return (el.value || el.count) > res;
+          });
+        }
+      }
+
       labels = data.map(function (el) {
         if (that.state.labelMap) return that.state.labelMap(el.label);
         return el.label;
@@ -96,20 +134,21 @@ var HistogramSegment = React.createClass({
       values = data.map(function (el) {
         return parseInt(el.count);
       });
-    }    
+      metadata = data.map(function (el) {
+        return el.metadata;
+      });
+    }
 
     return (
       <div className="ui center aligned segment">
         <div className="row">
-          <h3>
-            {this.state.title}
-          </h3>
+          <ChartSegmentHeader click={saveAsImage(this)} title={this.state.title}/>
           <div className={className}>
             {(function (state) {
               if (!state.data) return (<div><p></p><p></p></div>)
 
               return (
-                <HistogramChart labels={labels} values={values} scale={state.scale} />
+                <HistogramChart onBarClick={state.onBarClick} barValueSpacing={state.barValueSpacing} fillColor={state.fillColor} highlightFill={state.highlightFill} labels={labels} values={values} scale={state.scale} />
               )
             })(this.state)}
           </div>
@@ -135,9 +174,10 @@ var PieSegment = React.createClass({
 
     var className = 'ui segment basic';
     if (!this.state.data) className += ' loading';
-    
-    if (this.state.data) {
-      this.state.data = this.state.data.map(function (el) {
+
+    var data = this.state.data
+    if (data) {
+      data = this.state.data.map(function (el) {
         return {
           label: that.state.labelMap ? that.state.labelMap(el.label) : el.label,
           value: el.count,
@@ -149,20 +189,39 @@ var PieSegment = React.createClass({
     return (
       <div className="ui center aligned segment">
         <div className="row">
-          <h3>
-            Classes overview
-          </h3>
+          <ChartSegmentHeader click={saveAsImage(this)} title={this.state.title}/>
           <div className={className}>
             {(function (state) {
               if (!state.data) return (<div><p></p><p></p></div>)
 
-              return (<PieChart data={state.data}/>)
+              return (<PieChart data={data}/>)
             })(this.state)}
           </div>
           {(function (state) {
             if (state.data) return (<a href="#" onClick={state.showAsTable(state.data)}>Show as table</a>)
           })(this.state)}
         </div>
+      </div>
+    )
+  }
+});
+
+var ChartSegmentHeader = React.createClass({
+  render: function () {
+    var btnStyle = {
+      float: 'right'
+    };
+    var iStyle = {
+      marginRight: 0
+    };
+    return (
+      <div className="ui header">
+        <h3>
+          {this.props.title}
+          <button className="ui basic icon button" onClick={this.props.click} style={btnStyle}>
+            <i className="save icon" style={iStyle}></i>
+          </button>
+        </h3>
       </div>
     )
   }
@@ -195,7 +254,7 @@ var GraphOverviewSegment = React.createClass({
             if (!overview) return (<span className="text">Loading</span>)
 
             return (
-              <table className="ui definition table">
+              <table className="ui definition collapsing table">
                 <thead>
                   <tr>
                     <th>Graph Name</th>
@@ -227,14 +286,64 @@ var GraphOverviewSegment = React.createClass({
   }
 });
 
+var OverviewSegment = React.createClass({
+  getInitialState: function () {
+    return {
+      data: null,
+      title: null
+    }
+  },
+  render: function () {
+    var that = this;
+
+    var className = 'ui segment basic';
+    if (!this.state.data) className += ' loading';
+
+    return (
+      <div className="ui center aligned segment">
+        <div className="row">
+          <h3>
+            {this.state.title}
+          </h3>
+          <div className={className}>
+            {(function (state) {
+              if (!state.data) return (<div><p></p><p></p></div>)
+
+              return (
+                <table className="ui collapsing celled table">
+                  <tbody>
+                    {state.data.map(function (el) {
+                      return (
+                        <tr key={objectHash(el.label + el.value)}>
+                          <td>{el.label}</td>
+                          <td>{el.value || el.count}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              )
+            })(this.state)}
+          </div>
+        </div>
+      </div>
+    )
+  }
+});
+
 // Table components
 var StatsTable = React.createClass({
   render: function () {
-    console.log(this.props.data);
+    this.props.data.sort(function (a, b) {
+      var va = parseInt(a.value || a.count);
+      var vb = parseInt(b.value || b.count);
+
+      return vb - va;
+    });
     return (
       <div className="row">
         <div className="column">
-          <table className="ui compact celled table">
+          <table className="ui celled table">
             <thead>
               <tr>
                 <th className="">Name</th>
@@ -345,7 +454,7 @@ var CompositEntityView = React.createClass({
 var EntitiesTable = React.createClass({
   render: function () {
     return (
-      <table className="table stripped ui">
+      <table className="table stripped ui collapsing">
         <thead>
           <tr>
             <th> {app.QueryController.query} </th>
@@ -379,7 +488,7 @@ var EntitiesView = React.createClass({
   previousPage: function () {
     var state = this.state;
     if (state.page === 0) return;
-    
+
     this.setState({
       page: state.page-1,
       entities: app.Storage.Entity.getArray(entitiesPerPage, (state.page-1)* entitiesPerPage, entityPredicate)
@@ -389,7 +498,7 @@ var EntitiesView = React.createClass({
   nextPage: function () {
     var state = this.state;
     if (app.Storage.Entity.size() < entitiesPerPage * (state.page + 1)) return;
-    
+
     this.setState({
       page: state.page+1,
       entities: app.Storage.Entity.getArray(entitiesPerPage, (state.page+1) * entitiesPerPage, entityPredicate)
@@ -505,9 +614,9 @@ var EntityModalHeader = React.createClass({
         //       </div>
         //     );
         //   }
-        // })()}    
+        // })()}
     return (
-      <div>     
+      <div>
         <span className="text">
           {this.state.entity ? this.state.entity.getLabel() : ''}
         </span>

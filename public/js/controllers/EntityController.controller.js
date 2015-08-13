@@ -12,7 +12,7 @@
 
   scope.loadEntities = function () {
     if (app.offline) return;
-    
+
     scope.task = app.StatusController.createTask('EntityController', 'Executing query...', app.dom.view === 'entity');
     app.StatusController.addTask(scope.task);
     Socket.query();
@@ -28,6 +28,9 @@
   });
 
   Socket.registerGlobalListener('res:query', function (result) {
+    Storage.Entity.destroy();
+    Storage.Entity = new Storage('Entity');
+
     scope.updateEntities(result);
     app.views.Entity.update();
 
@@ -79,7 +82,7 @@
         entity.predicates = ent.predicates;
         entity.origins = ent.origins;
         entity.type = ent.type;
-        
+
         entity.completed = true;
         entity.updateAllConnections();
       } else {
@@ -124,7 +127,7 @@
 
         return app.dom.showEntityModal(entity);
       });
-    };    
+    };
   };
 })(window.app, window.app.Socket, window.app.Storage, window.app.models.Entity, window.app.models.NodeType);
 
