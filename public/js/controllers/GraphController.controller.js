@@ -2,11 +2,10 @@
 
 (function (app, Socket, Storage) {
   var scope = app.GraphController = {};
-  console.log('Graph controller loaded');
 
   scope.onDomReady = function () {
     console.log('Graph controller onDomReady callback called');
-    
+
     scope.NodesStorage = new Storage('Node');
     scope.graph = new app.models.Graph();
 
@@ -21,7 +20,7 @@
 
   scope.loadGraph = function () {
     if (app.offline) return;
-    
+
     scope.task = app.StatusController.createTask('GraphController', 'Connecting graph...', app.dom.view === 'graph');
     app.StatusController.addTask(scope.task);
     Socket.requestGraph();
@@ -40,7 +39,7 @@
     scope.clearGraph();
     scope.d3.update();
     scope.appendSubgraph(graph);
-    
+
     scope.expandAllNodes(function () {
       app.StatusController.completeTask(scope.task);
     });
@@ -84,8 +83,8 @@
         scope.NodesStorage.set(node.id, node);
         addedNodes++;
       }
-      
-      if (addedNodes < app.config.graph.maxUpdateNodesCount && scope.graph.nodes.length < app.config.graph.maxNodesCount) scope.graph.addNode(node);  
+
+      if (addedNodes < app.config.graph.maxUpdateNodesCount && scope.graph.nodes.length < app.config.graph.maxNodesCount) scope.graph.addNode(node);
     }
 
     for (i = 0; i < edges.length; i++) {
@@ -140,7 +139,7 @@
     } else {
       entity = new app.models.Entity(node.id, node.data, node.type, node.variable);
       Storage.Entity.set(entity.id, entity);
-    } 
+    }
   };
 
   scope.init = function () {

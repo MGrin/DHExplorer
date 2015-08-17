@@ -16,47 +16,198 @@ var saveAsImage = function (node) {
 
 Chart.defaults.global.responsive = true;
 
-// Chart.js components
-var HistogramChart = React.createClass({
-  render: function () {
-    return (<canvas/>)
+var HiddenLabel = function (label) {
+  this.value = label;
+};
+
+HiddenLabel.prototype.toString = function () {
+  return '';
+};
+
+
+var HistogramSegment = React.createClass({
+  getInitialState: function () {
+    return {
+      data: null,
+      dataProcessors: {
+        'data-sort': null,
+        'data-filter': null
+      },
+      filters: {
+        'label-transform': null,
+        'value-transform': null
+      },
+      chartConfig: null,
+      listeners: {
+        onBarClick: null,
+        onShowAsTableClick: null
+      }
+    };
   },
-  componentDidMount: function () {
-    var that = this;
+  setTitle: function (title) {
+    this.setState({
+      title: title
+    });
+    return this;
+  },
+  setData: function (data) {
+    this.setState({
+      data: data
+    });
+    return this;
+  },
+  setDataProcessors: function (processors) {
+    this.setState({
+      dataProcessors: processors
+    });
+    return this;
+  },
+  setFilters: function (filters) {
+    this.setState({
+      filters: filters
+    });
+    return this;
+  },
+  setListeners: function (listeners) {
+    this.setState({
+      listeners: listeners
+    });
+    return this;
+  },
+  setChartConfig: function (config) {
+    this.setState({
+      chartConfig: config
+    });
+    return this;
+  },
+  transformData: function () {
+    var data = this.state.data;
+    if (this.state.dataProcessors) {
+      var labelSort = this.state.dataProcessors['data-sort'];
+      var dataFilter = this.state.dataProcessors['data-filter'];
 
-    var labels = that.props.labels;
+      if (labelSort) {
+        data.sort(labelSort);
+      }
 
-    if (that.props.scale && labels.length > that.props.scale) {
-      var downsampleRate = Math.ceil(labels.length / that.props.scale);
-
-      labels = labels.map(function (el, index) {
-        if (index % downsampleRate === 0) return el;
-        return '';
-      });
+      if (dataFilter) {
+        var filter = dataFilter(data);
+        if (typeof(filter) === 'function') {
+          data = data.filter(filter);
+        } else {
+          data = data.filter(function (el) {
+            return el.value > filter;
+          });
+        }
+      }
     }
 
-    var fillColor = that.props.fillColor || 'rgba(151,187,205,0.5)';
-    var highlightFill = that.props.highlightFill || 'rgba(151,187,205,0.75)';
+    var labelTransform;
+    var valueTransform;
+
+    if (this.state.filters) {
+      labelTransform = this.state.filters['label-transform'];
+      valueTransform = this.state.filters['value-transform'];
+    }
+
+    this.state.chartData = {};
+    this.state.chartData.labels = data.map(function (el) {
+      if (labelTransform) return labelTransform(el.label);
+      return el.label;
+    });
+
+    this.state.chartData.values = data.map(function (el) {
+      if (valueTransform) return valueTransform(el.count);
+      return parseInt(el.count);
+    });
+    this.state.chartData.metadata = data.map(function (el) {
+      return el.metadata;
+    });
+  },
+  downsampleLabels: function () {
+    var length = this.state.chartData.labels.length;
+    var scale = this.state.chartConfig.scale;
+
+    if (length > scale) {
+      var downsampleRate = Math.ceil(length / scale);
+
+      this.state.chartData.labels = this.state.chartData.labels.map(function (el, index) {
+        if (index % downsampleRate === 0) return el;
+        return new HiddenLabel(el);
+      });
+    }
+  },
+  render: function () {
+    var className;
+    var content;
+    var footer;
+    var title;
+
+    if (!this.state.data) {
+      className = 'ui segment basic loading';
+      content = (<div><p></p><p></p></div>);
+      footer = (<div></div>);
+      title = '';
+    } else {
+      className = 'ui segment basic';
+      this.transformData();
+      content = (<canvas />);
+      footer = (<a href="#" onClick={this.state.listeners.onShowAsTableClick(this.state.data)}>Show as table</a>);
+      // footer = (<div></div>);
+      title = this.state.title;
+    }
+
+    return (
+      <div className="ui center aligned segment">
+        <div className="row">
+          <ChartSegmentHeader click={saveAsImage(this)} title={title}/>
+          <div className={className}>
+            {content}
+          </div>
+          {footer}
+        </div>
+      </div>
+    )
+  },
+  componentWillUpdate: function () {
+    if (this.chart) this.chart.destroy();
+  },
+  componentDidUpdate: function () {
+    if (!this.state.chartData) return;
+
+    var that = this;
+
+    var chartConfig = that.state.chartConfig || {};
+
+    if (chartConfig.scale) that.downsampleLabels();
+
+    var labels = that.state.chartData.labels;
+    var values = that.state.chartData.values;
+    var metadata = that.state.chartData.metadata;
+
+    var fillColor = chartConfig.fillColor || 'rgba(151,187,205,0.5)';
+    var highlightFill = chartConfig.highlightFill || 'rgba(151,187,205,0.75)';
+    var barStrokeWidth = chartConfig.barStrokeWidth || 0;
+    var barValueSpacing = chartConfig.barValueSpacing || 1;
 
     var data = {
       labels: labels,
       datasets: [{
         fillColor: fillColor,
         highlightFill: highlightFill,
-        data: that.props.values,
-        metadata: that.props.metadata
+        data: values
       }]
     };
 
     var maxValue = -1;
 
-    that.props.values.map(function (el) {
+    that.state.chartData.values.map(function (el) {
       if (el > maxValue) maxValue = el;
     });
 
     var chartConfig = {
-      barStrokeWidth : 0,
-      barValueSpacing : that.props.barValueSpacing || 1,
+      barStrokeWidth : barStrokeWidth,
+      barValueSpacing : barValueSpacing,
       scaleOverride : true,
       scaleSteps : 10,
       scaleStepWidth : Math.ceil(maxValue / 10),
@@ -64,145 +215,78 @@ var HistogramChart = React.createClass({
     };
 
     setTimeout(function () {
-      that.chart = new Chart(React.findDOMNode(that).getContext('2d')).Bar(data, chartConfig);
-      if (that.props.onBarClick) {
+      that.chart = new Chart($(React.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Bar(data, chartConfig);
+      if (that.state.listeners.onBarClick) {
         that.chart.chart.canvas.onclick = function (e) {
           var activePoints = that.chart.getBarsAtEvent(e);
-          console.log(activePoints);
+          that.state.listeners.onBarClick(activePoints, that.state.chartData.metadata);
         };
       }
-    }, 1000);
-  }
-});
-
-var PieChart = React.createClass({
-  render: function () {
-    return (<canvas />)
-  },
-  componentDidMount: function () {
-    var that = this;
-    that.chart = new Chart(React.findDOMNode(that).getContext('2d')).Doughnut(that.props.data);
-  }
-});
-
-// Segments components
-var HistogramSegment = React.createClass({
-  getInitialState: function () {
-    return {
-      title: null,
-      data: null,
-      labelMap: null,
-      fillColor: null,
-      highlightFill: null,
-      barValueSpacing: null,
-      filter: null,
-      onBarClick: null
-    }
-  },
-  render: function () {
-    var that = this;
-
-    var className = 'ui segment basic';
-    if (!this.state.data) className += ' loading';
-
-    var data = this.state.data;
-    var labels;
-    var values;
-    var metadata;
-
-    if (data) {
-      if (this.state['sort-labels']) {
-        data.sort(this.state['sort-labels']);
-      }
-
-      if (that.state.filter) {
-        var res = that.state.filter(data);
-        if (typeof(res) === 'function') {
-          data = data.filter(res)
-        } else {
-          res = Math.ceil(res) + 1;
-          data = data.filter(function (el) {
-            return (el.value || el.count) > res;
-          });
-        }
-      }
-
-      labels = data.map(function (el) {
-        if (that.state.labelMap) return that.state.labelMap(el.label);
-        return el.label;
-      });
-      values = data.map(function (el) {
-        return parseInt(el.count);
-      });
-      metadata = data.map(function (el) {
-        return el.metadata;
-      });
-    }
-
-    return (
-      <div className="ui center aligned segment">
-        <div className="row">
-          <ChartSegmentHeader click={saveAsImage(this)} title={this.state.title}/>
-          <div className={className}>
-            {(function (state) {
-              if (!state.data) return (<div><p></p><p></p></div>)
-
-              return (
-                <HistogramChart onBarClick={state.onBarClick} barValueSpacing={state.barValueSpacing} fillColor={state.fillColor} highlightFill={state.highlightFill} labels={labels} values={values} scale={state.scale} />
-              )
-            })(this.state)}
-          </div>
-          {(function (state) {
-            if (state.data) return (<a href="#" onClick={state.showAsTable(state.data)}>Show as table</a>)
-          })(this.state)}
-        </div>
-      </div>
-    )
+    }, that.chart ? 0 : 1000);
   }
 });
 
 var PieSegment = React.createClass({
+  setData: function (data) {
+    this.setState({
+      data: data
+    });
+  },
   getInitialState: function () {
-    return {
-      data: null,
-      title: null,
-      labelMap: null
-    };
+    return {};
+  },
+  transformData: function () {
+    var labelTransform = this.state['label-transform'];
+
+    var data = this.state.data.map(function (el) {
+      return {
+        label: labelTransform ? labelTransform(el.label) : el.label,
+        value: parseInt(el.count),
+        color: getRandomColor()
+      };
+    });
+
+    return data;
   },
   render: function () {
-    var that = this;
+    var className;
+    var content;
+    var footer;
+    var title;
 
-    var className = 'ui segment basic';
-    if (!this.state.data) className += ' loading';
+    if (!this.state.data) {
+      className = 'ui segment basic loading';
+      content = (<div><p></p><p></p></div>);
+      footer = (<div></div>);
+      title = '';
+    } else {
+      className = 'ui segment basic';
+      this.transformData();
+      content = (<canvas />);
+      footer = (<a href="#" onClick={this.state.listeners.onShowAsTableClick(this.state.data)}>Show as table</a>);
+      title = this.state.title;
+    }
 
-    var data = this.state.data
-    if (data) {
-      data = this.state.data.map(function (el) {
-        return {
-          label: that.state.labelMap ? that.state.labelMap(el.label) : el.label,
-          value: el.count,
-          color: getRandomColor()
-        };
-      })
-    };
+    var data = this.state.data;
 
     return (
       <div className="ui center aligned segment">
         <div className="row">
           <ChartSegmentHeader click={saveAsImage(this)} title={this.state.title}/>
           <div className={className}>
-            {(function (state) {
-              if (!state.data) return (<div><p></p><p></p></div>)
-
-              return (<PieChart data={data}/>)
-            })(this.state)}
+            {content}
           </div>
-          {(function (state) {
-            if (state.data) return (<a href="#" onClick={state.showAsTable(state.data)}>Show as table</a>)
-          })(this.state)}
+          {footer}
         </div>
       </div>
     )
+  },
+  componentDidUpdate: function () {
+    var that = this;
+    if (!this.state.data) return;
+    var data = this.transformData();
+    that.chart = new Chart($(React.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Doughnut(data);
+
   }
 });
 
@@ -228,6 +312,10 @@ var ChartSegmentHeader = React.createClass({
 });
 
 var GraphOverviewSegment = React.createClass({
+  setData: function (data) {
+    this.setState({overview: data});
+  },
+
   getInitialState: function () {
     return {
       overview: null
@@ -287,6 +375,11 @@ var GraphOverviewSegment = React.createClass({
 });
 
 var OverviewSegment = React.createClass({
+  setData: function (data) {
+    this.setState({
+      data: data
+    });
+  },
   getInitialState: function () {
     return {
       data: null,

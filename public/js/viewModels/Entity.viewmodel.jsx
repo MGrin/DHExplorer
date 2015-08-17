@@ -2,7 +2,6 @@
 
 (function (app) {
   var scope = app.views.Entity = {};
-  console.log('Entity viewmodel loaded');
 
   scope.open = function (cb) {
     scope.list = React.render(

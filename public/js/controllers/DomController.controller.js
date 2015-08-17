@@ -2,11 +2,12 @@
 
 (function (app) {
   var dom = app.dom = {};
-  console.log('Dom controller loaded');
+
+  var firstView = 'statistics';
 
   dom.onDomReady = function () {
     console.log('Dom controller onDomReady callback called');
-    
+
     // $('#bottom-menu').hide();
     // $('#initial-modal').modal('show');
 
@@ -14,7 +15,7 @@
       $(this).height($('body').height() - 2*$('#bottom-menu').height() + 2);
     });
 
-    $('.explorer-view').not('[data-view="graph"]').transition('scale');
+    $('.explorer-view').not('[data-view="' + firstView + '"]').transition('scale');
     // $('#statistics-container').css('margin-top', 14);
     // $('.explorer-view').transition('scale');
 
@@ -46,7 +47,7 @@
     app.dom.legendMenu = $('.top-menu #legend');
     app.dom.entityModal = $('#entity-modal');
 
-    dom.onSidebarClick('graph')('onPageLoad');
+    dom.onSidebarClick(firstView)('onPageLoad');
     app.QueryController.notify();
   };
 

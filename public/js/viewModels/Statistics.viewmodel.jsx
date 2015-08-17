@@ -42,11 +42,21 @@
         return parseInt(el.value || el.count);
       }));
 
-      console.log(max);
       return function (el) {
         return parseInt(el.value || el.count) > threshold * max;
       };
     };
+  };
+
+  statistics.listeners = {};
+  statistics.registerListener = function (name, fn) {
+    if (!statistics.listeners[name]) statistics.listeners[name] = [];
+    statistics.listeners[name].push(fn);
+  };
+  statistics.emit = function (name, data) {
+    for (var i = 0; i < statistics.listeners[name].length; i++) {
+      statistics.listeners[name][i](data);
+    }
   };
 
   statistics.init = function (view) {
@@ -67,214 +77,198 @@
   };
 
   statistics.initDashboard = function () {
-    statistics.GraphOverviewSegment = React.render(
-      <GraphOverviewSegment />,
-      $('#graph-overview').get(0)
-    );
+    statistics.Dashboard = {
+      Overview: React.render(
+        <GraphOverviewSegment />,
+        $('#graph-overview').get(0)
+      ),
+      Classes: React.render(
+        <PieSegment />,
+        $('#classes-overview').get(0)
+      ),
+      Properties: React.render(
+        <PieSegment />,
+        $('#properties-overview').get(0)
+      )
+    };
 
-    statistics.ClassesOverviewSegment = React.render(
-      <PieSegment />,
-      $('#classes-overview').get(0)
-    );
-
-    statistics.ClassesOverviewSegment.setState({
-      data: statistics.ClassesOverviewSegment.state.data,
+    statistics.Dashboard.Classes.setState({
       title: 'Classes overview',
-      showAsTable: showAsTableCb('Classes overview'),
-      labelMap: transformRDFLabel('#')
+      listeners: {
+        onShowAsTableClick: showAsTableCb('Classes overview')
+      },
+      'label-transform': transformRDFLabel('#')
     });
 
-    statistics.PropertiesOverviewSegment = React.render(
-      <PieSegment />,
-      $('#properties-overview').get(0)
-    );
-
-    statistics.PropertiesOverviewSegment.setState({
-      data: statistics.PropertiesOverviewSegment.state.data,
+    statistics.Dashboard.Properties.setState({
       title: 'Properties overview',
-      showAsTable: showAsTableCb('Properties overview'),
-      labelMap: transformRDFLabel('#')
+      listeners: {
+        onShowAsTableClick: showAsTableCb('Properties overview')
+      },
+      'label-transform': transformRDFLabel('#')
     });
   };
 
   statistics.initArchives = function () {
-    statistics.ArchivesOverviewSegment = React.render(
-      <OverviewSegment />,
-      $('#archives-numeric-info').get(0)
-    );
+    statistics.Archives = {
+      Overview: React.render(
+        <OverviewSegment />,
+        $('#archives-numeric-info').get(0)
+      ),
+      Contracts: {
+        PerYear: React.render(
+          <HistogramSegment />,
+          $('#archives-contracts-year').get(0)
+        ),
+        PerRegister: React.render(
+          <HistogramSegment />,
+          $('#archives-contracts-register').get(0)
+        )
+      },
+      Folia: {
+        PerYear: React.render(
+          <HistogramSegment />,
+          $('#archives-folia-year').get(0)
+        ),
+        PerRegister: React.render(
+          <HistogramSegment />,
+          $('#archives-folia-register').get(0)
+        )
+      }
+    };
 
-    statistics.ArchivesOverviewSegment.setState({
+    statistics.Archives.Overview.setState({
       title: 'Archives overview'
     });
 
-    statistics.ContractsHistYearSegment = React.render(
-      <HistogramSegment />,
-      $('#archives-contracts-year').get(0)
-    );
+    statistics.Archives.Contracts.PerYear
+      .setTitle('Contracts distribution per year')
+      .setChartConfig({
+        scale: 20
+      })
+      .setDataProcessors({
+        'data-sort' : function (a, b) {
+          return parseInt(a.label) - parseInt(b.label);
+        }
+      })
+      .setListeners({
+        onBarClick: function (activePoints) {
+          if (!activePoints || activePoints.length === 0) return;
 
-    statistics.ContractsHistYearSegment.setState({
-      title: 'Contracts distribution per year',
-      showAsTable: showAsTableCb('Contracts number per year'),
-      scale: 20,
-      'sort-labels': function (a, b) {
-        return parseInt(a.label) - parseInt(b.label);
-      }
-    });
+          var activeYear = activePoints[0].label.value;
+          statistics.emit('onYearBarClick', activeYear);
+        },
+        onShowAsTableClick: showAsTableCb('Contracts number per year')
+      });
 
-    statistics.ContractsHistRegisterSegment = React.render(
-      <HistogramSegment />,
-      $('#archives-contracts-register').get(0)
-    );
+    statistics.Archives.Contracts.PerRegister
+      .setTitle('Contracts distribution per register')
+      .setDataProcessors({
+        'data-sort' : function (a, b) {
+          return parseInt(a.label) - parseInt(b.label);
+        }
+      })
+      .setFilters({
+        'label-transform' : transformRegisterLabel
+      })
+      .setListeners({
+        onShowAsTableClick: showAsTableCb('Contracts number per year')
+      });
 
-    statistics.ContractsHistRegisterSegment.setState({
-      title: 'Contracts distribution per register',
-      showAsTable: showAsTableCb('Contracts number per register'),
-      labelMap: transformRegisterLabel,
-      'sort-labels': function (a, b) {
-        var regA = parseFloat(a.label.split('_')[1]);
-        var regB = parseFloat(b.label.split('_')[1]);
+    statistics.Archives.Folia.PerYear
+      .setTitle('Folia distribution per year')
+      .setChartConfig({
+        scale: 20
+      })
+      .setDataProcessors({
+        'data-sort' : function (a, b) {
+          return parseInt(a.label) - parseInt(b.label);
+        }
+      })
+      .setListeners({
+        onShowAsTableClick: showAsTableCb('Folia number per year'),
+      });
 
-        return regA - regB;
-      }
-    });
+    statistics.Archives.Folia.PerRegister
+      .setTitle('Folia distribution per register')
+      .setDataProcessors({
+        'data-sort' : function (a, b) {
+          var regA = parseFloat(a.label.split('_')[1]);
+          var regB = parseFloat(b.label.split('_')[1]);
 
-    statistics.FoliaHistYearSegment = React.render(
-      <HistogramSegment />,
-      $('#archives-folia-year').get(0)
-    );
-
-    statistics.FoliaHistYearSegment.setState({
-      title: 'Folia distribution per year',
-      showAsTable: showAsTableCb('Folia number per year'),
-      scale: 20,
-      'sort-labels': function (a, b) {
-        return parseInt(a.label) - parseInt(b.label);
-      }
-    })
-
-    statistics.FoliaHistRegisterSegment = React.render(
-      <HistogramSegment />,
-      $('#archives-folia-register').get(0)
-    );
-
-    statistics.FoliaHistRegisterSegment.setState({
-      title: 'Folia distribution per register',
-      showAsTable: showAsTableCb('Folia number per register'),
-      labelMap: transformRegisterLabel,
-      'sort-labels': function (a, b) {
-        var regA = parseFloat(a.label.split('_')[1]);
-        var regB = parseFloat(b.label.split('_')[1]);
-
-        return regA - regB;
-      }
-    });
+          return regA - regB;
+        }
+      })
+      .setFilters({
+        'label-transform' : transformRegisterLabel
+      })
+      .setListeners({
+        onShowAsTableClick: showAsTableCb('Folia number per register')
+      });
   };
 
   statistics.initPeople = function () {
-    statistics.PeopleOverviewSegment = React.render(
-      <OverviewSegment />,
-      $('#people-numeric-info').get(0)
-    );
+    statistics.People = {
+      Overview: React.render(
+        <OverviewSegment />,
+        $('#people-numeric-info').get(0)
+      ),
+      Roles: React.render(
+        <HistogramSegment />,
+        $('#people-roles-mentions').get(0)
+      ),
+      Mentions: React.render(
+        <HistogramSegment />,
+        $('#people-mentions-entity').get(0)
+      )
+    };
 
-    statistics.PeopleOverviewSegment.setState({
+    statistics.People.Overview.setState({
       title: 'People overview'
     });
 
-    statistics.RolesHistPersonMention = React.render(
-      <HistogramSegment />,
-      $('#people-roles-mentions').get(0)
-    );
+    statistics.People.Roles
+      .setTitle('Roles distribution per person mention')
+      .setChartConfig({
+        fillColor: 'rgba(151,205,187,0.5)',
+        highlightFill: 'rgba(151,205,187,0.75)',
+        barValueSpacing: 5
+      })
+      .setFilters({
+        'label-transform': transformRDFLabel('#')
+      })
+      .setListeners({
+        onShowAsTableClick: showAsTableCb('Role vs person mention')
+      });
 
-    statistics.RolesHistPersonMention.setState({
-      title: 'Roles distribution per person mention',
-      showAsTable: showAsTableCb('Role vs person mention'),
-      labelMap: transformRDFLabel('#'),
-      fillColor: 'rgba(151,205,187,0.5)',
-      highlightFill: 'rgba(151,205,187,0.75)',
-      barValueSpacing: 5
-    });
+    statistics.People.Mentions
+      .setTitle('Top mentioned persons')
+      .setChartConfig({
+        fillColor: 'rgba(151,205,187,0.5)',
+        highlightFill: 'rgba(151,205,187,0.75)',
+        barValueSpacing: 0
+      })
+      .setDataProcessors({
+        'data-filter': computeTop(0.55)
+      })
+      .setListeners({
+        onBarClick: function (activePoints, metadata) {
+          if (!activePoints || activePoints.length === 0) return;
 
-    statistics.PersonMentionsHistEntity = React.render(
-      <HistogramSegment />,
-      $('#people-mentions-entity').get(0)
-    );
+          var activeName = activePoints[0].label;
+          var activeMetadata;
 
-    statistics.PersonMentionsHistEntity.setState({
-      title: 'Top mentioned persons',
-      showAsTable: showAsTableCb('Person mentions per entity'),
-      fillColor: 'rgba(151,205,187,0.5)',
-      highlightFill: 'rgba(151,205,187,0.75)',
-      barValueSpacing: 0,
-      filter: computeTop(0.55),
-      onBarClick: function () {
-        console.log('clicked');
-      }
-    });
-  }
+          for (var i = 0; i < metadata.length; i++) {
+            if (metadata[i].label.value === activeName) {
+              activeMetadata = metadata[i];
+              break;
+            }
+          }
 
-  statistics.showGraphOverview = function (data) {
-    statistics.GraphOverviewSegment.setState({
-      overview: data
-    });
-  };
-
-  statistics.showClassesOverview = function (data) {
-    statistics.ClassesOverviewSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.showPropertiesOverview = function (data) {
-    statistics.PropertiesOverviewSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.showContractsPerYear = function (data) {
-    statistics.ContractsHistYearSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.showContractsPerRegister = function (data) {
-    statistics.ContractsHistRegisterSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.showFoliaPerYear = function (data) {
-    statistics.FoliaHistYearSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.showFoliaPerRegister = function (data) {
-    statistics.FoliaHistRegisterSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.updateArchivesOverview = function (data) {
-    statistics.ArchivesOverviewSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.updatePeopleOverview = function (data) {
-    statistics.PeopleOverviewSegment.setState({
-      data: data
-    });
-  };
-
-  statistics.showRolesPerPersonMention = function (data) {
-    statistics.RolesHistPersonMention.setState({
-      data: data
-    });
-  };
-
-  statistics.showPersonMentionPerEntity = function (data) {
-    statistics.PersonMentionsHistEntity.setState({
-      data: data
-    });
+          if (!activeMetadata) return console.log('Person not found');
+          statistics.emit('onPersonBarClick', activeMetadata.person);
+        },
+        onShowAsTableClick: showAsTableCb('Person mentions per entity')
+      });
   }
 })(window.app);

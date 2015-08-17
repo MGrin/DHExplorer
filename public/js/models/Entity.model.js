@@ -109,7 +109,7 @@
 
     var splittedValue = graphNameRegexp.exec(this.tuple.value);
     if (!splittedValue) return this.tuple.value;
-    
+
     var label = splittedValue[splittedValue.length - 1];
 
     label = label.replace(/_/g, ' ');
@@ -122,6 +122,8 @@
 
   if (app) {
     Entity.prototype.isLiteral = function () {
+      if (!this.type || !app.Storage.NodeType.has(this.type)) return false;
+
       return app.Storage.NodeType.get(this.type).rdfType === 'literal';
     };
     app.models.Entity = Entity;

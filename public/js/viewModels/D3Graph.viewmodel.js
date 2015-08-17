@@ -2,8 +2,7 @@
 
 (function (app) {
   var d3g = app.views.D3Graph = {};
-  console.log('D3Graph viewmodel loaded');
-  
+
   d3g.destroy = function () {
     d3g.layout.stop();
     delete d3g.listeners;
@@ -113,7 +112,7 @@
                         .append('g')
                         .attr('class', 'link');
     link.append('line').attr('class', 'edge');
-    
+
     d3g.link.exit().remove();
 
     var node = d3g.node.enter().append('g')

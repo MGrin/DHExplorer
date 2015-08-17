@@ -52,6 +52,33 @@ var completeMissing = function (data) {
   }
 };
 
+exports.histogram = {
+  contractsForYear: function (socket) {
+    return function (message) {
+      var messageId = message.id;
+      var endpoint = new sparql.Client(message.sparql);
+      var year = message.year;
+
+      endpoint.query(queries.generateContractsPerMonth(year), function (err, result) {
+        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+
+        var data = result.results.bindings;
+        var res = constructResult(data, function () {
+          // sortByYear(contractYearHist);
+          // completeMissing(contractYearHist);
+        });
+
+        var msg = {
+          id: messageId,
+          data: res
+        };
+
+        socket.emit('res:' + msg.id, msg);
+      });
+    };
+  }
+};
+
 exports.computeDashboard = function (socket) {
   return function (message) {
     var messageId = message.id;

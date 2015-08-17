@@ -2,7 +2,6 @@
 
 (function (app, Socket) {
   var scope = app.QueryController = {};
-  console.log('Query controller loaded');
 
   scope.sparql = app.config.default_sparql_endpoint;
   scope.graphName = app.config.default_graph_name;

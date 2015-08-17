@@ -1,8 +1,6 @@
 'use strict';
 
 (function (app) {
-  console.log('Storage service loaded');
-  
   var storage = app.Storage = function (name) {
     this.name = name;
     this.map = d3.map();

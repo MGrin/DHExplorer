@@ -3,8 +3,7 @@
 (function (app) {
   var legend = app.views.Legend = {};
   legend.listeners = {};
-  console.log('Legend viewmodel loaded');
-  
+
   legend.init = function () {
     return legend;
   };

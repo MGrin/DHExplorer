@@ -1,9 +1,8 @@
 'use strict';
 
 (function (app) {
-  console.log('Config script loaded');
   app.env = 'production';
-  
+
   app.config = {
     graph: {
       maxUpdateNodesCount: 20,

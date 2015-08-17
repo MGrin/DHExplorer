@@ -2,7 +2,6 @@
 
 (function (app) {
   var Socket = app.Socket = {};
-  console.log('Socket service loaded');
 
   Socket.globalListeners = {};
 
@@ -24,7 +23,7 @@
         for (var i = 0; i < Socket.globalListeners[event].length; i++) {
           Socket.globalListeners[event][i](message);
         }
-      });      
+      });
     }
 
     Socket.globalListeners[event].push(listener);
@@ -131,16 +130,18 @@
     });
   };
 
-  // Socket.requestStatisticsOnQuery = function () {
-  //   var message = {
-  //     query: app.QueryController.query,
-  //     sparql: app.QueryController.sparql,
-  //     graphName: app.QueryController.graphName
-  //   };
+  Socket.requestHistogramPerMonthesForYear = function (year, cb) {
+    var message = {
+      id: generateMessageId(),
+      sparql: app.QueryController.sparql,
+      year: year
+    };
 
-  //   Socket.running.push('statistics');
-  //   Socket.io.emit('req:statistics:query', message);
-  // };
+    Socket.io.emit('req:statistics:contracts:year', message);
+    Socket.io.on('res:' + message.id, function (resMessage) {
+      return cb(resMessage.data);
+    });
+  };
 
   var generateMessageId = function () {
     var text = '';

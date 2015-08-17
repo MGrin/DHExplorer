@@ -2,7 +2,6 @@
 
 (function (app, Socket, Storage, Entity, NodeType) {
   var scope = app.EntityController = {};
-  console.log('Entity controller loaded');
 
   Storage.Entity = new Storage('Entity');
 

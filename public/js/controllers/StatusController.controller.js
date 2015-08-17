@@ -2,8 +2,7 @@
 
 (function (app, Dom) {
   var status = app.StatusController = {};
-  console.log('Status controller loaded');
-  
+
   status.runningTasks = [];
 
   app.Socket.registerGlobalListener('res:err', function (err) {
@@ -34,7 +33,7 @@
       Dom.setStatusText(task.text);
     } else {
       Dom.showDimmer(task.text);
-    }    
+    }
   };
 
   status.completeTask = function (task) {
@@ -59,12 +58,12 @@
     }
 
     Dom.startStatusLoader();
-    Dom.setStatusText(status.runningTasks[0].text);    
+    Dom.setStatusText(status.runningTasks[0].text);
   };
 
   status.getRunningTask = function () {
     if (status.runningTasks.length === 0) return;
-    
+
     return status.runningTasks[status.runningTasks.length - 1];
   };
 })(window.app, window.app.dom);

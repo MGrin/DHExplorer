@@ -20,5 +20,9 @@ module.exports = {
 
   TOTAL_PERSONS_MENTION_COUNT: 'SELECT count(distinct ?pm) as ?count WHERE {?pm a grz-owl:PersonMention . } ',
   TOTAL_PERSONS_ENTITIES_COUNT: 'SELECT count(distinct ?pe) as ?count WHERE {?pe a grz-owl:Person . } ',
-  AVERAGE_PERSON_MENTION_PER_ENTITY: 'SELECT AVG(?mentionCount) as ?count WHERE {SELECT ?pe (count(distinct ?pm) AS ?mentionCount) WHERE {?pm a grz-owl:PersonMention ;  grz-owl:hasEntityLink ?link . ?pe a grz-owl:Person . ?link  grz-owl:refers_to ?pe. } GROUP BY ?pe } '
+  AVERAGE_PERSON_MENTION_PER_ENTITY: 'SELECT AVG(?mentionCount) as ?count WHERE {SELECT ?pe (count(distinct ?pm) AS ?mentionCount) WHERE {?pm a grz-owl:PersonMention ;  grz-owl:hasEntityLink ?link . ?pe a grz-owl:Person . ?link  grz-owl:refers_to ?pe. } GROUP BY ?pe } ',
+
+  generateContractsPerMonth: function (year) {
+    return 'SELECT ?label (count(?contract) as ?count) WHERE {?contract a grz-owl:Contract . ?contract sem:hasTime ?temp . ?temp sem:hasTimeStamp ?date . BIND (year(?date) AS ?year) . FILTER (?year = ' + year + ') . BIND(month(?date) as ?label)} GROUP BY ?label'
+  }
 };
