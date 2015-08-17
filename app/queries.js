@@ -8,7 +8,7 @@ module.exports = {
 
   CONTRACT_DISTRIBUTION_YEAR: 'SELECT ?label (count(?contract) as ?count) WHERE {?contract a grz-owl:Contract . ?contract sem:hasTime ?temp . ?temp sem:hasTimeStamp ?date . BIND (year(?date) AS ?label). } GROUP BY ?label',
   CONTRACT_DISTRIBUTION_REGISTER: 'SELECT ?label (count(?contract) as ?count) WHERE {?label a grz-owl:Register ; grz-owl:has_document ?contract . } GROUP BY ?label ',
-  FOLIA_DISTRIBUTION_YEAR: 'SELECT ?label (count(?folia) as ?count) WHERE {?contract a grz-owl:Contract . ?contract sem:hasTime ?temp . ?temp sem:hasTimeStamp ?date . ?contract grz-owl:onPage ?folia . BIND (year(?date) AS ?label) . } GROUP BY ?label',
+  FOLIA_DISTRIBUTION_YEAR: 'SELECT ?label (count(?folia) as ?count) WHERE {?contract a grz-owl:Contract . ?contract sem:hasTime ?temp . ?temp sem:hasTimeStamp ?date . ?contract grz-owl:appearsOn ?folia . BIND (year(?date) AS ?label) . } GROUP BY ?label',
   FOLIA_DISTRIBUTION_REGISTER: 'SELECT ?label (count(?folia) as ?count) WHERE {?label a grz-owl:Register ; grz-owl:has_folia ?folia . } GROUP BY ?label ',
 
   TOTAL_CONTRACTS_COUNT: 'SELECT count(distinct ?contract) as ?count where {?contract a grz-owl:Contract .}',

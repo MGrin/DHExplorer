@@ -131,13 +131,11 @@
           d3.select(this).attr({
             'stroke-width' : '3px'
           });
-          d3g.listeners['node-mouseenter'](node);
         })
         .on('mouseout', function (node) {
           d3.select(this).attr({
             'stroke-width' : '1px'
           });
-          d3g.listeners['node-mouseout'](node);
         });
 
     node.append('text')

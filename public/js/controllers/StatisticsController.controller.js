@@ -12,54 +12,61 @@
     return scope.switchView(scope.view || 'dashboard', cb);
   };
 
-  scope.handlersFactory = function (status, data) {
-    // console.log(status, data);
-    switch (status) {
-      case 'GraphOverview': {
-        app.views.Statistics.Dashboard.Overview.setData(data);
-        break;
+  scope.handlersFactory = {
+    dashboard: function (status, data) {
+      switch (status) {
+        case 'GraphOverview': {
+          app.views.Statistics.Dashboard.Overview.setData(data);
+          break;
+        }
+        case 'ClassesOverview': {
+          app.views.Statistics.Dashboard.Classes.setData(data);
+          break;
+        }
+        case 'PropertiesOverview': {
+          app.views.Statistics.Dashboard.Properties.setData(data);
+          break;
+        }
       }
-      case 'ClassesOverview': {
-        app.views.Statistics.Dashboard.Classes.setData(data);
-        break;
+    },
+    archives: function (status, data) {
+      switch (status) {
+        case 'ArchivesOverview': {
+          app.views.Statistics.Archives.Overview.setData(data);
+          break;
+        }
+        case 'ContractsPerYear': {
+          app.views.Statistics.Archives.Contracts.PerYear.setData(data);
+          break;
+        }
+        case 'ContractsPerRegister' : {
+          app.views.Statistics.Archives.Contracts.PerRegister.setData(data);
+          break;
+        }
+        case 'FoliaPerYear': {
+          app.views.Statistics.Archives.Folia.PerYear.setData(data);
+          break;
+        }
+        case 'FoliaPerRegister': {
+          app.views.Statistics.Archives.Folia.PerRegister.setData(data);
+          break;
+        }
       }
-      case 'PropertiesOverview': {
-        app.views.Statistics.Dashboard.Properties.setData(data);
-        break;
-      }
-
-      case 'ArchivesOverview': {
-        app.views.Statistics.Archives.Overview.setData(data);
-        break;
-      }
-      case 'ContractsPerYear': {
-        app.views.Statistics.Archives.Contracts.PerYear.setData(data);
-        break;
-      }
-      case 'ContractsPerRegister' : {
-        app.views.Statistics.Archives.Contracts.PerRegister.setData(data);
-        break;
-      }
-      case 'FoliaPerYear': {
-        app.views.Statistics.Archives.Folia.PerYear.setData(data);
-        break;
-      }
-      case 'FoliaPerRegister': {
-        app.views.Statistics.Archives.Folia.PerRegister.setData(data);
-        break;
-      }
-
-      case 'PeopleOverview': {
-        app.views.Statistics.People.Overview.setData(data);
-        break;
-      }
-      case 'RolesPerPersonMention': {
-        app.views.Statistics.People.Roles.setData(data);
-        break;
-      }
-      case 'PersonMentionPerEntity': {
-        app.views.Statistics.People.Mentions.setData(data);
-        break;
+    },
+    people: function (status, data) {
+      switch (status) {
+        case 'PeopleOverview': {
+          app.views.Statistics.People.Overview.setData(data);
+          break;
+        }
+        case 'RolesPerPersonMention': {
+          app.views.Statistics.People.Roles.setData(data);
+          break;
+        }
+        case 'PersonMentionPerEntity': {
+          app.views.Statistics.People.Mentions.setData(data);
+          break;
+        }
       }
     }
   };
@@ -97,7 +104,7 @@
     app.Socket.requestStatistics(view, function () {
       if (cb) cb();
       app.StatusController.completeTask(scope.task);
-    },scope.handlersFactory, function () {
+    },scope.handlersFactory[view], function () {
 
     });
   };
@@ -112,26 +119,8 @@
   };
 
   scope.onPersonBarClick = function (tuple) {
-    var task = app.StatusController.createTask('StatisticsController', 'Describing person', true);
-    app.StatusController.addTask(task);
-
-    var entityId = objectHash(tuple.value);
-    var entity = app.Storage.Entity.get(entityId);
-    if (!entity) {
-      entity = new app.models.Entity(entityId, tuple);
-      app.Storage.Entity.set(entity.id, entity);
-    }
-
-    if (entity.isCompleted()) {
-      app.StatusController.completeTask(task);
-      return app.dom.showEntityModal(entity);
-    }
-
-    app.Socket.describeEntity(entity, function (entities) {
-      app.EntityController.onEntityDescribed(entity, entities);
-      app.dom.showEntityModal(app.Storage.Entity.get(entityId));
-      app.StatusController.completeTask(task);
-    });
+    var task = app.StatusController.createTask('StatisticsController', 'Describing person', false);
+    app.EntityController.show({tuple: tuple}, task);
   };
   app.views.Statistics.registerListener('onPersonBarClick', scope.onPersonBarClick);
 
@@ -140,9 +129,15 @@
     app.StatusController.addTask(task);
 
     app.Socket.requestHistogramPerMonthesForYear(year, function (data) {
+      var listeners = app.views.Statistics.Archives.Contracts.PerYear.state.listeners;
+      listeners.onBarClick = function () {};
+
       app.views.Statistics.Archives.Contracts.PerYear
+        .saveCurrentState()
         .setTitle('Contracts per month for year ' + year)
+        .setListeners(listeners)
         .setData(data);
+
       app.StatusController.completeTask(task);
     });
   };

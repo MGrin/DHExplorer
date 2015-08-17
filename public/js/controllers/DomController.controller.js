@@ -6,19 +6,11 @@
   var firstView = 'statistics';
 
   dom.onDomReady = function () {
-    console.log('Dom controller onDomReady callback called');
-
-    // $('#bottom-menu').hide();
-    // $('#initial-modal').modal('show');
-
     $('.explorer-view-content').each(function () {
       $(this).height($('body').height() - 2*$('#bottom-menu').height() + 2);
     });
 
     $('.explorer-view').not('[data-view="' + firstView + '"]').transition('scale');
-    // $('#statistics-container').css('margin-top', 14);
-    // $('.explorer-view').transition('scale');
-
     $('.top-menu .dropdown').dropdown({
       action: 'nothing'
     });
@@ -41,14 +33,7 @@
     app.dom.status = $('#status-text');
     app.dom.loader = $('#status-loader');
 
-    app.dom.graph = $('#graph-container');
-    app.dom.entity = $('#entity-container .row .column');
-
-    app.dom.legendMenu = $('.top-menu #legend');
-    app.dom.entityModal = $('#entity-modal');
-
-    dom.onSidebarClick(firstView)('onPageLoad');
-    app.QueryController.notify();
+    $('#sidebar .item[data-toggle-view="' + firstView + '"]').trigger('click');
   };
 
   dom.onSidebarClick = function (view) {
@@ -56,10 +41,10 @@
       $('#sidebar').sidebar('hide');
     };
 
-    return function (firstTime) {
-      if (app.dom.view === view) return;
+    return function () {
+      if (dom.view === view) return;
 
-      if (firstTime !== 'onPageLoad') {
+      if (dom.view) {
         $('.explorer-view[data-view="' + dom.view + '"]').transition('scale');
         $('.explorer-view[data-view="' + view + '"]').transition('scale');
       }
@@ -122,7 +107,7 @@
   };
 
   dom.showDimmer = function (text) {
-    $('#entity-modal').modal('hide');
+    $('#entity-modal-container .modal').modal('hide');
     $('#loader-dimmer .text').text(text);
     $('#loader-dimmer').addClass('active');
   };
@@ -132,10 +117,10 @@
   };
 
   dom.showEntityModal = function (entity) {
-    $('#entity-modal').modal('hide');
+    $('#entity-modal-container .modal').modal('hide');
     app.views.Entity.setModalEntity(entity);
     dom.hideDimmer();
-    $('#entity-modal').modal('show');
+    $('#entity-modal-container .modal').modal('show');
   };
 })(window.app);
 

@@ -13,7 +13,7 @@
   };
 
   legend.appendType = function (type) {
-    app.dom.legendMenu.append(legend.typeHTML(type));
+    $('.top-menu #legend').append(legend.typeHTML(type));
 
     $('#type-' + type.id).click(function () {
       legend.listeners['legend-click'](type);

@@ -1,5 +1,14 @@
 'use strict';
 
+var getRandomColor = function () {
+  var letters = '0123456789ABCDEF'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++ ) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 (function (window) {
   var app = window.app = {};
   if (window.location.href.indexOf('localhost') === -1 && window.location.href.indexOf('127.0.0.1') === -1) {

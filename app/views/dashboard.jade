@@ -15,9 +15,8 @@ html
     script(src="/lib/object-hash/dist/object_hash.js")
     script(src="/lib/Chart.js/Chart.min.js")
 
-    script(src="/cdn/js/viewModels/React.components.js")
-
     script(src="/cdn/js/app.js")
+
     script(src="/cdn/js/services/config.service.js")
     script(src="/cdn/js/services/Socket.service.js")
     script(src="/cdn/js/services/Storage.service.js")
@@ -27,6 +26,16 @@ html
     script(src="/cdn/js/models/NodeType.model.js")
     script(src="/cdn/js/models/Entity.model.js")
     script(src="/cdn/js/models/Graph.model.js")
+
+    script(src="/cdn/js/ReactComponents/Helpers.js")
+    script(src="/cdn/js/ReactComponents/ChartHeader.js")
+    script(src="/cdn/js/ReactComponents/EntitiesList.js")
+    script(src="/cdn/js/ReactComponents/EntityModal.js")
+    script(src="/cdn/js/ReactComponents/EntityTable.js")
+    script(src="/cdn/js/ReactComponents/HistogramChart.js")
+    script(src="/cdn/js/ReactComponents/PieChart.js")
+    script(src="/cdn/js/ReactComponents/HistogramTable.js")
+    script(src="/cdn/js/ReactComponents/OverviewTable.js")
 
     script(src="/cdn/js/viewModels/Statistics.viewmodel.js")
     script(src="/cdn/js/viewModels/Legend.viewmodel.js")
@@ -49,7 +58,7 @@ html
       .item.link(data-toggle-view="entity")
         i.grid.layout.icon
         span.text Entity view
-      .item.link.active(data-toggle-view="graph")
+      .item.link(data-toggle-view="graph")
         i.fork.icon
         span.text Graph view
       .item.link(data-toggle-view="statistics")
@@ -153,10 +162,11 @@ html
             .ui.loader.inverted.text.active
               span.text Loading...
 
-    #entity-modal.ui.modal
-      i.close.icon
-      .header
-      .content.ui.grid.container
+    #entity-modal-container
+      //- .ui.modal
+      //- i.close.icon
+      //- .header
+      //- .content.ui.grid.container
 
     #statistics-modal.ui.modal
       i.close.icon

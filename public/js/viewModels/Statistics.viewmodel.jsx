@@ -3,51 +3,6 @@
 (function (app) {
   var statistics = app.views.Statistics = {};
 
-  var showAsTableCb = function (title) {
-    return function (data) {
-      return function () {
-        $('#statistics-modal .header').text(title);
-        React.render(
-          <StatsTable data={data} />,
-          $('#statistics-modal .content').get(0)
-        );
-        $('#statistics-modal').modal('show');
-      };
-    };
-  };
-
-  var transformRDFLabel = function (sym) {
-    return function (value) {
-      var spl = value.split(sym);
-      return spl[spl.length - 1];
-    };
-  };
-  var transformRegisterLabel = function (value) {
-    var index = value.indexOf(app.config.default_graph_name);
-    if (index === -1) return value;
-    return value.substring(index + app.config.default_graph_name.length);
-  };
-  var computeMean = function (data) {
-    var sum = 0;
-    for (var i = 0; i < data.length; i++) {
-      sum += parseInt(data[i].value || data[i].count);
-    }
-
-    return sum / data.length;
-  };
-
-  var computeTop = function (threshold) {
-    return function (data) {
-      var max = Math.max.apply(null, data.map(function (el) {
-        return parseInt(el.value || el.count);
-      }));
-
-      return function (el) {
-        return parseInt(el.value || el.count) > threshold * max;
-      };
-    };
-  };
-
   statistics.listeners = {};
   statistics.registerListener = function (name, fn) {
     if (!statistics.listeners[name]) statistics.listeners[name] = [];
@@ -79,15 +34,15 @@
   statistics.initDashboard = function () {
     statistics.Dashboard = {
       Overview: React.render(
-        <GraphOverviewSegment />,
+        <app.React.GraphOverviewTable />,
         $('#graph-overview').get(0)
       ),
       Classes: React.render(
-        <PieSegment />,
+        <app.React.PieChart />,
         $('#classes-overview').get(0)
       ),
       Properties: React.render(
-        <PieSegment />,
+        <app.React.PieChart />,
         $('#properties-overview').get(0)
       )
     };
@@ -95,43 +50,45 @@
     statistics.Dashboard.Classes.setState({
       title: 'Classes overview',
       listeners: {
-        onShowAsTableClick: showAsTableCb('Classes overview')
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Classes overview'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
       },
-      'label-transform': transformRDFLabel('#')
+      'label-transform': app.React.helpers.transformRDFLabel('#')
     });
 
     statistics.Dashboard.Properties.setState({
       title: 'Properties overview',
       listeners: {
-        onShowAsTableClick: showAsTableCb('Properties overview')
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Properties overview'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
       },
-      'label-transform': transformRDFLabel('#')
+      'label-transform': app.React.helpers.transformRDFLabel('#')
     });
   };
 
   statistics.initArchives = function () {
     statistics.Archives = {
       Overview: React.render(
-        <OverviewSegment />,
+        <app.React.OverviewTable />,
         $('#archives-numeric-info').get(0)
       ),
       Contracts: {
         PerYear: React.render(
-          <HistogramSegment />,
+          <app.React.HistogramChart />,
           $('#archives-contracts-year').get(0)
         ),
         PerRegister: React.render(
-          <HistogramSegment />,
+          <app.React.HistogramChart />,
           $('#archives-contracts-register').get(0)
         )
       },
       Folia: {
         PerYear: React.render(
-          <HistogramSegment />,
+          <app.React.HistogramChart />,
           $('#archives-folia-year').get(0)
         ),
         PerRegister: React.render(
-          <HistogramSegment />,
+          <app.React.HistogramChart />,
           $('#archives-folia-register').get(0)
         )
       }
@@ -158,8 +115,10 @@
           var activeYear = activePoints[0].label.value;
           statistics.emit('onYearBarClick', activeYear);
         },
-        onShowAsTableClick: showAsTableCb('Contracts number per year')
-      });
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Contracts number per year'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
+      })
+      .apply();
 
     statistics.Archives.Contracts.PerRegister
       .setTitle('Contracts distribution per register')
@@ -169,11 +128,13 @@
         }
       })
       .setFilters({
-        'label-transform' : transformRegisterLabel
+        'label-transform' : app.React.helpers.transformRegisterLabel
       })
       .setListeners({
-        onShowAsTableClick: showAsTableCb('Contracts number per year')
-      });
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Contracts number per year'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
+      })
+      .apply();
 
     statistics.Archives.Folia.PerYear
       .setTitle('Folia distribution per year')
@@ -186,8 +147,10 @@
         }
       })
       .setListeners({
-        onShowAsTableClick: showAsTableCb('Folia number per year'),
-      });
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Folia number per year'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
+      })
+      .apply();
 
     statistics.Archives.Folia.PerRegister
       .setTitle('Folia distribution per register')
@@ -200,25 +163,27 @@
         }
       })
       .setFilters({
-        'label-transform' : transformRegisterLabel
+        'label-transform' : app.React.helpers.transformRegisterLabel
       })
       .setListeners({
-        onShowAsTableClick: showAsTableCb('Folia number per register')
-      });
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Folia number per register'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
+      })
+      .apply();
   };
 
   statistics.initPeople = function () {
     statistics.People = {
       Overview: React.render(
-        <OverviewSegment />,
+        <app.React.OverviewTable />,
         $('#people-numeric-info').get(0)
       ),
       Roles: React.render(
-        <HistogramSegment />,
+        <app.React.HistogramChart />,
         $('#people-roles-mentions').get(0)
       ),
       Mentions: React.render(
-        <HistogramSegment />,
+        <app.React.HistogramChart />,
         $('#people-mentions-entity').get(0)
       )
     };
@@ -235,11 +200,13 @@
         barValueSpacing: 5
       })
       .setFilters({
-        'label-transform': transformRDFLabel('#')
+        'label-transform': app.React.helpers.transformRDFLabel('#')
       })
       .setListeners({
-        onShowAsTableClick: showAsTableCb('Role vs person mention')
-      });
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Role vs person mention'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
+      })
+      .apply();
 
     statistics.People.Mentions
       .setTitle('Top mentioned persons')
@@ -249,7 +216,7 @@
         barValueSpacing: 0
       })
       .setDataProcessors({
-        'data-filter': computeTop(0.55)
+        'data-filter': app.React.helpers.computeTop(0.55)
       })
       .setListeners({
         onBarClick: function (activePoints, metadata) {
@@ -268,7 +235,9 @@
           if (!activeMetadata) return console.log('Person not found');
           statistics.emit('onPersonBarClick', activeMetadata.person);
         },
-        onShowAsTableClick: showAsTableCb('Person mentions per entity')
-      });
+        onShowAsTableClick: app.React.helpers.showAsTableCb('Person mentions per entity'),
+        onSaveAsImageClick: app.React.helpers.saveAsImage
+      })
+      .apply();
   }
 })(window.app);

@@ -86,10 +86,6 @@
     var index = Socket.running.indexOf('graph');
     if (index > -1) Socket.running.splice(index, 1);
   });
-  Socket.registerGlobalListener('res:statistics', function () {
-    var index = Socket.running.indexOf('statistics');
-    if (index > -1) Socket.running.splice(index, 1);
-  });
 
   Socket.query = function () {
     var message = {

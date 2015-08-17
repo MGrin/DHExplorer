@@ -4,8 +4,6 @@
   var scope = app.LegendController = {};
 
   scope.onDomReady = function () {
-    console.log('Legend controller onDomReady callback called');
-
     scope.legend = app.views.Legend.init();
 
     scope.legend.registerListener('legend-click', scope.onLegendClick);

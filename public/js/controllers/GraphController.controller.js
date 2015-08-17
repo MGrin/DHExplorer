@@ -4,11 +4,12 @@
   var scope = app.GraphController = {};
 
   scope.onDomReady = function () {
-    console.log('Graph controller onDomReady callback called');
-
     scope.NodesStorage = new Storage('Node');
     scope.graph = new app.models.Graph();
 
+    scope.dom = {
+      graph: $('#graph-container')
+    };
     scope.init();
 
     $('.top-menu #expand-nodes').click(scope.expandAllNodes);
@@ -101,35 +102,6 @@
     return (type !== 'literal');
   };
 
-  // scope.constructGraphFromEntity = function (sourceNode, entity) {
-  //   var graph = {
-  //     nodes: [],
-  //     edges: []
-  //   };
-
-  //   for (var predIdx in entity.predicates) {
-  //     if (entity.predicates[predIdx]) {
-  //       var predicate = entity.predicates[predIdx];
-  //       var subject = entity.subjects[predIdx];
-  //       if (!subject) continue;
-
-  //       var nodeEntity = Storage.Entity.get(subject);
-
-  //       var node = Node.createFromEntity(nodeEntity);
-
-  //       var edgeId = Edge.generateId(entity.id, node.id, predicate, objectHash);
-  //       var edge = new Edge(edgeId, sourceNode.id, node.id, predicate);
-
-  //       graph.nodes.push(node);
-  //       graph.edges.push(edge);
-  //     }
-  //   }
-
-  //   sourceNode.type = entity.type;
-  //   graph.nodes.unshift(sourceNode);
-  //   return graph;
-  // };
-
   scope.updateEntityWithNode = function (node) {
     var entity;
 
@@ -144,8 +116,8 @@
 
   scope.init = function () {
     var d3params = {
-      width: app.dom.graph.width(),
-      height: app.dom.graph.height(),
+      width: scope.dom.graph.width(),
+      height: scope.dom.graph.height(),
       charge: -4000,
       friction: 0.8,
       linkDistance: 50,
@@ -166,8 +138,6 @@
 
     scope.d3.registerListener('node-click', scope.nodeClick);
     scope.d3.registerListener('node-shift-click', scope.nodeShiftClick);
-    scope.d3.registerListener('node-mouseenter', scope.nodeMouseEnter);
-    scope.d3.registerListener('node-mouseout', scope.nodeMouseOut);
     scope.d3.registerListener('node-label', scope.getNodeLabel);
     scope.d3.registerListener('node-icon', scope.getNodeIcon);
   };
@@ -212,34 +182,13 @@
 
   scope.nodeClick = function (node) {
     var task = app.StatusController.createTask('GraphController', 'Describing node...');
-    app.StatusController.addTask(task);
-
-    var entity = Storage.Entity.get(node.id);
-    if (entity.isCompleted()) {
-      app.StatusController.completeTask(task);
-      return app.dom.showEntityModal(entity);
-    }
-
-    Socket.describeEntity(entity, function (entities) {
-      app.EntityController.onEntityDescribed(entity, entities);
-      app.dom.showEntityModal(Storage.Entity.get(node.id));
-      node.type = entity.type;
-      app.StatusController.completeTask(task);
-    });
+    app.EntityController.show({id: node.id}, task);
   };
 
   scope.nodeShiftClick = function (node) {
     Socket.describeNode(node, function (graph) {
       scope.appendSubgraph(graph, node);
     });
-  };
-
-  scope.nodeMouseOut = function (node) {
-
-  };
-
-  scope.nodeMouseEnter = function (node) {
-
   };
 
   scope.getNodeLabel = function (node) {
@@ -250,7 +199,7 @@
     return '<i class="' + node.getType().getIconClass() + '"></i>';
   };
 
-  scope.toggleTypeVisibility = function (type) {
+  scope.toggleTypeVisibility = function () {
     scope.d3.tick();
   };
 })(window.app, window.app.Socket, window.app.Storage, window.app.models.NodeType, window.app.models.Node, window.app.models.Edge);

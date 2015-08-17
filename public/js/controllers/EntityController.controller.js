@@ -5,10 +5,6 @@
 
   Storage.Entity = new Storage('Entity');
 
-  scope.onDomReady = function () {
-    app.views.Entity.open();
-  };
-
   scope.loadEntities = function () {
     if (app.offline) return;
 
@@ -38,6 +34,7 @@
 
   scope.open = function (cb) {
     if (scope.onOpen) scope.onOpen();
+    app.views.Entity.init();
     if (cb) cb();
     return;
   };
@@ -99,35 +96,36 @@
     return scope.entity.getLabelHTML(entity);
   };
 
+  scope.show = function (params, task) {
+    var entityId;
+    if (params.id) entityId = params.id;
+    else entityId = objectHash(params.tuple.value);
+
+    var entity = app.Storage.Entity.get(entityId);
+    if (!entity) {
+      if (!params.tuple) return app.dom.showError('Entity not found: ' + params.id);
+
+      entity = new app.models.Entity(entityId, params.tuple);
+      app.Storage.Entity.set(entity.id, entity);
+    }
+
+    if (entity.isCompleted()) {
+      app.StatusController.completeTask(task);
+      return app.dom.showEntityModal(entity);
+    }
+
+    app.Socket.describeEntity(entity, function (entities) {
+      app.EntityController.onEntityDescribed(entity, entities);
+      entity.completed = true;
+      app.dom.showEntityModal(app.Storage.Entity.get(entityId));
+      app.StatusController.completeTask(task);
+    });
+  };
+
   scope.onResourceClick = function (id) {
     return function () {
       var task = app.StatusController.createTask('EntityController', 'Describing entity');
-      app.StatusController.addTask(task);
-
-      var entity = Storage.Entity.get(id);
-
-      if (!entity) {
-        app.StatusController.completeTask(task);
-        return console.log('No entity found for id ' + id);
-      }
-
-      if (entity.isCompleted()) {
-        app.StatusController.completeTask(task);
-
-        return app.dom.showEntityModal(entity);
-      }
-
-      app.dom.showDimmer('Loading');
-
-      Socket.describeEntity(entity, function (entities) {
-        scope.onEntityDescribed(entity, entities);
-        entity.completed = true;
-        app.StatusController.completeTask(task);
-
-        return app.dom.showEntityModal(entity);
-      });
+      scope.show({id: id}, task);
     };
   };
 })(window.app, window.app.Socket, window.app.Storage, window.app.models.Entity, window.app.models.NodeType);
-
-window.app.addOnDocumentReady('EntityController', window.app.EntityController.onDomReady, ['DomController']);

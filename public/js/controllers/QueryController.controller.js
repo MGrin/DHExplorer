@@ -18,7 +18,6 @@
   };
 
   scope.onDomLoaded = function () {
-    console.log('Query controller onDomLoaded callback called');
     $('#query-btn').click(function () {
       scope.query = $('#query-input').val();
       scope.notify();
