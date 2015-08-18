@@ -9,6 +9,8 @@
     statistics.listeners[name].push(fn);
   };
   statistics.emit = function (name, data) {
+    if (!statistics.listeners[name]) return;
+
     for (var i = 0; i < statistics.listeners[name].length; i++) {
       statistics.listeners[name][i](data);
     }
@@ -73,7 +75,7 @@
         $('#archives-numeric-info').get(0)
       ),
       Contracts: {
-        PerYear: React.render(
+        PerDate: React.render(
           <app.React.HistogramChart />,
           $('#archives-contracts-year').get(0)
         ),
@@ -83,7 +85,7 @@
         )
       },
       Folia: {
-        PerYear: React.render(
+        PerDate: React.render(
           <app.React.HistogramChart />,
           $('#archives-folia-year').get(0)
         ),
@@ -98,7 +100,7 @@
       title: 'Archives overview'
     });
 
-    statistics.Archives.Contracts.PerYear
+    statistics.Archives.Contracts.PerDate
       .setTitle('Contracts distribution per year')
       .setChartConfig({
         scale: 20
@@ -109,12 +111,7 @@
         }
       })
       .setListeners({
-        onBarClick: function (activePoints) {
-          if (!activePoints || activePoints.length === 0) return;
-
-          var activeYear = activePoints[0].label.value;
-          statistics.emit('onYearBarClick', activeYear);
-        },
+        onBarClick: app.React.helpers.onBarClick('onYearBarClick', statistics.emit, {source: statistics.Archives.Contracts.PerDate, type: 'Contracts'}),
         onShowAsTableClick: app.React.helpers.showAsTableCb('Contracts number per year'),
         onSaveAsImageClick: app.React.helpers.saveAsImage
       })
@@ -136,7 +133,7 @@
       })
       .apply();
 
-    statistics.Archives.Folia.PerYear
+    statistics.Archives.Folia.PerDate
       .setTitle('Folia distribution per year')
       .setChartConfig({
         scale: 20
@@ -147,6 +144,7 @@
         }
       })
       .setListeners({
+        onBarClick: app.React.helpers.onBarClick('onYearBarClick', statistics.emit, {source: statistics.Archives.Folia.PerDate, type: 'Folia'}),
         onShowAsTableClick: app.React.helpers.showAsTableCb('Folia number per year'),
         onSaveAsImageClick: app.React.helpers.saveAsImage
       })

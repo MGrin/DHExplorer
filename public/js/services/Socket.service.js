@@ -126,15 +126,37 @@
     });
   };
 
-  Socket.requestHistogramPerMonthesForYear = function (year, cb) {
+  Socket.requestHistogramPerMonthesForYear = function (year, type, cb) {
+    type = type.toLowerCase();
+
     var message = {
       id: generateMessageId(),
       sparql: app.QueryController.sparql,
       year: year
     };
 
-    Socket.io.emit('req:statistics:contracts:year', message);
+    var path = 'req:statistics:' + type + ':year';
+    Socket.io.emit(path, message);
     Socket.io.on('res:' + message.id, function (resMessage) {
+      Socket.io.removeListener('res:' + resMessage.id);
+      return cb(resMessage.data);
+    });
+  };
+
+  Socket.requestHistogramPerDayForMonth = function (year, month, type, cb) {
+    type = type.toLowerCase();
+
+    var message = {
+      id: generateMessageId(),
+      sparql: app.QueryController.sparql,
+      year: year,
+      month: month
+    };
+
+    var path = 'req:statistics:' + type + ':month';
+    Socket.io.emit(path, message);
+    Socket.io.on('res:' + message.id, function (resMessage) {
+      Socket.io.removeListener('res:' + resMessage.id);
       return cb(resMessage.data);
     });
   };

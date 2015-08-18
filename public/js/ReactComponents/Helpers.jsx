@@ -67,4 +67,29 @@
       };
     };
   };
+
+  app.React.helpers.onBarClick = function (event, emit, info) {
+    return function (activePoints) {
+      if (!activePoints || activePoints.length === 0) return;
+
+      emit(event, {point: activePoints[0], info: info});
+    }
+  };
+
+  var monthes = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Juin', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  app.React.helpers.MonthLabel = function (number) {
+    this.number = parseInt(number);
+    this.value = monthes[this.number - 1];
+  };
+
+  app.React.helpers.MonthLabel.prototype.toString = function () {
+    return this.value;
+  };
+
+  app.React.helpers.monthNumberToString = function (number) {
+    return new app.React.helpers.MonthLabel(number);
+  };
+
+  app.React.helpers.noop = function () {};
 })(window.app);

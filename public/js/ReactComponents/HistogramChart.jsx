@@ -21,13 +21,19 @@
     },
     saveCurrentState: function () {
       if (!this.stateHistory) this.stateHistory = [];
-      this.stateHistory.push(this.state);
+      this.stateHistory.push($.extend(true, {}, this.state));
       return this;
     },
     setTitle: function (title) {
       if (!this.newState) this.newState = {};
 
       this.newState.title = title;
+      return this;
+    },
+    setProperty: function (name, value) {
+      if (!this.newState) this.newState = {};
+
+      this.newState[name] = value;
       return this;
     },
     setData: function (data) {
@@ -49,10 +55,24 @@
       this.newState.filters = filters;
       return this;
     },
+    setFilter: function (name, fn) {
+      if (!this.newState) this.newState = {};
+      if (!this.newState.filters) this.newState.filters = {};
+
+      this.newState.filters[name] = fn;
+      return this;
+    },
     setListeners: function (listeners) {
       if (!this.newState) this.newState = {};
 
       this.newState.listeners = listeners;
+      return this;
+    },
+    setListener: function (event, fn) {
+      if (!this.newState) this.newState = {};
+      if (!this.newState.listeners) this.newState.listeners = this.state.listeners;
+
+      this.newState.listeners[event] = fn;
       return this;
     },
     setChartConfig: function (config) {

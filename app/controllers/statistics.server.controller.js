@@ -29,27 +29,31 @@ var constructResult = function (data, map) {
   return res;
 };
 
-var sortByYear = function (data) {
+var sortByLabel = function (data) {
   data.sort(function (a, b) {
-    return a.label - b.label;
+    return parseInt(a.label) - parseInt(b.label);
   });
 };
 
-var completeMissing = function (data) {
-  var i = 1;
-  var previousYear = data[0].label;
+var completeMissing = function (data, min, max) {
+  var i = 0;
+  var previousValue = min;
 
-  while (i < data.length) {
-    previousYear++;
-    if (data[i].label !== previousYear) {
-      data.splice(i, 0, {
-        label: previousYear,
+  var newData = [];
+  while (i < data.length && previousValue < max + 1) {
+    if (previousValue < parseInt(data[i].label)) {
+      newData.push({
+        label: previousValue,
         count: 0
       });
+    } else {
+      newData.push(data[i]);
       i++;
     }
-    i++;
+    previousValue++;
   }
+
+  return newData;
 };
 
 exports.histogram = {
@@ -63,10 +67,100 @@ exports.histogram = {
         if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
 
         var data = result.results.bindings;
-        var res = constructResult(data, function () {
-          // sortByYear(contractYearHist);
-          // completeMissing(contractYearHist);
+        var res = constructResult(data, function (hist) {
+          sortByLabel(hist);
         });
+
+        var labels = res.map(function (el) {return parseInt(el.label);});
+        var min = 1;
+        var max = Math.max.apply(null, labels);
+        res = completeMissing(res, min, max);
+
+        var msg = {
+          id: messageId,
+          data: res
+        };
+
+        socket.emit('res:' + msg.id, msg);
+      });
+    };
+  },
+  contractsForMonth: function (socket) {
+    return function (message) {
+      var messageId = message.id;
+      var endpoint = new sparql.Client(message.sparql);
+      var year = message.year;
+      var month = message.month;
+
+      endpoint.query(queries.generateContractsPerDay(year, month), function (err, result) {
+        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+
+        var data = result.results.bindings;
+        var res = constructResult(data, function (hist) {
+          sortByLabel(hist);
+        });
+
+        var labels = res.map(function (el) {return parseInt(el.label);});
+        var min = 1;
+        var max = Math.max.apply(null, labels);
+        res = completeMissing(res, min, max);
+
+        var msg = {
+          id: messageId,
+          data: res
+        };
+
+        socket.emit('res:' + msg.id, msg);
+      });
+    };
+  },
+  foliaForYear: function (socket) {
+    return function (message) {
+      var messageId = message.id;
+      var endpoint = new sparql.Client(message.sparql);
+      var year = message.year;
+
+      endpoint.query(queries.generateFoliaPerMonth(year), function (err, result) {
+        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+
+        var data = result.results.bindings;
+        var res = constructResult(data, function (hist) {
+          sortByLabel(hist);
+        });
+
+        var labels = res.map(function (el) {return parseInt(el.label);});
+        var min = 1;
+        var max = Math.max.apply(null, labels);
+        res = completeMissing(res, min, max);
+
+        var msg = {
+          id: messageId,
+          data: res
+        };
+
+        socket.emit('res:' + msg.id, msg);
+      });
+    };
+  },
+  foliaForMonth: function (socket) {
+    return function (message) {
+      var messageId = message.id;
+      var endpoint = new sparql.Client(message.sparql);
+      var year = message.year;
+      var month = message.month;
+
+      endpoint.query(queries.generateFoliaPerDay(year, month), function (err, result) {
+        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+
+        var data = result.results.bindings;
+        var res = constructResult(data, function (hist) {
+          sortByLabel(hist);
+        });
+
+        var labels = res.map(function (el) {return parseInt(el.label);});
+        var min = 1;
+        var max = Math.max.apply(null, labels);
+        res = completeMissing(res, min, max);
 
         var msg = {
           id: messageId,
@@ -215,9 +309,16 @@ exports.computeArchives = function (socket) {
 
           var data = result.results.bindings;
           var res = constructResult(data, function (contractYearHist) {
-            sortByYear(contractYearHist);
-            completeMissing(contractYearHist);
+            sortByLabel(contractYearHist);
           });
+          var labels = res.map(function (el) {return parseInt(el.label);});
+          var min = Math.min.apply(null, labels);
+          var max = Math.max.apply(null, labels);
+          if (max > 1900 && min < 1570) {
+            max = 1710;
+            min = 1570;
+          }
+          res = completeMissing(res, min, max);
 
           fireResponse('ContractsPerYear', res);
           return next();
@@ -228,9 +329,17 @@ exports.computeArchives = function (socket) {
 
           var data = result.results.bindings;
           var res = constructResult(data, function (foliaYearHist) {
-            sortByYear(foliaYearHist);
-            completeMissing(foliaYearHist);
+            sortByLabel(foliaYearHist);
           });
+
+          var labels = res.map(function (el) {return parseInt(el.label);});
+          var min = Math.min.apply(null, labels);
+          var max = Math.max.apply(null, labels);
+          if (max > 1900 && min < 1570) {
+            max = 1710;
+            min = 1570;
+          }
+          res = completeMissing(res, min, max);
 
           fireResponse('FoliaPerYear', res);
           return next();

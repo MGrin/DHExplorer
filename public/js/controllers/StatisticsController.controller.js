@@ -36,7 +36,7 @@
           break;
         }
         case 'ContractsPerYear': {
-          app.views.Statistics.Archives.Contracts.PerYear.setData(data);
+          app.views.Statistics.Archives.Contracts.PerDate.setData(data);
           break;
         }
         case 'ContractsPerRegister' : {
@@ -44,7 +44,7 @@
           break;
         }
         case 'FoliaPerYear': {
-          app.views.Statistics.Archives.Folia.PerYear.setData(data);
+          app.views.Statistics.Archives.Folia.PerDate.setData(data);
           break;
         }
         case 'FoliaPerRegister': {
@@ -124,22 +124,57 @@
   };
   app.views.Statistics.registerListener('onPersonBarClick', scope.onPersonBarClick);
 
-  scope.onYearBarClick = function (year) {
+  scope.onYearBarClick = function (data) {
+    var ReactComponent = data.info.source;
+    var type = data.info.type;
+    var yearPoint = data.point;
+
+    var year = yearPoint.label.value;
     var task = app.StatusController.createTask('StatisticsController', 'Expanding year');
     app.StatusController.addTask(task);
 
-    app.Socket.requestHistogramPerMonthesForYear(year, function (data) {
-      var listeners = app.views.Statistics.Archives.Contracts.PerYear.state.listeners;
-      listeners.onBarClick = function () {};
-
-      app.views.Statistics.Archives.Contracts.PerYear
+    app.Socket.requestHistogramPerMonthesForYear(year, data.info.type, function (data) {
+      ReactComponent
         .saveCurrentState()
-        .setTitle('Contracts per month for year ' + year)
-        .setListeners(listeners)
+        .setTitle(type + ' per month for year ' + year)
+        .setProperty('year', year)
+        .setListener('onBarClick', app.React.helpers.onBarClick('onMonthBarClick', app.views.Statistics.emit, {source: ReactComponent, year: year, type: type}))
+        .setFilter('label-transform', app.React.helpers.monthNumberToString)
         .setData(data);
 
       app.StatusController.completeTask(task);
     });
   };
   app.views.Statistics.registerListener('onYearBarClick', scope.onYearBarClick);
+
+  scope.onMonthBarClick = function (data) {
+    var ReactComponent = data.info.source;
+    var type = data.info.type;
+
+    var monthPoint = data.point;
+    var info = data.info;
+
+    var month = monthPoint.label.number;
+    var year = info.year;
+
+    var task = app.StatusController.createTask('StatisticsController', 'Expanding month');
+    app.StatusController.addTask(task);
+
+    var chartConfig = $.extend(true, {}, app.views.Statistics.Archives.Contracts.PerDate.state.chartConfig);
+    chartConfig.scale = null;
+
+    app.Socket.requestHistogramPerDayForMonth(year, month, data.info.type, function (data) {
+      ReactComponent
+        .saveCurrentState()
+        .setTitle(type + ' per day for ' + monthPoint.label.value + ' ' + year)
+        .setProperty('month', month)
+        .setListener('onBarClick', app.React.helpers.noop)
+        .setFilter('label-transform', null)
+        .setChartConfig(chartConfig)
+        .setData(data);
+
+      app.StatusController.completeTask(task);
+    });
+  };
+  app.views.Statistics.registerListener('onMonthBarClick', scope.onMonthBarClick);
 })(window.app);

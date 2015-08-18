@@ -17,6 +17,10 @@ module.exports = function (app) {
     socket.on('req:statistics:people', statistics.computePeople(socket));
 
     socket.on('req:statistics:contracts:year', statistics.histogram.contractsForYear(socket));
+    socket.on('req:statistics:contracts:month', statistics.histogram.contractsForMonth(socket));
+
+    socket.on('req:statistics:folia:year', statistics.histogram.foliaForYear(socket));
+    socket.on('req:statistics:folia:month', statistics.histogram.foliaForMonth(socket));
     // socket.on('req:statistics:query', statistics.computeOnQuery(socket));
 
     socket.on('req:graph', graph.query(socket));
