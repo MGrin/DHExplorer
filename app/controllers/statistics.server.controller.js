@@ -78,8 +78,7 @@ exports.histogram = {
 
         var msg = {
           id: messageId,
-          data: res,
-          query: queries.generateContractsPerMonth(year)
+          data: res
         };
 
         socket.emit('res:' + msg.id, msg);
@@ -108,8 +107,7 @@ exports.histogram = {
 
         var msg = {
           id: messageId,
-          data: res,
-          query: queries.generateContractsPerDay(year, month)
+          data: res
         };
 
         socket.emit('res:' + msg.id, msg);
@@ -137,8 +135,7 @@ exports.histogram = {
 
         var msg = {
           id: messageId,
-          data: res,
-          query: queries.generateFoliaPerMonth(year)
+          data: res
         };
 
         socket.emit('res:' + msg.id, msg);
@@ -167,8 +164,7 @@ exports.histogram = {
 
         var msg = {
           id: messageId,
-          data: res,
-          query: queries.generateFoliaPerDay(year, month)
+          data: res
         };
 
         socket.emit('res:' + msg.id, msg);
@@ -182,12 +178,11 @@ exports.computeDashboard = function (socket) {
     var messageId = message.id;
     var endpoint = new sparql.Client(message.sparql);
 
-    var fireResponse = function (status, data, query) {
+    var fireResponse = function (status, data) {
       var msg = {
         id: messageId,
         status: status,
-        data: data,
-        query: query
+        data: data
       };
 
       socket.emit('res:' + msg.id, msg);
@@ -212,7 +207,7 @@ exports.computeDashboard = function (socket) {
               }
             );
           });
-          fireResponse('GraphOverview', graphOverview, queries.GRAPH_OVERVIEW);
+          fireResponse('GraphOverview', graphOverview);
           return next();
         });
       },
@@ -223,7 +218,7 @@ exports.computeDashboard = function (socket) {
           var data = result.results.bindings;
           // var vars = result.head.vars;
           var res = constructResult(data);
-          fireResponse('ClassesOverview', res, queries.CLASSES_OVERVIEW);
+          fireResponse('ClassesOverview', res);
           return next();
         });
       },
@@ -235,7 +230,7 @@ exports.computeDashboard = function (socket) {
           // var vars = result.head.vars;
 
           var res= constructResult(data);
-          fireResponse('PropertiesOverview', res, queries.PROPERTIES_OVERVIEW);
+          fireResponse('PropertiesOverview', res);
           return next();
         });
       }
@@ -251,12 +246,11 @@ exports.computeArchives = function (socket) {
     var messageId = message.id;
     var endpoint = new sparql.Client(message.sparql);
 
-    var fireResponse = function (status, data, query) {
+    var fireResponse = function (status, data) {
       var msg = {
         id: messageId,
         status: status,
-        data: data,
-        query: query
+        data: data
       };
 
       socket.emit('res:' + msg.id, msg);
@@ -326,7 +320,7 @@ exports.computeArchives = function (socket) {
           }
           res = completeMissing(res, min, max);
 
-          fireResponse('ContractsPerYear', res, queries.CONTRACT_DISTRIBUTION_YEAR);
+          fireResponse('ContractsPerYear', res);
           return next();
         });
       }, function (next) {
@@ -347,7 +341,7 @@ exports.computeArchives = function (socket) {
           }
           res = completeMissing(res, min, max);
 
-          fireResponse('FoliaPerYear', res, queries.FOLIA_DISTRIBUTION_YEAR);
+          fireResponse('FoliaPerYear', res);
           return next();
         });
       }, function (next) {
@@ -364,7 +358,7 @@ exports.computeArchives = function (socket) {
             });
           });
 
-          fireResponse('ContractsPerRegister', res, queries.CONTRACT_DISTRIBUTION_REGISTER);
+          fireResponse('ContractsPerRegister', res);
           return next();
         });
       }, function (next) {
@@ -381,7 +375,7 @@ exports.computeArchives = function (socket) {
             });
           });
 
-          fireResponse('FoliaPerRegister', res, queries.FOLIA_DISTRIBUTION_REGISTER);
+          fireResponse('FoliaPerRegister', res);
           return next();
         });
       }
@@ -466,7 +460,7 @@ exports.computePeople = function (socket) {
           var data = result.results.bindings;
           var res = constructResult(data);
 
-          fireResponse('RolesPerPersonMention', res, queries.PERSON_MENTION_DISTRIBUTION_ROLE);
+          fireResponse('RolesPerPersonMention', res);
           return next();
         });
       }, function (next) {
@@ -476,7 +470,7 @@ exports.computePeople = function (socket) {
           var data = result.results.bindings;
           var res = constructResult(data);
 
-          fireResponse('PersonMentionPerEntity', res, queries.PERSON_MENTION_DISTRIBUTION_ENTITY);
+          fireResponse('PersonMentionPerEntity', res);
           return next();
         });
       }
