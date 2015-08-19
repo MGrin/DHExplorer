@@ -27,7 +27,7 @@ var constructFromDescribe = function (originEntity, description) {
       type = (subject.type === 'literal') ? 'literal' : null;
       entity = new Entity(hash(subject.value), subject, type);
 
-      edgeId = Edge.generateId(originEntity.id, hash(subject.value), predicate.value, hash);
+      edgeId = Edge.generateId(hash(subject.value), originEntity.id, predicate.value, hash);
       Entity.prototype.addOrigin.call(originEntity, edgeId, predicate, entity.id);
       return;
     }
@@ -36,7 +36,7 @@ var constructFromDescribe = function (originEntity, description) {
       originEntity.type = object.value;
       return;
     }
-    
+
     type = (object.type === 'literal') ? 'literal' : null;
     entity = new Entity(hash(object.value), object, type);
 
@@ -58,16 +58,22 @@ exports.init = function (myApp) {
 
 exports.query = function (socket) {
   return function (message) {
+    var messageId = message.id;
+
     var query = message.query;
     var endpoint = new sparql.Client(message.sparql);
 
     app.logger.info('req:query, ' + query);
 
     endpoint.query(query, function (err, result) {
-          if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
-          
-          socket.emit('res:query', result);
-        });
+      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+
+      var resMessage = {
+        id: messageId,
+        data: result
+      };
+      socket.emit('res:' + messageId, resMessage);
+    });
   };
 };
 
@@ -83,14 +89,14 @@ exports.describe = function (socket) {
     var query = 'describe <' + entity.tuple.value + '>';
 
     endpoint.query(query, function (err, result) {
-          if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
-          var entities = constructFromDescribe(entity, result);
+      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+      var entities = constructFromDescribe(entity, result);
 
-          message = {
-            id: messageId,
-            data: entities
-          };
-          socket.emit('res:' + messageId, message);
-        });
+      message = {
+        id: messageId,
+        data: entities
+      };
+      socket.emit('res:' + messageId, message);
+    });
   };
 };

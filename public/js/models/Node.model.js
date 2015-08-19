@@ -24,7 +24,7 @@
   };
 
   Node.prototype.getLabel = function () {
-    var graphNameRegexp = new RegExp(app.QueryController.graphName + '?(.*)', 'i');
+    var graphNameRegexp = new RegExp(app.config.default_graph_name + '?(.*)', 'i');
 
     var splittedValue = graphNameRegexp.exec(this.data.value);
     if (!splittedValue) return this.data.value;

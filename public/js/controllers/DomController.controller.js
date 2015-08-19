@@ -3,7 +3,7 @@
 (function (app) {
   var dom = app.dom = {};
 
-  var firstView = 'statistics';
+  var firstView = 'entity';
 
   dom.onDomReady = function () {
     $('.explorer-view-content').each(function () {
@@ -23,8 +23,6 @@
       var view = $(this).attr('data-toggle-view');
       $(this).click(dom.onSidebarClick(view));
     });
-
-    $('#query-input').val(app.QueryController.query);
 
     $('[stats-click]').each(function () {
       $(this).click(app.StatisticsController.sectionClick($(this), $(this).attr('stats-click')));
@@ -56,21 +54,18 @@
 
       switch (view) {
         case 'entity': {
-          $('#bottom-menu #query').removeClass('hide');
           $('#bottom-menu .statistics-selection').addClass('hide');
 
           app.EntityController.open(onSwitchDone);
           break;
         }
         case 'graph': {
-          $('#bottom-menu #query').removeClass('hide');
           $('#bottom-menu .statistics-selection').addClass('hide');
 
           app.GraphController.open(onSwitchDone);
           break;
         }
         case 'statistics': {
-          $('#bottom-menu #query').addClass('hide');
           $('#bottom-menu .statistics-selection').removeClass('hide');
 
           app.StatisticsController.open(onSwitchDone);
@@ -114,13 +109,6 @@
 
   dom.hideDimmer = function () {
     $('#loader-dimmer').removeClass('active');
-  };
-
-  dom.showEntityModal = function (entity) {
-    $('#entity-modal-container .modal').modal('hide');
-    app.views.Entity.setModalEntity(entity);
-    dom.hideDimmer();
-    $('#entity-modal-container .modal').modal('show');
   };
 })(window.app);
 

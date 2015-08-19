@@ -1,105 +1,124 @@
 (function (app) {
-  app.React.EntityModal = React.createClass({
+  var modal;
+
+  app.React.EntityModal = {
+    getInstance: function () {
+      if (!modal) modal = new EntityModal();
+      return modal;
+    }
+  };
+
+  var EntityModal = function () {
+    this.header = React.render(
+      <ModalHeader />,
+      $('#entity-modal .header').get(0)
+    );
+
+    this.content = React.render(
+      <ModalContent />,
+      $('#entity-modal .content').get(0)
+    );
+
+    $('#entity-modal').modal({
+      onHidden: function () {
+        modal.history = [];
+      }
+    });
+
+    this.history = [];
+  };
+
+  EntityModal.prototype.show = function (entity) {
+    this.history.push(entity);
+
+    this.header.replaceState({
+      entity: entity
+    });
+    this.content.replaceState({
+      entity: entity
+    });
+
+    $('#entity-modal').modal('show');
+    $('#entity-modal .ui.accordion').accordion({
+      onOpen: function () {
+        $('#entity-modal').modal('refresh');
+      }
+    });
+  };
+
+  EntityModal.prototype.goBack = function () {
+    if (modal.history.length === 0) return;
+
+    modal.history.pop();
+    var entity = modal.history[modal.history.length - 1];
+
+    modal.header.replaceState({
+      entity: entity
+    });
+    modal.content.replaceState({
+      entity: entity
+    });
+  };
+
+  var ModalHeader = React.createClass({
     getInitialState: function () {
       return {
         entity: null
-      }
+      };
     },
     render: function () {
-      if (!this.state.entity) return (<div></div>)
+      if (!this.state.entity) return (<div></div>);
 
       var type = app.Storage.NodeType.get(this.state.entity.type);
-
       var typeStyles = {
         float: 'right',
         color: type.color
       };
+      var btnBackStyle = {
+        float: 'left'
+      };
+      var iStyle = {
+        marginRight: 0
+      };
 
       return (
-        <div className="ui modal">
-          <i className="close icon"></i>
-          <div className="header">
-            <span className="text">
-              {this.state.entity.getLabel()}
-            </span>
-            <span style={typeStyles} className="text">
-              {type.label}
-            </span>
-          </div>
-          <div className="content ui grid container">
-            <div className="row">
-              <div className="column">
-                <app.React.EntityTable entity={this.state.entity} />
-              </div>
-            </div>
+        <div>
+          {(function () {
+            if (modal.history.length > 1) {
+              return (
+                <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
+                  <i className="left arrow icon" style={iStyle}></i>
+                </button>
+              )
+            }
+          })()}
+          <span className="text">
+            {this.state.entity.getLabel()}
+          </span>
+          <span style={typeStyles} className="text">
+            {type.label}
+          </span>
+        </div>
+      )
+    }
+  });
+
+  var ModalContent = React.createClass({
+    getInitialState: function () {
+      return {
+        entity: null
+      };
+    },
+    render: function () {
+      if (!this.state.entity) return (<div></div>);
+
+      return (
+        <div className="row">
+          <div className="column">
+            <app.React.EntityTable entity={this.state.entity} />
           </div>
         </div>
       )
     }
   });
 })(window.app);
-
-var EntityModalHeader = React.createClass({
-  getInitialState: function () {
-    return {
-      entity: null
-    }
-  },
-  render: function () {
-    if (!this.state.entity) {
-      return (
-        <div></div>
-      );
-    }
-
-    var type = app.Storage.NodeType.get(this.state.entity.type);
-
-    var typeStyles = {
-      float: 'right',
-      color: type.color
-    };
-
-    // {(function () {
-        //   if (scope.history.length > 1) {
-        //     return (
-        //       <div className="ui icon button" onClick={scope.showPreviousEntity}>
-        //         <i className="left arrow icon" />
-        //       </div>
-        //     );
-        //   }
-        // })()}
-    return (
-      <div>
-        <span className="text">
-          {this.state.entity ? this.state.entity.getLabel() : ''}
-        </span>
-        <span style={typeStyles} className="text">
-          {type.label}
-        </span>
-      </div>
-    );
-  }
-});
-
-var EntityModalContent = React.createClass({
-  getInitialState: function () {
-    return {
-      entity: null
-    }
-  },
-  render: function () {
-    if (!this.state.entity) {
-      return (
-        <div></div>
-      );
-    }
-
-    return (
-      <div className="row">
-        <div className="column">
-          <EntityView entity={this.state.entity} />
-        </div>
-      </div>
-    );
-  }
-});

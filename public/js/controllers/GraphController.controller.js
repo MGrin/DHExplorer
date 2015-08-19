@@ -28,14 +28,6 @@
     scope.onOpen = null;
   };
 
-  app.QueryController.registerListener(function () {
-    if (app.dom.view === 'graph') {
-      scope.loadGraph();
-    } else {
-      scope.onOpen = scope.loadGraph;
-    }
-  });
-
   Socket.registerGlobalListener('res:graph', function (graph) {
     scope.clearGraph();
     scope.d3.update();

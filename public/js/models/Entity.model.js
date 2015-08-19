@@ -8,7 +8,7 @@
     this.variable = variable;
 
     this.predicates = {};
-    this.subjects = {};
+    this.objects = {};
     this.origins = {};
 
     this.completed = this.isLiteral();
@@ -17,7 +17,7 @@
   Entity.castFromObject = function (obj) {
     var entity = new Entity(obj.id, obj.tuple, obj.type);
     entity.predicates = obj.predicates;
-    entity.subjects = obj.subjects;
+    entity.objects = obj.objects;
     entity.origins = obj.origins;
 
     entity.updateAllConnections();
@@ -27,8 +27,8 @@
   Entity.prototype.updateAllConnections = function () {
     for (var predIdx in this.predicates) {
       if (this.predicates[predIdx]) {
-        var entityId = this.origins[predIdx] || this.subjects[predIdx];
-        var connectionType = this.origins[predIdx] ? 'subject' : 'origin';
+        var entityId = this.origins[predIdx] || this.objects[predIdx];
+        var connectionType = this.origins[predIdx] ? 'object' : 'origin';
 
         var entity = app.Storage.Entity.get(entityId);
         if (!entity) continue;
@@ -36,11 +36,11 @@
         if (entity.predicates[predIdx]) continue;
         entity.predicates[predIdx] = this.predicates[predIdx];
 
-        if (connectionType === 'subject' && entity.subjects[predIdx]) continue;
+        if (connectionType === 'object' && entity.objects[predIdx]) continue;
         if (connectionType === 'origin' && entity.origins[predIdx]) continue;
 
-        if (connectionType === 'subject') {
-          entity.subjects[predIdx] = this.id;
+        if (connectionType === 'object') {
+          entity.objects[predIdx] = this.id;
         } else {
           entity.origins[predIdx] = this.id;
         }
@@ -48,51 +48,13 @@
     }
   };
 
-  Entity.prototype.originsAsArray = function () {
-    var arr = [];
-    for (var originIdx in this.origins) {
-      if (this.origins[originIdx]) {
-        var origPredicate = this.predicates[originIdx];
-        var source = app.Storage.Entity.get(this.origins[originIdx]);
-
-        if (!source) continue;
-
-        arr.push({
-          predicate: origPredicate,
-          source: source
-        });
-      }
-    }
-
-    return arr;
-  };
-
-  Entity.prototype.subjectsAsArray = function () {
-    var arr = [];
-    for (var subjectIds in this.subjects) {
-      if (this.subjects[subjectIds]) {
-        var subjPredicate = this.predicates[subjectIds];
-        var subject = app.Storage.Entity.get(this.subjects[subjectIds]);
-
-        if (!subject) continue;
-
-        arr.push({
-          predicate: subjPredicate,
-          object: subject
-        });
-      }
-    }
-
-    return arr;
-  };
-
   Entity.prototype.addRelation = function (id, predicate, target) {
-    if (this.predicates[id] || this.subjects[id]) {
+    if (this.predicates[id] || this.objects[id]) {
       return;
     }
 
     this.predicates[id] = predicate;
-    this.subjects[id] = target;
+    this.objects[id] = target;
   };
 
   Entity.prototype.addOrigin = function (id, predicate, origin) {
@@ -105,7 +67,7 @@
   };
 
   Entity.prototype.getLabel = function () {
-    var graphNameRegexp = new RegExp(app.QueryController.graphName + '?(.*)', 'i');
+    var graphNameRegexp = new RegExp(app.config.default_graph_name + '?(.*)', 'i');
 
     var splittedValue = graphNameRegexp.exec(this.tuple.value);
     if (!splittedValue) return this.tuple.value;

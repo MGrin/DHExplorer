@@ -5,38 +5,34 @@
 
   Storage.Entity = new Storage('Entity');
 
-  scope.loadEntities = function () {
-    if (app.offline) return;
-
-    scope.task = app.StatusController.createTask('EntityController', 'Executing query...', app.dom.view === 'entity');
-    app.StatusController.addTask(scope.task);
-    Socket.query();
-    scope.onOpen = null;
-  };
-
-  app.QueryController.registerListener(function () {
-    if (app.dom.view === 'entity') {
-      scope.loadEntities();
-    } else {
-      scope.onOpen = scope.loadEntities;
-    }
-  });
-
-  Socket.registerGlobalListener('res:query', function (result) {
-    Storage.Entity.destroy();
-    Storage.Entity = new Storage('Entity');
-
-    scope.updateEntities(result);
-    app.views.Entity.update();
-
-    app.StatusController.completeTask(scope.task);
-  });
+  scope.variables = new Storage('Variables');
 
   scope.open = function (cb) {
-    if (scope.onOpen) scope.onOpen();
-    app.views.Entity.init();
-    if (cb) cb();
-    return;
+    if (!scope.inited) {
+      app.views.Entity.init();
+      app.views.Entity.registerListener('onClickQuery', scope.onQueryClick);
+      scope.inited = true;
+    }
+    return cb();
+  };
+
+  scope.onQueryClick = function (query) {
+    var task = app.StatusController.createTask('EntityController', 'Executing query', true);
+    app.StatusController.addTask(task);
+
+    Socket.query(query, function (result) {
+      Storage.Entity.destroy();
+      Storage.Entity = new Storage('Entity');
+
+      scope.variables.destroy();
+      scope.variables = new Storage('Variables');
+
+      scope.updateEntities(result);
+
+      app.views.Entity.updateVariables(scope.variables.getArray());
+      app.views.Entity.update(query, scope.onResourceClick);
+      app.StatusController.completeTask(task);
+    });
   };
 
   scope.updateEntities = function (result) {
@@ -51,6 +47,19 @@
         var resource = binding[variable];
         if (!resource) continue;
 
+        if (!scope.selectedVaraible) {
+          scope.selectedVaraible = {
+            label: variable,
+            count: 0
+          };
+        }
+        if (!scope.variables.has(variable)) {
+          scope.variables.set(variable, {
+            label: variable,
+            count: 0
+          });
+        }
+
         var entityId = objectHash(resource.value);
         var entityType = (resource.type === 'literal') ? 'literal' : 'no-type';
         var type = NodeType.update(entityType);
@@ -63,6 +72,7 @@
         } else {
           entity = new Entity(entityId, resource, type, variable);
           Storage.Entity.set(entity.id, entity);
+          scope.variables.get(variable).count++;
         }
       }
     }
@@ -74,26 +84,17 @@
       ent.type = NodeType.update(ent.type);
 
       if (ent.id === entity.id) {
-        entity.subjects = ent.subjects;
+        entity.objects = ent.objects;
         entity.predicates = ent.predicates;
         entity.origins = ent.origins;
         entity.type = ent.type;
 
-        entity.completed = true;
         entity.updateAllConnections();
       } else {
         ent = Entity.castFromObject(ent);
         Storage.Entity.set(ent.id, ent);
       }
     }
-  };
-
-  scope.getView = function (entity) {
-    return scope.entity.getHTML(entity);
-  };
-
-  scope.getViewLabel = function (entity) {
-    return scope.entity.getLabelHTML(entity);
   };
 
   scope.show = function (params, task) {
@@ -111,14 +112,14 @@
 
     if (entity.isCompleted()) {
       app.StatusController.completeTask(task);
-      return app.dom.showEntityModal(entity);
+      return app.views.Entity.modal.show(entity);
     }
 
     app.Socket.describeEntity(entity, function (entities) {
       app.EntityController.onEntityDescribed(entity, entities);
       entity.completed = true;
-      app.dom.showEntityModal(app.Storage.Entity.get(entityId));
       app.StatusController.completeTask(task);
+      app.views.Entity.modal.show(entity);
     });
   };
 

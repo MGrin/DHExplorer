@@ -34,7 +34,7 @@
       id: generateMessageId(),
       data: {
         node: node,
-        sparql: app.QueryController.sparql
+        sparql: app.config.default_sparql_endpoint
       }
     };
     Socket.io.emit('req:node:describe', message);
@@ -49,7 +49,7 @@
       id: generateMessageId(),
       data: {
         nodes: nodes,
-        sparql: app.QueryController.sparql
+        sparql: app.config.default_sparql_endpoint
       }
     };
 
@@ -65,7 +65,7 @@
       id: generateMessageId(),
       data: {
         entity: entity,
-        sparql: app.QueryController.sparql
+        sparql: app.config.default_sparql_endpoint
       }
     };
 
@@ -76,41 +76,34 @@
     });
   };
 
-
-  Socket.running = [];
-  Socket.registerGlobalListener('res:query', function () {
-    var index = Socket.running.indexOf('entity');
-    if (index > -1) Socket.running.splice(index, 1);
-  });
-  Socket.registerGlobalListener('res:graph', function () {
-    var index = Socket.running.indexOf('graph');
-    if (index > -1) Socket.running.splice(index, 1);
-  });
-
-  Socket.query = function () {
+  Socket.query = function (query, cb) {
     var message = {
-      query: app.QueryController.query,
-      sparql: app.QueryController.sparql
+      id: generateMessageId(),
+      query: query,
+      sparql: app.config.default_sparql_endpoint
     };
 
-    Socket.running.push('entity');
     Socket.io.emit('req:query', message);
+    Socket.io.on('res:' + message.id, function (resMessage) {
+      Socket.io.removeListener('res:' + resMessage.id);
+      cb(resMessage.data);
+    });
   };
 
-  Socket.requestGraph = function () {
-    var message = {
-      query: app.QueryController.query,
-      sparql: app.QueryController.sparql
-    };
+  // Socket.requestGraph = function () {
+  //   var message = {
+  //     query: app.QueryController.query,
+  //     sparql: app.QueryController.sparql
+  //   };
 
-    Socket.running.push('graph');
-    Socket.io.emit('req:graph', message);
-  };
+  //   Socket.running.push('graph');
+  //   Socket.io.emit('req:graph', message);
+  // };
 
   Socket.requestStatistics = function (view, initCb, cbFactory, finalCb) {
     var message = {
       id: generateMessageId(),
-      sparql: app.QueryController.sparql
+      sparql: app.config.default_sparql_endpoint
     };
 
     Socket.io.emit('req:statistics:' + view, message);
@@ -131,7 +124,7 @@
 
     var message = {
       id: generateMessageId(),
-      sparql: app.QueryController.sparql,
+      sparql: app.config.default_sparql_endpoint,
       year: year
     };
 
@@ -148,7 +141,7 @@
 
     var message = {
       id: generateMessageId(),
-      sparql: app.QueryController.sparql,
+      sparql: app.config.default_sparql_endpoint,
       year: year,
       month: month
     };
