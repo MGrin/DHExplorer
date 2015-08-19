@@ -37,10 +37,6 @@
 
     scope.modal = app.React.EntityModal.getInstance();
 
-    $('#entity-container form').visibility({
-      type   : 'fixed',
-      offset : 50
-    });
     $('#entity-container form').width($('#entity-container form').parent().width());
     $('#entity-container form').submit(function (e) {
       e.preventDefault();
