@@ -37,10 +37,10 @@
 
     scope.modal = app.React.EntityModal.getInstance();
 
-    $('#entity-container form').width($('#entity-container form').parent().width());
-    $('#entity-container form').submit(function (e) {
+    // $('#entity-container .query form').width($('#entity-container form').parent().width());
+    $('#entity-container .query form').submit(function (e) {
       e.preventDefault();
-      var query = $('#entity-container form textarea').val();
+      var query = $('#entity-container .query form textarea').val();
       if (!query || query === '') return;
 
       scope.emit('onClickQuery', query);

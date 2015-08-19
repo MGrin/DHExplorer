@@ -28,6 +28,8 @@
       $(this).click(app.StatisticsController.sectionClick($(this), $(this).attr('stats-click')));
     });
 
+    $('#entity-container .menu .item').tab();
+
     app.dom.status = $('#status-text');
     app.dom.loader = $('#status-loader');
 

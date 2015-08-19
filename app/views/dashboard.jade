@@ -2,14 +2,13 @@ doctype html
 html
   head
     title Data Explorer
-    link(rel="stylesheet", href="/lib/semantic/dist/semantic.min.css")
+    link(rel="stylesheet", href="/lib/semantic-ui/dist/semantic.min.css")
     link(rel="stylesheet", href="/css/styles.css")
-    link(rel="stylesheet", href="/lib/semantic/dist/components/menu.min.css")
 
     script(src="/lib/react/react.js")
     script(src="/lib/react/JSXTransformer.js")
     script(src="/lib/jquery/dist/jquery.min.js")
-    script(src="/lib/semantic/dist/semantic.min.js")
+    script(src="/lib/semantic-ui/dist/semantic.min.js")
     script(src="/lib/d3/d3.min.js")
     script(src="/lib/socket.io-client/socket.io.js")
     script(src="/lib/object-hash/dist/object_hash.js")
@@ -69,14 +68,24 @@ html
         .top-menu.ui.top.attached.inverted.menu
         .content.explorer-view-content#entity-container(style="overflow-y: auto")
           .ui.grid.container.stackable
-            .five.wide.column.query
-              form.ui.form
-                .field
-                  label Query
-                  textarea(placeholder="Input your query here") select ?p where { ?p a grz-owl:Person }
-                button.ui.positive.submit.button Query
-                .variables
-            .ten.wide.middle.aligned.column.entities-list
+            .five.wide.column
+              .ui.top.attached.tabular.menu
+                a.active.item(data-tab="Query") Query
+                a.item(data-tab="Search") Search
+              .query.ui.bottom.attached.active.tab.segment(data-tab="Query")
+                form.ui.form
+                  .field
+                    label Query
+                    textarea(placeholder="Input your query here") select ?p where { ?p a grz-owl:Person }
+                  button.ui.positive.submit.button Query
+                  .variables
+              .search.ui.bottom.attached.tab.segment(data-tab="Search")
+                form.ui.form
+                  .field
+                    label Query
+                    input(type="text" placeholder="Search")
+                  button.ui.positive.submit.button Search
+            .eleven.wide.column.entities-list
 
       .explorer-view(data-view="graph")
         .top-menu.ui.top.attached.inverted.menu
