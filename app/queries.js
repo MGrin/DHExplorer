@@ -1,6 +1,10 @@
 'use strict';
 
 module.exports = {
+  generateSearchPersonQuery: function (name) {
+    return 'SELECT ?person ?name WHERE {?person a grz-owl:Person . ?person rdfs:label ?name . FILTER (regex(?name, "' + name + '", "i"))}';
+  },
+
   GRAPH_OVERVIEW : 'select (str(?tCount) as ?tripleCount) (str(?sCount) as ?distinctSubjectCount) (str(?cCount) as ?distinctClassCount) (str(?pCount) as ?distinctPropertyCount) ?graphName where {{select (count(*) as ?tCount) (count(distinct ?s) as ?sCount) (count(distinct ?class) as ?cCount) (count(distinct ?p) as ?pCount) where {?s ?p ?o . optional {?s a ?class . } } } union {select (count(*) as ?tCount) (count(distinct ?s) as ?sCount) (count(distinct ?class) as ?cCount) (count(distinct ?p) as ?pCount) ?graphName where {graph ?graphName {?s ?p ?o . optional {?s a ?class . } } } group by ?graphName order by ?graphName } }',
   CLASSES_OVERVIEW : 'select (str(count(?label)) as ?count) ?label where {?x a ?label } group by ?label order by desc(count(?label))',
   PROPERTIES_OVERVIEW: 'select (str(count(?label)) as ?count) ?label where {?x ?label [] } group by ?label order by desc(count(?label))',

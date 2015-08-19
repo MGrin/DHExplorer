@@ -100,7 +100,7 @@
   scope.show = function (params, task) {
     var entityId;
     if (params.id) entityId = params.id;
-    else entityId = objectHash(params.tuple.value);
+    else entityId = objectHash(params.tuple);
 
     var entity = app.Storage.Entity.get(entityId);
     if (!entity) {
@@ -118,7 +118,7 @@
     app.Socket.describeEntity(entity, function (entities) {
       app.EntityController.onEntityDescribed(entity, entities);
       entity.completed = true;
-      app.StatusController.completeTask(task);
+      if (task) app.StatusController.completeTask(task);
       app.views.Entity.modal.show(entity);
     });
   };

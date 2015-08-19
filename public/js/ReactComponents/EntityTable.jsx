@@ -102,7 +102,6 @@
                   {reversedPredicatesArr.map(function (predicate) {
                     return (
                       <tr key={'reversed_' + predicate.label}>
-                        <td>{predicate.label}</td>
                         <td>
                           <div className="ui list">
                             {predicate.content.map(function (origin) {
@@ -120,6 +119,7 @@
                             })}
                           </div>
                         </td>
+                        <td>{predicate.label}</td>
                       </tr>
                     )
                   })}

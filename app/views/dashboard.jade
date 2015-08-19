@@ -67,25 +67,28 @@ html
       .explorer-view(data-view="entity")
         .top-menu.ui.top.attached.inverted.menu
         .content.explorer-view-content#entity-container(style="overflow-y: auto")
-          .ui.grid.container.stackable
-            .five.wide.column
-              .ui.top.attached.tabular.menu
+          .ui.grid.stackable
+            .row
+            .one.wide.column
+            .two.wide.column
+              .ui.vertical.fluid.tabular.menu
                 a.active.item(data-tab="Query") Query
                 a.item(data-tab="Search") Search
-              .query.ui.bottom.attached.active.tab.segment(data-tab="Query")
-                form.ui.form
-                  .field
-                    label Query
-                    textarea(placeholder="Input your query here") select ?p where { ?p a grz-owl:Person }
-                  button.ui.positive.submit.button Query
-                  .variables
-              .search.ui.bottom.attached.tab.segment(data-tab="Search")
-                form.ui.form
-                  .field
-                    label Query
-                    input(type="text" placeholder="Search")
-                  button.ui.positive.submit.button Search
-            .eleven.wide.column.entities-list
+            .twelve.wide.column
+              .ui.active.tab.grid.stackable.container.query(data-tab="Query")
+                .five.wide.column
+                  form.ui.form
+                    .field
+                      label Query
+                      textarea(placeholder="Input your query here") select ?p where { ?p a grz-owl:Person }
+                    button.ui.positive.submit.button Query
+                    .variables
+                .eleven.wide.column.entities-list
+              .ui.tab.segment(data-tab="Search")
+                .search.ui.fluid.icon.input
+                  input.prompt(type="text" placeholder="Search person")
+                  i.search.icon
+                .results
 
       .explorer-view(data-view="graph")
         .top-menu.ui.top.attached.inverted.menu

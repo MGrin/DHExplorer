@@ -37,13 +37,24 @@
 
     scope.modal = app.React.EntityModal.getInstance();
 
-    // $('#entity-container .query form').width($('#entity-container form').parent().width());
+    $('#entity-container .tabular.menu .item').tab();
     $('#entity-container .query form').submit(function (e) {
       e.preventDefault();
       var query = $('#entity-container .query form textarea').val();
       if (!query || query === '') return;
 
       scope.emit('onClickQuery', query);
+    });
+
+    $('#entity-container .search').search({
+      apiSettings: {
+        url: '/search/person?q={query}&endpoint=' + app.config.default_sparql_endpoint
+      },
+      onSelect: function (result) {
+        app.EntityController.show({
+          tuple: result.tuple
+        });
+      }
     });
   };
 
@@ -89,18 +100,18 @@
     });
   };
 
-  scope.setModalEntity = function (entity) {
-    if (!scope.entityModal) {
-      scope.entityModal = React.render(
-        <app.React.EntityModal />,
-        $('#entity-modal-container').get(0)
-      );
-    }
+  // scope.setModalEntity = function (entity) {
+  //   if (!scope.entityModal) {
+  //     scope.entityModal = React.render(
+  //       <app.React.EntityModal />,
+  //       $('#entity-modal-container').get(0)
+  //     );
+  //   }
 
-    scope.entityModal.setState({
-      entity: entity
-    });
-  };
+  //   scope.entityModal.setState({
+  //     entity: entity
+  //   });
+  // };
 
   scope.showPreviousEntity = function () {
     scope.history.pop()
