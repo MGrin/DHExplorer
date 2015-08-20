@@ -80,7 +80,7 @@
   "globals"       : {         // additional predefined global variables
     "angular": true,
     "alertify": true,
-    "d3": true,
+    "Viva": true,
     "objectHash": true,
     "Chart": true
   }

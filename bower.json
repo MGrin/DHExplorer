@@ -4,10 +4,10 @@
   "dependencies": {
     "jquery": "latest",
     "socket.io-client": "latest",
-    "d3": "latest",
     "object-hash": "https://github.com/puleos/object-hash.git#latest",
     "react": "latest",
     "Chart.js": "latest",
-    "semantic-ui": "latest"
+    "semantic-ui": "latest",
+    "vivagraphjs": "https://github.com/anvaka/VivaGraphJS.git#latest"
   }
 }

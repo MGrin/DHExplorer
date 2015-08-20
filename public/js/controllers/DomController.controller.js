@@ -3,7 +3,7 @@
 (function (app) {
   var dom = app.dom = {};
 
-  var firstView = 'entity';
+  var firstView = 'graph';
 
   dom.onDomReady = function () {
     $('.explorer-view-content').each(function () {
@@ -47,6 +47,8 @@
       if (dom.view) {
         $('.explorer-view[data-view="' + dom.view + '"]').transition('scale');
         $('.explorer-view[data-view="' + view + '"]').transition('scale');
+
+        if (dom.view === 'graph') app.GraphController.close();
       }
       app.dom.view = view;
       $('#sidebar .item').not('[data-toggle-view="' + view + '"]').removeClass('active').addClass('link');

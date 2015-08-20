@@ -29,31 +29,17 @@
     Socket.globalListeners[event].push(listener);
   };
 
-  Socket.describeNode = function (node, cb) {
+  Socket.requestSocialGraph = function (minYear, maxYear, cb) {
     var message = {
       id: generateMessageId(),
+      sparql: app.config.default_sparql_endpoint,
       data: {
-        node: node,
-        sparql: app.config.default_sparql_endpoint
-      }
-    };
-    Socket.io.emit('req:node:describe', message);
-    Socket.io.on('res:' + message.id, function (resMessage) {
-      Socket.io.removeListener('res:' + resMessage.id);
-      cb(resMessage.data);
-    });
-  };
-
-  Socket.describeNodes = function (nodes, cb) {
-    var message = {
-      id: generateMessageId(),
-      data: {
-        nodes: nodes,
-        sparql: app.config.default_sparql_endpoint
+        minYear: minYear,
+        maxYear: maxYear,
       }
     };
 
-    Socket.io.emit('req:node:describe:multiple', message);
+    Socket.io.emit('req:graph:social', message);
     Socket.io.on('res:' + message.id, function (resMessage) {
       Socket.io.removeListener('res:' + resMessage.id);
       cb(resMessage.data);
@@ -89,16 +75,6 @@
       cb(resMessage.data);
     });
   };
-
-  // Socket.requestGraph = function () {
-  //   var message = {
-  //     query: app.QueryController.query,
-  //     sparql: app.QueryController.sparql
-  //   };
-
-  //   Socket.running.push('graph');
-  //   Socket.io.emit('req:graph', message);
-  // };
 
   Socket.requestStatistics = function (view, initCb, cbFactory, finalCb) {
     var message = {

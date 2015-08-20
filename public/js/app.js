@@ -19,6 +19,8 @@ var getRandomColor = function () {
 
   app.models = {};
   app.views = {};
+  app.React = {};
+  app.WebGL = {};
 
   app.require = {
     domLoadedCallbacks: {},

@@ -17,7 +17,7 @@
     }
   };
 
-  Type.types = d3.map();
+  Type.types = new app.Storage('NodeType');
 
   Type.update = function (t) {
     var typeId;

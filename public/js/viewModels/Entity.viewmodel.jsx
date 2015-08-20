@@ -100,19 +100,6 @@
     });
   };
 
-  // scope.setModalEntity = function (entity) {
-  //   if (!scope.entityModal) {
-  //     scope.entityModal = React.render(
-  //       <app.React.EntityModal />,
-  //       $('#entity-modal-container').get(0)
-  //     );
-  //   }
-
-  //   scope.entityModal.setState({
-  //     entity: entity
-  //   });
-  // };
-
   scope.showPreviousEntity = function () {
     scope.history.pop()
     scope.setModalEntity(scope.history.pop());

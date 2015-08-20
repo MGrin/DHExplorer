@@ -3,7 +3,8 @@
 (function (app) {
   var storage = app.Storage = function (name) {
     this.name = name;
-    this.map = d3.map();
+    this.map = {};
+    this.size = 0;
 
     storage[name] = this;
   };
@@ -13,23 +14,25 @@
   };
 
   storage.prototype.get = function (id) {
-    return this.map.get(id);
+    return this.map[id];
   };
 
   storage.prototype.set = function (id, item) {
-    this.map.set(id, item);
+    this.map[id] = item;
+    this.size++;
   };
 
   storage.prototype.has = function (id) {
-    return this.map.has(id);
+    return (this.map[id]) ? true : false;
   };
 
   storage.prototype.size = function () {
-    return this.map.size();
+    return this.size;
   };
 
   storage.prototype.remove = function (id) {
-    return this.map.remove(id);
+    delete this.map[id];
+    this.size--;
   };
 
   storage.prototype.destroy = function () {
@@ -42,17 +45,17 @@
 
     var counter = -1;
 
-    for (var id in this.map._) {
-      if (this.map.has(id)) {
+    for (var id in this.map) {
+      if (this.has(id)) {
         counter++;
         if (offset && counter < offset) continue;
 
-        if (predicate && !predicate(this.map.get(id))) {
+        if (predicate && !predicate(this.get(id))) {
           if (counter > -1) counter--;
           continue;
         }
 
-        arr.push(this.map.get(id));
+        arr.push(this.get(id));
         if (length && counter > offset + length - 2) break;
       }
     }

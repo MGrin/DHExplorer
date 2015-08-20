@@ -5,6 +5,10 @@ module.exports = {
     return 'SELECT ?person ?name WHERE {?person a grz-owl:Person . ?person rdfs:label ?name . FILTER (regex(?name, "' + name + '", "i"))}';
   },
 
+  generateSocialGraphQuery: function (minYear, maxYear) {
+    return 'SELECT ?person ?plabel ?connection ?clabel WHERE {?person a grz-owl:Person . ?person rdfs:label ?plabel . ?person foaf:knows ?connection . ?connection rdfs:label ?clabel . ?person tis:hasTimeIndexedSetting ?situation . ?situation sem:hasTime ?time . ?time sem:hasTimeStamp ?date . FILTER (year(?date) > ' + minYear + ' AND year(?date) < ' + maxYear + ')}';
+  },
+
   GRAPH_OVERVIEW : 'select (str(?tCount) as ?tripleCount) (str(?sCount) as ?distinctSubjectCount) (str(?cCount) as ?distinctClassCount) (str(?pCount) as ?distinctPropertyCount) ?graphName where {{select (count(*) as ?tCount) (count(distinct ?s) as ?sCount) (count(distinct ?class) as ?cCount) (count(distinct ?p) as ?pCount) where {?s ?p ?o . optional {?s a ?class . } } } union {select (count(*) as ?tCount) (count(distinct ?s) as ?sCount) (count(distinct ?class) as ?cCount) (count(distinct ?p) as ?pCount) ?graphName where {graph ?graphName {?s ?p ?o . optional {?s a ?class . } } } group by ?graphName order by ?graphName } }',
   CLASSES_OVERVIEW : 'select (str(count(?label)) as ?count) ?label where {?x a ?label } group by ?label order by desc(count(?label))',
   PROPERTIES_OVERVIEW: 'select (str(count(?label)) as ?count) ?label where {?x ?label [] } group by ?label order by desc(count(?label))',

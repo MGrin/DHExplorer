@@ -1,6 +1,4 @@
 (function (app) {
-  app.React = {};
-
   app.React.helpers = {};
   app.React.helpers.saveAsImage = function (node) {
     return function () {

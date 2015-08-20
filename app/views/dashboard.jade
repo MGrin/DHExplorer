@@ -11,10 +11,10 @@ html
     script(src="/lib/react/JSXTransformer.js")
     script(src="/lib/jquery/dist/jquery.min.js")
     script(src="/lib/semantic-ui/dist/semantic.min.js")
-    script(src="/lib/d3/d3.min.js")
     script(src="/lib/socket.io-client/socket.io.js")
     script(src="/lib/object-hash/dist/object_hash.js")
     script(src="/lib/Chart.js/Chart.min.js")
+    script(src="/lib/vivagraphjs/dist/vivagraph.min.js")
 
     script(src="/cdn/js/app.js")
 
@@ -38,10 +38,13 @@ html
     script(src="/cdn/js/ReactComponents/HistogramTable.js")
     script(src="/cdn/js/ReactComponents/OverviewTable.js")
 
+    script(src="/cdn/js/WebGLComponents/models.js")
+    script(src="/cdn/js/WebGLComponents/Node.shader.js")
+
     script(src="/cdn/js/viewModels/Statistics.viewmodel.js")
     script(src="/cdn/js/viewModels/Legend.viewmodel.js")
-    script(src="/cdn/js/viewModels/D3Graph.viewmodel.js")
     script(src="/cdn/js/viewModels/Entity.viewmodel.js")
+    script(src="/cdn/js/viewModels/Graph.viewmodel.js")
 
     script(src="/cdn/js/controllers/DomController.controller.js")
 
@@ -94,19 +97,6 @@ html
 
       .explorer-view(data-view="graph")
         .top-menu.ui.top.attached.inverted.menu
-          .ui.dropdown.item.hover.link
-            i.icon.sidebar
-            span.text Legend
-            #legend.menu
-          .ui.dropdown.item.hover.link
-            i.icon.fork
-            span.text Graph
-            .menu
-              .item
-                #clear-graph.text Clear
-              .item
-                #expand-nodes.text Expand all nodes
-
         .content.explorer-view-content#graph-container
 
       .explorer-view(data-view="statistics")

@@ -72,6 +72,7 @@ exports.query = function (socket) {
         id: messageId,
         data: result
       };
+
       socket.emit('res:' + messageId, resMessage);
     });
   };

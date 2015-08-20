@@ -13,7 +13,8 @@
       app.views.Entity.registerListener('onClickQuery', scope.onQueryClick);
       scope.inited = true;
     }
-    return cb();
+    if (cb) cb();
+    return;
   };
 
   scope.onQueryClick = function (query) {
@@ -98,6 +99,8 @@
   };
 
   scope.show = function (params, task) {
+    if (!scope.inited) scope.open();
+
     var entityId;
     if (params.id) entityId = params.id;
     else entityId = objectHash(params.tuple);
