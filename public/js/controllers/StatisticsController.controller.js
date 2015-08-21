@@ -112,7 +112,7 @@
   scope.sectionClick = function (el, section) {
     return function () {
       scope.switchView(section, function () {
-        $('#bottom-menu .statistics-selection').removeClass('active');
+        $('.bottom-menu .statistics-selection').removeClass('active');
         el.addClass('active');
       });
     };

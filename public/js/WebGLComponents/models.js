@@ -8,7 +8,7 @@
 
   models.Circle = function (node) {
     this.size = 12;
-    this.color = maleColor;
+    this.color = (node.data.data.gender === 'M') ? maleColor : femaleColor;
   };
 
 })(window.app);

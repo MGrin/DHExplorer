@@ -15,6 +15,38 @@
     }
   };
 
+  scope.init = function (params) {
+    scope.information = React.render(
+      <app.React.GraphInformation />,
+      $('#graph-container .graph-settings .statistics-wrapper').get(0)
+    );
+    $('.rangeSlider[slide-on="years"]').ionRangeSlider({
+      min: params.min,
+      max: params.max,
+      from: params.from,
+      to: params.to
+    });
+
+    $('.graph-settings form').submit(function (e) {
+      e.preventDefault();
+
+      var range = $('.rangeSlider[slide-on="years"]').data('ionRangeSlider').result;
+
+      var minYear = range.from;
+      var maxYear = range.to;
+
+      scope.emit('onTimeRangeUpdate', {minYear: minYear, maxYear: maxYear});
+    });
+  };
+
+  scope.pause = function () {
+    if (scope.renderer) scope.renderer.pause();
+  };
+
+  scope.resume = function () {
+    if (scope.renderer) scope.renderer.resume();
+  };
+
   scope.render = function () {
     scope.graphics = Viva.Graph.View.webglGraphics();
     scope.events = Viva.Graph.webglInputEvents(scope.graphics, scope.graph);
@@ -39,19 +71,11 @@
     });
 
     scope.renderer = Viva.Graph.View.renderer(scope.graph, {
-      container: $('#graph-container').get(0),
+      container: $('#graph-container .webgl-wrapper').get(0),
       graphics: scope.graphics,
       layout: scope.layout
     });
     scope.renderer.run();
-  };
-
-  scope.pause = function () {
-    if (scope.renderer) scope.renderer.pause();
-  };
-
-  scope.resume = function () {
-    if (scope.renderer) scope.renderer.resume();
   };
 
   scope.update = function (nodes, edges) {
@@ -71,5 +95,9 @@
     }
 
     scope.render();
+  };
+
+  scope.updateInformation = function (state) {
+    scope.information.replaceState(state);
   };
 })(window.app);

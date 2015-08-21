@@ -29,6 +29,19 @@
     Socket.globalListeners[event].push(listener);
   };
 
+  Socket.requestTimeRange = function (cb) {
+    var message = {
+      id: generateMessageId(),
+      sparql: app.config.default_sparql_endpoint
+    };
+
+    Socket.io.emit('req:timerange', message);
+    Socket.io.on('res:' + message.id, function (resMessage) {
+      Socket.io.removeListener('res:' + resMessage.id);
+      cb(resMessage.data);
+    });
+  };
+
   Socket.requestSocialGraph = function (minYear, maxYear, cb) {
     var message = {
       id: generateMessageId(),

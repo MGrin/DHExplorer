@@ -5,6 +5,10 @@ html
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
 
     link(rel="stylesheet", href="/lib/semantic-ui/dist/semantic.min.css")
+    link(rel="stylesheet", href="/lib/ionrangeslider/css/normalize.css")
+    link(rel="stylesheet", href="/lib/ionrangeslider/css/ion.rangeSlider.css")
+    link(rel="stylesheet", href="/lib/ionrangeslider/css/ion.rangeSlider.skinFlat.css")
+
     link(rel="stylesheet", href="/css/styles.css")
 
     script(src="/lib/react/react.js")
@@ -15,7 +19,7 @@ html
     script(src="/lib/object-hash/dist/object_hash.js")
     script(src="/lib/Chart.js/Chart.min.js")
     script(src="/lib/vivagraphjs/dist/vivagraph.min.js")
-
+    script(src="/lib/ionrangeslider/js/ion.rangeSlider.min.js")
     script(src="/cdn/js/app.js")
 
     script(src="/cdn/js/services/config.service.js")
@@ -37,12 +41,12 @@ html
     script(src="/cdn/js/ReactComponents/PieChart.js")
     script(src="/cdn/js/ReactComponents/HistogramTable.js")
     script(src="/cdn/js/ReactComponents/OverviewTable.js")
+    script(src="/cdn/js/ReactComponents/GraphInformation.js")
 
     script(src="/cdn/js/WebGLComponents/models.js")
     script(src="/cdn/js/WebGLComponents/Node.shader.js")
 
     script(src="/cdn/js/viewModels/Statistics.viewmodel.js")
-    script(src="/cdn/js/viewModels/Legend.viewmodel.js")
     script(src="/cdn/js/viewModels/Entity.viewmodel.js")
     script(src="/cdn/js/viewModels/Graph.viewmodel.js")
 
@@ -52,7 +56,6 @@ html
     script(src="/cdn/js/controllers/EntityController.controller.js")
     script(src="/cdn/js/controllers/StatisticsController.controller.js")
 
-    script(src="/cdn/js/controllers/LegendController.controller.js")
     script(src="/cdn/js/controllers/StatusController.controller.js")
 
 
@@ -68,18 +71,16 @@ html
         i.bar.chart.icon
         span.text Statistics view
 
-    .pusher
+    .ui.padded.centered.grid.pusher
+      .top-menu.ui.top.fixed.inverted.menu
       .explorer-view(data-view="entity")
-        .top-menu.ui.top.attached.inverted.menu
-        .content.explorer-view-content#entity-container(style="overflow-y: auto")
-          .ui.grid.stackable
-            .row
-            .one.wide.column
-            .two.wide.column
+        .content.explorer-view-content#entity-container
+          .ui.grid.container
+            .three.wide.column
               .ui.vertical.fluid.tabular.menu
                 a.active.item(data-tab="Query") Query
                 a.item(data-tab="Search") Search
-            .twelve.wide.column
+            .thirteen.wide.column
               .ui.active.tab.grid.stackable.container.query(data-tab="Query")
                 .five.wide.column
                   form.ui.form
@@ -95,41 +96,48 @@ html
                   i.search.icon
                 .results
 
-      .explorer-view(data-view="graph")
-        .top-menu.ui.top.attached.inverted.menu
+      .explorer-view.full-height(data-view="graph" style="width: 100%;")
         .content.explorer-view-content#graph-container
+          .ui.grid.full-height
+            .twelve.wide.column.webgl-wrapper.full-height
+            .four.wide.column.ui.left.aligned.segment.graph-settings.full-height
+              form.ui.form.fluid
+                .field
+                  label Select time range
+                  input.rangeSlider(type="text" data-type="double" data-min-interval="2" slide-on="years")
+                button.ui.basic.submit.button
+                  i.refresh.icon
+                  | Refresh
+              .row.statistics-wrapper
 
       .explorer-view(data-view="statistics")
-        .top-menu.ui.top.attached.inverted.menu
-        .content.explorer-view-content.grid.container#statistics-container(style="overflow-y: auto; overflow-x: hidden")
-          .ui.stackable.equal.width.page.grid.hide#statistics-dashboard(style="margin: 0;")
-            .row
-              .column#graph-overview
-            .equal.width.row
-              .column#classes-overview
-              .column#properties-overview
+        .content.explorer-view-content#statistics-container
+          .ui.grid
+            .ui.stackable.container.grid#statistics-dashboard
+              .row
+                .column#graph-overview
+              .ui.equal.width.equal.height.row
+                .column#classes-overview
+                .column#properties-overview
 
-          .ui.equal.width.stackable.grid.hide#statistics-archives
-            .centered.row#archives-numeric-info
+            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-archives
+              .row#archives-numeric-info
 
-            .row
-              .column#archives-contracts-year
-              .column#archives-contracts-register
+              .row
+                .column#archives-contracts-year
+                .column#archives-contracts-register
 
-            //- Distribution of folia per year and per register
-            .row
-              .column#archives-folia-year
-              .column#archives-folia-register
-          .ui.equal.width.stackable.grid.hide#statistics-people
-            .centered.row#people-numeric-info
+              .row
+                .column#archives-folia-year
+                .column#archives-folia-register
+            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-people
+              .row#people-numeric-info
 
-            .row
-              .column#people-roles-mentions
-              .column#people-mentions-entity
+              .row
+                .column#people-roles-mentions
+                .column#people-mentions-entity
 
-
-
-      #bottom-menu.ui.bottom.attached.inverted.menu.borderless
+      .bottom-menu.ui.bottom.fixed.inverted.menu.borderless
         #sidebar-toggle.item.icon.link
           i.block.layout.icon.inverted
         .item.statistics-selection.link.active(stats-click="dashboard")

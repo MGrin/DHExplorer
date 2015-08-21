@@ -18,11 +18,19 @@
    * https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md#deployment-pm2--090
    */
   "deploy" : {
-    "production" : {
+    "pc5" : {
       "user" : "grishin",
       "host" : "128.178.21.39",
       "ref"  : "origin/master",
       "repo" : "/home/grishin/git/data-explorer.git",
+      "path" : "/home/grishin/data-explorer",
+      "post-deploy" : "npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
+    },
+    "pc1" : {
+      "user" : "nikita",
+      "host" : "dhpabpc1.epfl.ch",
+      "ref"  : "origin/master",
+      "repo" : "grishin@128.178.21.39:/home/grishin/git/data-explorer.git",
       "path" : "/home/grishin/data-explorer",
       "post-deploy" : "npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
     }

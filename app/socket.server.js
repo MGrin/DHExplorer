@@ -9,6 +9,7 @@ module.exports = function (app) {
     socket.on('req:query', entity.query(socket));
     socket.on('req:entity:describe', entity.describe(socket));
 
+    socket.on('req:timerange', graph.timerange(socket));
     socket.on('req:graph:social', graph.social.query(socket));
 
     socket.on('req:statistics:dashboard', statistics.computeDashboard(socket));

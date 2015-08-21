@@ -67,6 +67,7 @@
       if (!this.state.data) return;
       var data = this.transformData();
       that.chart = new Chart($(React.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Doughnut(data);
+      $(window).trigger('resize');
     }
   });
 })(window.app);

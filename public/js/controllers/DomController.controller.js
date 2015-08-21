@@ -6,9 +6,7 @@
   var firstView = 'graph';
 
   dom.onDomReady = function () {
-    $('.explorer-view-content').each(function () {
-      $(this).height($('body').height() - 2*$('#bottom-menu').height() + 2);
-    });
+    $('#graph-container').height($('body').height() - 80);
 
     $('.explorer-view').not('[data-view="' + firstView + '"]').transition('scale');
     $('.top-menu .dropdown').dropdown({
@@ -58,19 +56,19 @@
 
       switch (view) {
         case 'entity': {
-          $('#bottom-menu .statistics-selection').addClass('hide');
+          $('.bottom-menu .statistics-selection').addClass('hide');
 
           app.EntityController.open(onSwitchDone);
           break;
         }
         case 'graph': {
-          $('#bottom-menu .statistics-selection').addClass('hide');
+          $('.bottom-menu .statistics-selection').addClass('hide');
 
           app.GraphController.open(onSwitchDone);
           break;
         }
         case 'statistics': {
-          $('#bottom-menu .statistics-selection').removeClass('hide');
+          $('.bottom-menu .statistics-selection').removeClass('hide');
 
           app.StatisticsController.open(onSwitchDone);
           break;

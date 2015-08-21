@@ -28,7 +28,6 @@
     } else {
       var type = new Type(t);
       app.Storage.NodeType.set(type.id, type);
-      app.LegendController.addNewType(type);
       typeId = type.id;
     }
 

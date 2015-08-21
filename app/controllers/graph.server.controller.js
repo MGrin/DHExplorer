@@ -1,8 +1,6 @@
 'use strict';
-var _ = require('underscore');
 var sparql = require('sparql');
 var hash = require('object-hash');
-var async = require('async');
 var queries = require('../queries');
 
 var GraphNode = require('../../public/js/models/Node.model');
@@ -13,6 +11,29 @@ exports.init = function (myApp) {
   app = myApp;
 };
 
+exports.timerange = function (socket) {
+  return function (message) {
+    var messageId = message.id;
+
+    var endpoint = new sparql.Client(message.sparql);
+
+    app.logger.info('req:timerange');
+    endpoint.query(queries.TIMERANGE, function (err, result) {
+      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+
+      var data = result.results.bindings[0];
+      var resMessage = {
+        id: messageId,
+        data: {
+          minYear: data.min.value,
+          maxYear: data.max.value
+        }
+      };
+
+      socket.emit('res:' + messageId, resMessage);
+    });
+  };
+};
 var social = {};
 
 social.query = function (socket) {
@@ -38,17 +59,19 @@ social.query = function (socket) {
 
         var person = binding.person;
         var plabel = binding.plabel.value;
+        var pgender = binding.pgender.value;
 
         var connection = binding.connection;
         var clabel = binding.clabel.value;
+        var cgender = binding.cgender.value;
 
         if (!plabel || !clabel || !person || !connection) continue;
 
         var pid = hash(person);
         var cid = hash(connection);
 
-        if (!persons[pid]) persons[pid] = new GraphNode(pid, person, {label: plabel});
-        if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {label: clabel});
+        if (!persons[pid]) persons[pid] = new GraphNode(pid, person, {label: plabel, gender: pgender});
+        if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {label: clabel, gender: cgender});
 
         var edgeId = [pid, cid].sort().join('-');
         if (!conections[edgeId]) conections[edgeId] = 'knows';

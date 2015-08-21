@@ -6,8 +6,8 @@
 
   app.config = {
     graph: {
-      maxUpdateNodesCount: 20,
-      maxNodesCount: 500
+      initMinYear: 1641,
+      initMaxYear: 1643
     },
     entity: {
       perPage: 30,
