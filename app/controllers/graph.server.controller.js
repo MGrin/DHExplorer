@@ -65,6 +65,8 @@ social.query = function (socket) {
         var clabel = binding.clabel.value;
         var cgender = binding.cgender.value;
 
+        var ctype = binding.ctype.value;
+
         if (!plabel || !clabel || !person || !connection) continue;
 
         var pid = hash(person);
@@ -74,7 +76,8 @@ social.query = function (socket) {
         if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {label: clabel, gender: cgender});
 
         var edgeId = [pid, cid].sort().join('-');
-        if (!conections[edgeId]) conections[edgeId] = 'knows';
+        if (!conections[edgeId]) conections[edgeId] = [];
+        if (conections[edgeId].indexOf(ctype) === -1) conections[edgeId].push(ctype);
       }
 
       var resMessage = {
@@ -90,3 +93,4 @@ social.query = function (socket) {
   };
 };
 exports.social = social;
+
