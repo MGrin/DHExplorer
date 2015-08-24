@@ -26,7 +26,7 @@
       "ref"  : "origin/master",
       "repo" : "grishin@128.178.21.39:/home/grishin/git/data-explorer.git",
       "path" : "/home/nikita/data-explorer",
-      "post-deploy" : "npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
+      "post-deploy" : "export PATH=/home/nikita/.nvm/versions/v0.12.7/bin/:$PATH && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
     }
   }
 }
