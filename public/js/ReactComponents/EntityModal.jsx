@@ -73,9 +73,7 @@
       switch (type.rdfType) {
         case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
           return (
-            <span className="text">
-              {this.state.entity.getLabel()}
-            </span>
+            <div></div>
           )
         }
         default : {
@@ -127,7 +125,8 @@
 
       switch (type.rdfType) {
         case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
-          return <app.React.PersonIDCard entity={this.state.entity} />
+          var person = new app.DataModel.Person(this.state.entity);
+          return <app.React.PersonIDCard person={person} />
         }
         default : {
           return (

@@ -25,7 +25,7 @@
       "host" : "dhlabpc1.epfl.ch",
       "ref"  : "origin/master",
       "repo" : "grishin@128.178.21.39:/home/grishin/git/data-explorer.git",
-      "path" : "/home/grishin/data-explorer",
+      "path" : "/home/nikita/data-explorer",
       "post-deploy" : "npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
     }
   }

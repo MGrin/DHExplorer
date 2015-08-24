@@ -51,10 +51,10 @@
 
           var connections = data.edges[e];
           for (var j = 0; j < connections.length; j++) {
-            if (DataModel.Person.Connection.isApprentice(connections[j])) apprenticeOf++;
-            if (DataModel.Person.Connection.isColleague(connections[j])) colleagueOf++;
-            if (DataModel.Person.Connection.isGuarantor(connections[j])) guarantorOf++;
-            if (DataModel.Person.Connection.isMaster(connections[j])) masterOf++;
+            if (DataModel.Connection.isApprentice(connections[j])) apprenticeOf++;
+            if (DataModel.Connection.isColleague(connections[j])) colleagueOf++;
+            if (DataModel.Connection.isGuarantor(connections[j])) guarantorOf++;
+            if (DataModel.Connection.isMaster(connections[j])) masterOf++;
           }
         }
       }
