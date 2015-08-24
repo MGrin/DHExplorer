@@ -72,7 +72,10 @@ social.query = function (socket) {
         var pid = hash(person);
         var cid = hash(connection);
 
-        if (!persons[pid]) persons[pid] = new GraphNode(pid, person, {label: plabel, gender: pgender});
+        if (!persons[pid]) persons[pid] = new GraphNode(pid, person, {
+                                                                      label: plabel,
+                                                                      gender: pgender
+                                                                    });
         if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {label: clabel, gender: cgender});
 
         var edgeId = [pid, cid].sort().join('-');

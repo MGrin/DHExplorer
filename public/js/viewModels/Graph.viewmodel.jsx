@@ -37,6 +37,14 @@
 
       scope.emit('onTimeRangeUpdate', {minYear: minYear, maxYear: maxYear});
     });
+
+    $('.graph-to-png').click(function (e) {
+      var dataUrl;
+      var n = $('#graph-container .webgl-wrapper canvas').each(function () {
+        dataUrl = $(this).get(0).toDataURL('image/png');
+      });
+      window.open(dataUrl);
+    });
   };
 
   scope.pause = function () {

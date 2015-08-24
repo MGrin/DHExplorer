@@ -70,24 +70,38 @@
       if (!this.state.entity) return (<div></div>);
 
       var type = this.state.entity.getType();
+      var typeStyles = {
+        float: 'right',
+        color: type.color
+      };
+      var btnBackStyle = {
+        float: 'left'
+      };
+      var iStyle = {
+        marginRight: 0
+      };
+
       switch (type.rdfType) {
         case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
+          var person = new app.DataModel.Person(this.state.entity);
+
           return (
-            <div></div>
+            <div>
+              {(function () {
+                if (modal.history.length > 1) {
+                  return (
+                    <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
+                      <i className="left arrow icon" style={iStyle}></i>
+                    </button>
+                  )
+                }
+              })()}
+              <div className="text">{person.name}</div>
+            </div>
           )
         }
-        default : {
-          var typeStyles = {
-            float: 'right',
-            color: type.color
-          };
-          var btnBackStyle = {
-            float: 'left'
-          };
-          var iStyle = {
-            marginRight: 0
-          };
 
+        default : {
           return (
             <div>
               {(function () {
