@@ -69,37 +69,48 @@
     render: function () {
       if (!this.state.entity) return (<div></div>);
 
-      var type = app.Storage.NodeType.get(this.state.entity.type);
-      var typeStyles = {
-        float: 'right',
-        color: type.color
-      };
-      var btnBackStyle = {
-        float: 'left'
-      };
-      var iStyle = {
-        marginRight: 0
-      };
+      var type = this.state.entity.getType();
+      switch (type.rdfType) {
+        case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
+          return (
+            <span className="text">
+              {this.state.entity.getLabel()}
+            </span>
+          )
+        }
+        default : {
+          var typeStyles = {
+            float: 'right',
+            color: type.color
+          };
+          var btnBackStyle = {
+            float: 'left'
+          };
+          var iStyle = {
+            marginRight: 0
+          };
 
-      return (
-        <div>
-          {(function () {
-            if (modal.history.length > 1) {
-              return (
-                <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
-                  <i className="left arrow icon" style={iStyle}></i>
-                </button>
-              )
-            }
-          })()}
-          <span className="text">
-            {this.state.entity.getLabel()}
-          </span>
-          <span style={typeStyles} className="text">
-            {type.label}
-          </span>
-        </div>
-      )
+          return (
+            <div>
+              {(function () {
+                if (modal.history.length > 1) {
+                  return (
+                    <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
+                      <i className="left arrow icon" style={iStyle}></i>
+                    </button>
+                  )
+                }
+              })()}
+              <span className="text">
+                {this.state.entity.getLabel()}
+              </span>
+              <span style={typeStyles} className="text">
+                {type.label}
+              </span>
+            </div>
+          )
+        }
+      }
     }
   });
 
@@ -112,13 +123,22 @@
     render: function () {
       if (!this.state.entity) return (<div></div>);
 
-      return (
-        <div className="row">
-          <div className="column">
-            <app.React.EntityTable entity={this.state.entity} />
-          </div>
-        </div>
-      )
+      var type = this.state.entity.getType();
+
+      switch (type.rdfType) {
+        case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
+          return <app.React.PersonIDCard entity={this.state.entity} />
+        }
+        default : {
+          return (
+            <div className="row">
+              <div className="column">
+                <app.React.EntityTable entity={this.state.entity} />
+              </div>
+            </div>
+          )
+        }
+      }
     }
   });
 })(window.app);

@@ -68,7 +68,7 @@
             Network
           </div>
           <div className="content">
-            Test
+            In development
           </div>
         </div>
       )

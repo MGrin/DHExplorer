@@ -88,6 +88,10 @@
 
       return app.Storage.NodeType.get(this.type).rdfType === 'literal';
     };
+    Entity.prototype.getType = function (){
+      return app.Storage.NodeType.get(this.type);
+    };
+
     app.models.Entity = Entity;
   } else {
     Entity.prototype.isLiteral = function () {
