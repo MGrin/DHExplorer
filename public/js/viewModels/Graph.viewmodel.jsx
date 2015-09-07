@@ -38,25 +38,40 @@
       scope.emit('onTimeRangeUpdate', {minYear: minYear, maxYear: maxYear});
     });
 
-    $('.graph-to-png').click(function (e) {
-      var dataUrl;
-      var n = $('#graph-container .webgl-wrapper canvas').each(function () {
-        dataUrl = $(this).get(0).toDataURL('image/png');
-      });
-      window.open(dataUrl);
+    $('.graph-pause-play').click(function (e) {
+      e.preventDefault();
+      if (scope.paused) {
+        scope.renderer.resume();
+        $(this).find('i').each(function () {
+          $(this).removeClass('play').addClass('pause');
+        });
+      } else {
+        scope.renderer.pause();
+        $(this).find('i').each(function () {
+          $(this).removeClass('pause').addClass('play');
+        });
+      }
+      scope.paused = !scope.paused;
     });
   };
 
   scope.pause = function () {
-    if (scope.renderer) scope.renderer.pause();
+    if (scope.renderer && !scope.paused) {
+      scope.renderer.pause();
+      scope.paused = true;
+    }
   };
 
   scope.resume = function () {
-    if (scope.renderer) scope.renderer.resume();
+    if (scope.renderer && scope.paused) {
+      scope.renderer.resume();
+      scope.paused = false;
+    }
   };
 
   scope.render = function () {
     scope.graphics = Viva.Graph.View.webglGraphics();
+
     scope.events = Viva.Graph.webglInputEvents(scope.graphics, scope.graph);
     scope.events.click(function (node) {
       scope.emit('onNodeClick', node.data);
@@ -81,8 +96,11 @@
     scope.renderer = Viva.Graph.View.renderer(scope.graph, {
       container: $('#graph-container .webgl-wrapper').get(0),
       graphics: scope.graphics,
-      layout: scope.layout
+      layout: scope.layout,
+      preserveDrawingBuffer: true
     });
+
+    scope.paused = false;
     scope.renderer.run();
   };
 
