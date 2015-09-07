@@ -73,14 +73,33 @@
     }
   };
 
+  scope.onModalHide = function () {
+    if (!scope.pauseStatus) return scope.togglePausePlay();
+    scope.resume();
+    scope.pause();
+  };
+
   scope.render = function () {
     scope.graphics = Viva.Graph.View.webglGraphics();
 
     scope.events = Viva.Graph.webglInputEvents(scope.graphics, scope.graph);
+    scope.events.mouseDown(function () {
+      scope.startClick = Date.now();
+    });
+
     scope.events.click(function (node) {
+      if (Date.now() - scope.startClick > 250) return;
+
       scope.lastClickedNode = node;
       scope.emit('onNodeClick', node.data);
-      // if (!scope.paused) setTimeout(scope.togglePausePlay, 250);
+      if (!scope.paused) {
+        scope.pauseStatus = false;
+        setTimeout(scope.togglePausePlay, 1);
+      } else {
+        scope.pauseStatus = true;
+        scope.resume();
+        scope.pause();
+      }
     });
 
     scope.NodeShader = new app.WebGL.NodeShader();

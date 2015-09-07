@@ -22,6 +22,9 @@
     $('#entity-modal').modal({
       onHidden: function () {
         modal.history = [];
+      },
+      onHide: function () {
+        app.views.Graph.onModalHide();
       }
     });
 
