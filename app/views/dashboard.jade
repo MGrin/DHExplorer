@@ -75,6 +75,9 @@ html
 
     .ui.padded.centered.grid.pusher
       .top-menu.ui.top.fixed.inverted.menu
+        .right.aligned.item.settings-visibility-toggle.link
+          i.icon.options
+          span.text Hide settings
       .explorer-view(data-view="entity")
         .content.explorer-view-content#entity-container
           .ui.grid.container
@@ -101,7 +104,7 @@ html
       .explorer-view.full-height(data-view="graph" style="width: 100%;")
         .content.explorer-view-content#graph-container
           .ui.grid.full-height
-            .twelve.wide.column.webgl-wrapper.full-height
+            .webgl-wrapper.full-height.left.aligned
             .four.wide.column.ui.left.aligned.segment.graph-settings.full-height
               form.ui.form.fluid
                 .field

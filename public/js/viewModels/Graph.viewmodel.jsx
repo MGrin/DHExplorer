@@ -42,7 +42,36 @@
       e.preventDefault();
       scope.togglePausePlay();
     });
+
+    scope.optionsAreVisibile = true;
+    $('.settings-visibility-toggle').click(function () {
+      if (!scope.optionsAreVisibile) {
+        $('.graph-settings form .field').css('display', 'block');
+        $('.statistics-wrapper').css('display', 'block');
+        $('.settings-visibility-toggle .text').text('Hide settings');
+
+      } else {
+        $('.settings-visibility-toggle .text').text('Show settings');
+      }
+
+      $('.graph-settings').transition('fade left', function () {
+        $('.graph-settings').removeClass('left aligned');
+        $('.graph-settings').addClass('left aligned');
+
+        if (scope.optionsAreVisibile) {
+          $('.graph-settings form .field').css('display', 'none');
+          $('.statistics-wrapper').css('display', 'none');
+        }
+
+        scope.optionsAreVisibile = !scope.optionsAreVisibile;
+      });
+    });
   };
+
+  scope.resizeCanvas = function () {
+    $('.webgl-wrapper canvas').animate({width: $('.webgl-wrapper').width()}, 500);
+  };
+  // $(window).resize(scope.resizeCanvas);
 
   scope.togglePausePlay = function () {
     if (scope.paused) {

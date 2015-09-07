@@ -6,14 +6,21 @@
 
   scope.open = function (cb) {
     if (!scope.inited) scope.init();
-    if (scope.inited) app.views.Graph.resume();
+    if (scope.inited && scope.changedAnimation) {
+      app.views.Graph.resume();
+    }
 
     if (cb) cb();
     return;
   };
 
   scope.close = function () {
-    app.views.Graph.pause();
+    if (!app.views.Graph.paused) {
+      app.views.Graph.pause();
+      scope.changedAnimation = true;
+    } else {
+      scope.changedAnimation = false;
+    }
   };
 
   scope.onTimeRangeUpdate = function (data) {
