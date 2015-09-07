@@ -63,7 +63,7 @@
       }
     }
 
-    console.log(directPredicates);
+    // console.log(directPredicates);
 
     this.name = directPredicates.label.content[0].tuple.value;
     this.gender = directPredicates.gender ? directPredicates.gender.content[0].tuple.value : 'x';

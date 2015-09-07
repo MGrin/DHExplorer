@@ -2,7 +2,7 @@
   app.React.PersonIDCard = React.createClass({
     render: function () {
       var person = this.props.person;
-      console.log(person);
+      // console.log(person);
 
       var avatarSrc;
 

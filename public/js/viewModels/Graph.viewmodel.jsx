@@ -40,19 +40,23 @@
 
     $('.graph-pause-play').click(function (e) {
       e.preventDefault();
-      if (scope.paused) {
-        scope.renderer.resume();
-        $(this).find('i').each(function () {
-          $(this).removeClass('play').addClass('pause');
-        });
-      } else {
-        scope.renderer.pause();
-        $(this).find('i').each(function () {
-          $(this).removeClass('pause').addClass('play');
-        });
-      }
-      scope.paused = !scope.paused;
+      scope.togglePausePlay();
     });
+  };
+
+  scope.togglePausePlay = function () {
+    if (scope.paused) {
+      scope.renderer.resume();
+      $('.graph-pause-play').find('i').each(function () {
+        $(this).removeClass('play').addClass('pause');
+      });
+    } else {
+      scope.renderer.pause();
+      $('.graph-pause-play').find('i').each(function () {
+        $(this).removeClass('pause').addClass('play');
+      });
+    }
+    scope.paused = !scope.paused;
   };
 
   scope.pause = function () {
@@ -74,7 +78,9 @@
 
     scope.events = Viva.Graph.webglInputEvents(scope.graphics, scope.graph);
     scope.events.click(function (node) {
+      scope.lastClickedNode = node;
       scope.emit('onNodeClick', node.data);
+      // if (!scope.paused) setTimeout(scope.togglePausePlay, 250);
     });
 
     scope.NodeShader = new app.WebGL.NodeShader();

@@ -37,30 +37,9 @@
                 </div>
               </div>
             </div>
-
-            <div className="ui mg-animated">
-              <div className="mg-visible ui small statistic transition visible">
-                <div className="value">{this.state.edgesCount}</div>
-                <div className="label">Connections</div>
-              </div>
-              <div className="mg-hidden ui mini statistics transition hidden">
-                <div className="ui mini horizontal statistic" style={noBottomMarginStyle}>
-                  <div className="value">{this.state.apprenticesCount}</div>
-                  <div className="label">"Apprentice of" Connection</div>
-                </div>
-                <div className="ui mini horizontal statistic">
-                  <div className="value">{this.state.masterCount}</div>
-                  <div className="label">"Has apprentice" connection</div>
-                </div>
-                <div className="ui mini horizontal statistic">
-                  <div className="value">{this.state.colleagueCount}</div>
-                  <div className="label">"Colleague of" connection</div>
-                </div>
-                <div className="ui mini horizontal statistic">
-                  <div className="value">{this.state.guarantorCount}</div>
-                  <div className="label">"Guarantor of" connection</div>
-                </div>
-              </div>
+            <div className="ui small statistic transition visible">
+              <div className="value">{this.state.edgesCount}</div>
+              <div className="label">Connections</div>
             </div>
           </div>
           <div className="title">
@@ -72,6 +51,31 @@
           </div>
         </div>
       )
+
+      // <div className="ui mg-animated">
+      //   <div className="mg-visible ui small statistic transition visible">
+      //     <div className="value">{this.state.edgesCount}</div>
+      //     <div className="label">Connections</div>
+      //   </div>
+      //   <div className="mg-hidden ui mini statistics transition hidden">
+      //     <div className="ui mini horizontal statistic" style={noBottomMarginStyle}>
+      //       <div className="value">{this.state.apprenticesCount}</div>
+      //       <div className="label">"Apprentice of" Connection</div>
+      //     </div>
+      //     <div className="ui mini horizontal statistic">
+      //       <div className="value">{this.state.masterCount}</div>
+      //       <div className="label">"Has apprentice" connection</div>
+      //     </div>
+      //     <div className="ui mini horizontal statistic">
+      //       <div className="value">{this.state.colleagueCount}</div>
+      //       <div className="label">"Colleague of" connection</div>
+      //     </div>
+      //     <div className="ui mini horizontal statistic">
+      //       <div className="value">{this.state.guarantorCount}</div>
+      //       <div className="label">"Guarantor of" connection</div>
+      //     </div>
+      //   </div>
+      // </div>
     },
     componentDidMount: function () {
       var domNode = React.findDOMNode(this);

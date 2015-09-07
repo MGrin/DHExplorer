@@ -65,15 +65,16 @@
   /**
    * Called by webgl renderer to update node position in the buffer array
    *
-   * @param model - data model for the rendered node (Circle in this case)
+   * @param model - data model for the rendered node (Cirэ in this case)
    * @param pos - {x, y} coordinates of the node.
    */
   NodeShader.prototype.position = function (model, pos) {
     var index = model.id;
     this.nodes[index * ATTRIBUTES_PER_PRIMITIVE] = pos.x;
     this.nodes[index * ATTRIBUTES_PER_PRIMITIVE + 1] = pos.y;
-    this.nodes[index * ATTRIBUTES_PER_PRIMITIVE + 2] = model.color;
-    this.nodes[index * ATTRIBUTES_PER_PRIMITIVE + 3] = model.size;
+
+    this.nodes[index * ATTRIBUTES_PER_PRIMITIVE + 2] = model.getColor();
+    this.nodes[index * ATTRIBUTES_PER_PRIMITIVE + 3] = model.getSize();
   };
 
   /**
