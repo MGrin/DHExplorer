@@ -9,7 +9,7 @@
   scope.inited = {};
 
   scope.open = function (cb) {
-    return scope.switchView(scope.view || 'dashboard', cb);
+    return scope.switchView(scope.view || 'archives', cb);
   };
 
   scope.handlersFactory = {

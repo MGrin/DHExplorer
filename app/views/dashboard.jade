@@ -120,12 +120,12 @@ html
       .explorer-view(data-view="statistics")
         .content.explorer-view-content#statistics-container
           .ui.grid
-            .ui.stackable.container.grid#statistics-dashboard
-              .row
-                .column#graph-overview
-              .ui.equal.width.equal.height.row
-                .column#classes-overview
-                .column#properties-overview
+            //- .ui.stackable.container.grid#statistics-dashboard
+            //-   .row
+            //-     .column#graph-overview
+            //-   .ui.equal.width.equal.height.row
+            //-     .column#classes-overview
+            //-     .column#properties-overview
 
             .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-archives
               .row#archives-numeric-info
@@ -150,10 +150,10 @@ html
       .bottom-menu.ui.bottom.fixed.inverted.menu.borderless
         #sidebar-toggle.item.icon.link
           i.block.layout.icon.inverted
-        .item.statistics-selection.link.active(stats-click="dashboard")
-          i.dashboard.icon
-          span.text Dashboard
-        .item.statistics-selection.link(stats-click="archives")
+        //- .item.statistics-selection.link.active(stats-click="dashboard")
+        //-   i.dashboard.icon
+        //-   span.text Dashboard
+        .item.statistics-selection.link.active(stats-click="archives")
           i.book.icon
           span.text Archive
         .item.statistics-selection.link(stats-click="people")

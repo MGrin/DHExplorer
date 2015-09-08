@@ -55,7 +55,6 @@
     "require-dot-file": "latest",
     "serve-favicon": "latest",
     "socket.io": "latest",
-    "sparql": "latest",
     "underscore": "latest",
     "winston": "latest",
     "yamljs": "latest"

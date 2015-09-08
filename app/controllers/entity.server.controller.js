@@ -1,6 +1,5 @@
 'use strict';
 var _ = require('underscore');
-var sparql = require('sparql');
 var hash = require('object-hash');
 
 var Entity = require('../../public/js/models/Entity.model');
@@ -61,12 +60,11 @@ exports.query = function (socket) {
     var messageId = message.id;
 
     var query = message.query;
-    var endpoint = new sparql.Client(message.sparql);
 
     app.logger.info('req:query, ' + query);
 
-    endpoint.query(query, function (err, result) {
-      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+    app.sparql.query(query, function (err, result) {
+      if (err) return socket.emit('res:err', err);
 
       var resMessage = {
         id: messageId,
@@ -81,7 +79,6 @@ exports.query = function (socket) {
 exports.describe = function (socket) {
   return function (message) {
     var entity = message.data.entity;
-    var endpoint = new sparql.Client(message.data.sparql);
 
     app.logger.info('req:entity:describe, ' + entity.id);
 
@@ -89,8 +86,8 @@ exports.describe = function (socket) {
 
     var query = 'describe <' + entity.tuple.value + '>';
 
-    endpoint.query(query, function (err, result) {
-      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+    app.sparql.query(query, function (err, result) {
+      if (err) return socket.emit('res:err', err);
       var entities = constructFromDescribe(entity, result);
 
       message = {

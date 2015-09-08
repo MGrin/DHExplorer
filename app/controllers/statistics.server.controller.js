@@ -1,6 +1,5 @@
 'use strict';
 
-var sparql = require('sparql');
 var async = require('async');
 var _ = require('underscore');
 
@@ -60,11 +59,10 @@ exports.histogram = {
   contractsForYear: function (socket) {
     return function (message) {
       var messageId = message.id;
-      var endpoint = new sparql.Client(message.sparql);
       var year = message.year;
 
-      endpoint.query(queries.generateContractsPerMonth(year), function (err, result) {
-        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+      app.sparql.query(queries.generateContractsPerMonth(year), function (err, result) {
+        if (err) return socket.emit('res:err', err);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -88,12 +86,11 @@ exports.histogram = {
   contractsForMonth: function (socket) {
     return function (message) {
       var messageId = message.id;
-      var endpoint = new sparql.Client(message.sparql);
       var year = message.year;
       var month = message.month;
 
-      endpoint.query(queries.generateContractsPerDay(year, month), function (err, result) {
-        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+      app.sparql.query(queries.generateContractsPerDay(year, month), function (err, result) {
+        if (err) return socket.emit('res:err', err);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -117,11 +114,10 @@ exports.histogram = {
   foliaForYear: function (socket) {
     return function (message) {
       var messageId = message.id;
-      var endpoint = new sparql.Client(message.sparql);
       var year = message.year;
 
-      endpoint.query(queries.generateFoliaPerMonth(year), function (err, result) {
-        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+      app.sparql.query(queries.generateFoliaPerMonth(year), function (err, result) {
+        if (err) return socket.emit('res:err', err);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -145,12 +141,11 @@ exports.histogram = {
   foliaForMonth: function (socket) {
     return function (message) {
       var messageId = message.id;
-      var endpoint = new sparql.Client(message.sparql);
       var year = message.year;
       var month = message.month;
 
-      endpoint.query(queries.generateFoliaPerDay(year, month), function (err, result) {
-        if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+      app.sparql.query(queries.generateFoliaPerDay(year, month), function (err, result) {
+        if (err) return socket.emit('res:err', err);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -176,7 +171,6 @@ exports.histogram = {
 exports.computeDashboard = function (socket) {
   return function (message) {
     var messageId = message.id;
-    var endpoint = new sparql.Client(message.sparql);
 
     var fireResponse = function (status, data) {
       var msg = {
@@ -194,8 +188,8 @@ exports.computeDashboard = function (socket) {
 
     async.parallel([
       function (next) {
-        endpoint.query(queries.GRAPH_OVERVIEW, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.GRAPH_OVERVIEW, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           // var vars = result.head.vars;
@@ -212,8 +206,8 @@ exports.computeDashboard = function (socket) {
         });
       },
       function (next) {
-        endpoint.query(queries.CLASSES_OVERVIEW, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.CLASSES_OVERVIEW, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           // var vars = result.head.vars;
@@ -223,8 +217,8 @@ exports.computeDashboard = function (socket) {
         });
       },
       function (next) {
-        endpoint.query(queries.PROPERTIES_OVERVIEW, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.PROPERTIES_OVERVIEW, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           // var vars = result.head.vars;
@@ -244,7 +238,6 @@ exports.computeDashboard = function (socket) {
 exports.computeArchives = function (socket) {
   return function (message) {
     var messageId = message.id;
-    var endpoint = new sparql.Client(message.sparql);
 
     var fireResponse = function (status, data) {
       var msg = {
@@ -264,8 +257,8 @@ exports.computeArchives = function (socket) {
 
         async.series([
           function (_next) {
-            endpoint.query(queries.AVERAGE_CONTRACTS_NUMBER, function (err, result) {
-              if (err) return _next(err[2] || 'Virtuoso is not running');
+            app.sparql.query(queries.AVERAGE_CONTRACTS_NUMBER, function (err, result) {
+              if (err) return _next(err);
 
               var data = result.results.bindings[0];
               overview.push({
@@ -276,10 +269,9 @@ exports.computeArchives = function (socket) {
             });
           },
           function (_next) {
-            endpoint.query(queries.TOTAL_CONTRACTS_COUNT, function (err, result) {
-              if (err) return _next(err[2] || 'Virtuoso is not running');
+            app.sparql.query(queries.TOTAL_CONTRACTS_COUNT, function (err, result) {
+              if (err) return _next(err);
 
-              console.log(result.results.bindings);
               var data = result.results.bindings[0];
               overview.push({
                 label: 'Number of contracts',
@@ -288,8 +280,8 @@ exports.computeArchives = function (socket) {
               return _next();
             });
           }, function (_next) {
-            endpoint.query(queries.TOTAL_FOLIA_COUNT, function (err, result) {
-              if (err) return _next(err[2] || 'Virtuoso is not running');
+            app.sparql.query(queries.TOTAL_FOLIA_COUNT, function (err, result) {
+              if (err) return _next(err);
 
               var data = result.results.bindings[0];
               overview.push({
@@ -305,8 +297,8 @@ exports.computeArchives = function (socket) {
           return next();
         });
       }, function (next) {
-        endpoint.query(queries.CONTRACT_DISTRIBUTION_YEAR, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.CONTRACT_DISTRIBUTION_YEAR, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           var res = constructResult(data, function (contractYearHist) {
@@ -325,8 +317,8 @@ exports.computeArchives = function (socket) {
           return next();
         });
       }, function (next) {
-        endpoint.query(queries.FOLIA_DISTRIBUTION_YEAR, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.FOLIA_DISTRIBUTION_YEAR, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           var res = constructResult(data, function (foliaYearHist) {
@@ -346,8 +338,8 @@ exports.computeArchives = function (socket) {
           return next();
         });
       }, function (next) {
-        endpoint.query(queries.CONTRACT_DISTRIBUTION_REGISTER, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.CONTRACT_DISTRIBUTION_REGISTER, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           var res = constructResult(data, function (contractRegisterHist) {
@@ -363,8 +355,8 @@ exports.computeArchives = function (socket) {
           return next();
         });
       }, function (next) {
-        endpoint.query(queries.FOLIA_DISTRIBUTION_REGISTER, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.FOLIA_DISTRIBUTION_REGISTER, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           var res = constructResult(data, function (foliaRegisterHist) {
@@ -393,7 +385,6 @@ exports.computeArchives = function (socket) {
 exports.computePeople = function (socket) {
   return function (message) {
     var messageId = message.id;
-    var endpoint = new sparql.Client(message.sparql);
 
     var fireResponse = function (status, data) {
       var msg = {
@@ -413,8 +404,8 @@ exports.computePeople = function (socket) {
 
         async.series([
           function (_next) {
-            endpoint.query(queries.AVERAGE_PERSON_MENTION_PER_ENTITY, function (err, result) {
-              if (err) return _next(err[2] || 'Virtuoso is not running');
+            app.sparql.query(queries.AVERAGE_PERSON_MENTION_PER_ENTITY, function (err, result) {
+              if (err) return _next(err);
 
               var data = result.results.bindings[0];
               overview.push({
@@ -425,8 +416,8 @@ exports.computePeople = function (socket) {
               return _next();
             });
           }, function (_next) {
-            endpoint.query(queries.TOTAL_PERSONS_MENTION_COUNT, function (err, result) {
-              if (err) return _next(err[2] || 'Virtuoso is not running');
+            app.sparql.query(queries.TOTAL_PERSONS_MENTION_COUNT, function (err, result) {
+              if (err) return _next(err);
 
               var data = result.results.bindings[0];
               overview.push({
@@ -437,8 +428,8 @@ exports.computePeople = function (socket) {
               return _next();
             });
           }, function (_next) {
-            endpoint.query(queries.TOTAL_PERSONS_ENTITIES_COUNT, function (err, result) {
-              if (err) return _next(err[2] || 'Virtuoso is not running');
+            app.sparql.query(queries.TOTAL_PERSONS_ENTITIES_COUNT, function (err, result) {
+              if (err) return _next(err);
 
               var data = result.results.bindings[0];
               overview.push({
@@ -455,8 +446,8 @@ exports.computePeople = function (socket) {
           return next();
         });
       }, function (next) {
-        endpoint.query(queries.PERSON_MENTION_DISTRIBUTION_ROLE, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.PERSON_MENTION_DISTRIBUTION_ROLE, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           var res = constructResult(data);
@@ -465,8 +456,8 @@ exports.computePeople = function (socket) {
           return next();
         });
       }, function (next) {
-        endpoint.query(queries.PERSON_MENTION_DISTRIBUTION_ENTITY, function (err, result) {
-          if (err) return next(err[2] || 'Virtuoso is not running');
+        app.sparql.query(queries.PERSON_MENTION_DISTRIBUTION_ENTITY, function (err, result) {
+          if (err) return next(err);
 
           var data = result.results.bindings;
           var res = constructResult(data);

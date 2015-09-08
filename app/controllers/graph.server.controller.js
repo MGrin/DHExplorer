@@ -1,5 +1,4 @@
 'use strict';
-var sparql = require('sparql');
 var hash = require('object-hash');
 var queries = require('../queries');
 
@@ -15,11 +14,9 @@ exports.timerange = function (socket) {
   return function (message) {
     var messageId = message.id;
 
-    var endpoint = new sparql.Client(message.sparql);
-
     app.logger.info('req:timerange');
-    endpoint.query(queries.TIMERANGE, function (err, result) {
-      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+    app.sparql.query(queries.TIMERANGE, function (err, result) {
+      if (err) return socket.emit('res:err', err);
 
       var data = result.results.bindings[0];
       var resMessage = {
@@ -40,14 +37,13 @@ social.query = function (socket) {
   return function (message) {
     var messageId = message.id;
 
-    var endpoint = new sparql.Client(message.sparql);
     var minYear = message.data.minYear;
     var maxYear = message.data.maxYear;
 
     app.logger.info('req:graph:social, ' + minYear + ', ' + maxYear);
 
-    endpoint.query(queries.generateSocialGraphQuery(minYear, maxYear), function (err, result) {
-      if (err) return socket.emit('res:err', err[2] || 'Virtuoso is not running');
+    app.sparql.query(queries.generateSocialGraphQuery(minYear, maxYear), function (err, result) {
+      if (err) return socket.emit('res:err', err);
 
       var persons = {};
       var conections = {};

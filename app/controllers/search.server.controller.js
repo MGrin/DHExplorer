@@ -1,5 +1,4 @@
 'use strict';
-var sparql = require('sparql');
 var queries = require('../queries');
 var hash = require('object-hash');
 
@@ -10,12 +9,9 @@ exports.init = function (myApp) {
 };
 
 exports.query = function (req, res) {
-  // var entity = req.entity;
-  var sparqlEndpoint = req.query.endpoint;
   var q = req.query.q;
 
-  var endpoint = new sparql.Client(sparqlEndpoint);
-  endpoint.query(queries.generateSearchPersonQuery(q), function (err, result) {
+  app.sparql.query(queries.generateSearchPersonQuery(q), function (err, result) {
     if (err) return app.err(err, res);
 
     var data = result.results.bindings;
