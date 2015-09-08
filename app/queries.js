@@ -22,7 +22,7 @@ module.exports = {
   FOLIA_DISTRIBUTION_REGISTER: 'SELECT ?label (count(?folia) as ?count) WHERE {?label a grz-owl:Register ; grz-owl:has_folia ?folia . } GROUP BY ?label ',
 
   TOTAL_CONTRACTS_COUNT: 'SELECT count(distinct ?contract) as ?count where {?contract a grz-owl:Contract .}',
-  TOTAL_FOLIA_COUNT: 'SELECT count(distinct ?folia) as ?count where {?folia a grz-owl:Folia .}',
+  TOTAL_FOLIA_COUNT: 'SELECT count(distinct ?folia) as ?count where {?folia a grz-owl:Page .}',
   AVERAGE_CONTRACTS_NUMBER: 'SELECT (AVG (?contractYear) as ?count) WHERE {SELECT count(?contract) AS ?contractYear WHERE {?contract a grz-owl:Contract . ?contract sem:hasTime ?temp . ?temp sem:hasTimeStamp ?date . BIND (year(?date) AS ?year). } GROUP BY ?year } ',
 
   PERSON_MENTION_DISTRIBUTION_ROLE: 'SELECT ?label (count(distinct ?pm) as ?count) WHERE {?pm a grz-owl:PersonMention ; tis:hasTimeIndexedSetting ?tx . ?tx tis:isSettingFor ?role . ?role grz-owl:roleType ?label . } GROUP BY ?label',

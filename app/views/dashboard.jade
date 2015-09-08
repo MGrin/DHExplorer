@@ -83,10 +83,10 @@ html
           .ui.grid.container
             .three.wide.column
               .ui.vertical.fluid.tabular.menu
-                a.active.item(data-tab="Query") Query
-                a.item(data-tab="Search") Search
+                a.item(data-tab="Query") Query
+                a.active.item(data-tab="Search") Search
             .thirteen.wide.column
-              .ui.active.tab.grid.stackable.container.query(data-tab="Query")
+              .ui.tab.grid.stackable.container.query(data-tab="Query")
                 .five.wide.column
                   form.ui.form
                     .field
@@ -95,7 +95,7 @@ html
                     button.ui.positive.submit.button Query
                     .variables
                 .eleven.wide.column.entities-list
-              .ui.tab.segment(data-tab="Search")
+              .ui.active.tab.segment(data-tab="Search")
                 .search.ui.fluid.icon.input
                   input.prompt(type="text" placeholder="Search person")
                   i.search.icon
@@ -143,6 +143,9 @@ html
               .row
                 .column#people-roles-mentions
                 .column#people-mentions-entity
+            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-economics
+            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-events
+            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-geographics
 
       .bottom-menu.ui.bottom.fixed.inverted.menu.borderless
         #sidebar-toggle.item.icon.link

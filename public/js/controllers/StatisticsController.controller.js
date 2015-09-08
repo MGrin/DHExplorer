@@ -74,6 +74,10 @@
   scope.switchView = function (newView, cb) {
     if (scope.view === newView) return cb();
 
+    if (newView === 'economics' || newView === 'events' || newView === 'geographics') {
+      return alert('Work in progress');
+    }
+
     scope.view = newView;
     if (scope.domview) {
       scope.domview.transition(scope.animationOut, function () {

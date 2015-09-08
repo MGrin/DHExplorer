@@ -279,6 +279,7 @@ exports.computeArchives = function (socket) {
             endpoint.query(queries.TOTAL_CONTRACTS_COUNT, function (err, result) {
               if (err) return _next(err[2] || 'Virtuoso is not running');
 
+              console.log(result.results.bindings);
               var data = result.results.bindings[0];
               overview.push({
                 label: 'Number of contracts',

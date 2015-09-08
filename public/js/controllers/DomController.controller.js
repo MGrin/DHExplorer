@@ -57,18 +57,21 @@
       switch (view) {
         case 'entity': {
           $('.bottom-menu .statistics-selection').addClass('hide');
+          $('.settings-visibility-toggle').addClass('hide');
 
           app.EntityController.open(onSwitchDone);
           break;
         }
         case 'graph': {
           $('.bottom-menu .statistics-selection').addClass('hide');
+          $('.settings-visibility-toggle').removeClass('hide');
 
           app.GraphController.open(onSwitchDone);
           break;
         }
         case 'statistics': {
           $('.bottom-menu .statistics-selection').removeClass('hide');
+          $('.settings-visibility-toggle').addClass('hide');
 
           app.StatisticsController.open(onSwitchDone);
           break;
