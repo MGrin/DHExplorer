@@ -6,8 +6,8 @@
   status.runningTasks = [];
 
   app.Socket.registerGlobalListener('res:err', function (err) {
-    console.log(err.message);
-    status.showError(err.message);
+    console.log(err);
+    status.showError(err);
   });
 
   status.showError = function (err) {
