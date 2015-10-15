@@ -94,7 +94,6 @@ DHExplorer/
   |   |-- express.js         # express.js config
   |   |-- logger.server.js   # server logger setup
   |
-  |--lib/                    # custom libraries. Should be extracted to independent npm modules
   |--public/                 # frontend files
   -
 ```

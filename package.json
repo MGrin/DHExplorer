@@ -46,6 +46,7 @@
     "gulp-watch": "latest",
     "inflection": "latest",
     "jade": "latest",
+    "jsparql": "0.0.2",
     "map-stream": "latest",
     "method-override": "latest",
     "moment": "latest",
