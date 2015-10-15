@@ -178,7 +178,7 @@ module.exports = function (app) {
     // response object given, pass the error to it
     if (_.isObject(next)) {
       // send error to the client
-      return next.format({
+      if (next.format) return next.format({
         html: function () {
           next.status(500).render('error.server.jade', {status: 500, url: next.originalUrl, error: err});
         },
@@ -186,6 +186,8 @@ module.exports = function (app) {
           next.status(500).jsonp(err);
         }
       });
+
+      if (next.emit) next.emit('res:err', err);
     }
   };
 };

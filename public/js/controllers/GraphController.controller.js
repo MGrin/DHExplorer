@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app, Socket, DataModel) {
+(function (app, Socket) {
   var scope = app.GraphController = {};
   scope.setup = {};
 
@@ -38,11 +38,6 @@
       var males = 0;
       var females = 0;
 
-      var apprenticeOf = 0;
-      var colleagueOf = 0;
-      var guarantorOf = 0;
-      var masterOf = 0;
-
       for (var n in data.nodes) {
         if (data.nodes[n]) {
           nodes.push(data.nodes[n]);
@@ -54,15 +49,7 @@
 
       for (var e in data.edges) {
         if (data.edges[e]) {
-          edges.push(e);
-
-          var connections = data.edges[e];
-          for (var j = 0; j < connections.length; j++) {
-            if (DataModel.Connection.isApprentice(connections[j])) apprenticeOf++;
-            if (DataModel.Connection.isColleague(connections[j])) colleagueOf++;
-            if (DataModel.Connection.isGuarantor(connections[j])) guarantorOf++;
-            if (DataModel.Connection.isMaster(connections[j])) masterOf++;
-          }
+          edges.push({id: e, value: data.edges[e]});
         }
       }
 
@@ -72,11 +59,7 @@
         maleCount: males,
         femaleCount: females,
 
-        edgesCount: edges.length,
-        apprenticesCount: apprenticeOf,
-        colleagueCount: colleagueOf,
-        guarantorCount: guarantorOf,
-        masterCount: masterOf
+        edgesCount: edges.length
       });
       app.StatusController.completeTask(task);
     });
@@ -114,4 +97,4 @@
   };
 
 
-})(window.app, window.app.Socket, window.app.DataModel);
+})(window.app, window.app.Socket);
