@@ -61,7 +61,7 @@
             <tbody>
               {directPredicatesArr.map(function (predicate) {
                 return (
-                  <tr key={'direct_' + predicate.label}>
+                  <tr key={'direct_' + predicate.label + objectHash(predicate.content)}>
                     <td>{predicate.label}</td>
                     <td>
                       <div className="ui list">

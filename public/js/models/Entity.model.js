@@ -1,10 +1,11 @@
 'use strict';
 
 (function (app) {
-  var Entity = function (id, tuple, type, variable) {
+  var Entity = function (id, tuple, types, variable) {
     this.id = id;
     this.tuple = tuple;
-    this.type = type || 'no-type';
+    this.types = types || [];
+
     this.variable = variable;
 
     this.predicates = {};
@@ -15,7 +16,7 @@
   };
 
   Entity.castFromObject = function (obj) {
-    var entity = new Entity(obj.id, obj.tuple, obj.type);
+    var entity = new Entity(obj.id, obj.tuple, obj.types);
     entity.predicates = obj.predicates;
     entity.objects = obj.objects;
     entity.origins = obj.origins;
@@ -67,7 +68,7 @@
   };
 
   Entity.prototype.getLabel = function () {
-    var graphNameRegexp = new RegExp(app.config.default_graph_name + '?(.*)', 'i');
+    var graphNameRegexp = new RegExp(app.config.default_graph_name + '/?(.*)', 'i');
 
     var splittedValue = graphNameRegexp.exec(this.tuple.value);
     if (!splittedValue) return this.tuple.value;
@@ -84,18 +85,36 @@
 
   if (app) {
     Entity.prototype.isLiteral = function () {
-      if (!this.type || !app.Storage.NodeType.has(this.type)) return false;
+      if (!this.types || this.types.length === 0) return false;
 
-      return app.Storage.NodeType.get(this.type).rdfType === 'literal';
+      for (var i = 0 ; i < this.types.length; i++) {
+        var type = this.types[i];
+        if (app.Storage.NodeType.get(type) && app.Storage.NodeType.get(type).rdfType === 'literal') return true;
+      }
+      return false;
     };
-    Entity.prototype.getType = function (){
-      return app.Storage.NodeType.get(this.type);
+
+    Entity.prototype.getTypes = function () {
+      var res = [];
+      for (var i = 0; i < this.types.length; i++) {
+        if (app.Storage.NodeType.get(this.types[i]).label !== 'Not typed') res.push(app.Storage.NodeType.get(this.types[i]));
+      }
+      return res;
+    };
+
+    Entity.prototype.hasType = function (t) {
+      for (var i = 0; i < this.types.length; i++) {
+        var type = app.Storage.NodeType.get(this.types[i]);
+        if (type.isEqual(t)) return true;
+      }
+
+      return false;
     };
 
     app.models.Entity = Entity;
   } else {
     Entity.prototype.isLiteral = function () {
-      return this.type === 'literal';
+      return this.types.indexOf('literal') !== -1;
     };
     module.exports = Entity;
   }

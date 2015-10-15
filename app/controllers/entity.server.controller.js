@@ -17,14 +17,14 @@ var constructFromDescribe = function (originEntity, description) {
     var predicate = binding.p;
     var object = binding.o;
 
-    var type;
+    var types = [];
     var entity;
     var edgeId;
 
     // Case where the described resource is in the object field
     if (object.value === originEntity.tuple.value) {
-      type = (subject.type === 'literal') ? 'literal' : null;
-      entity = new Entity(hash(subject.value), subject, type);
+      types.push((subject.type === 'literal') ? 'literal' : null);
+      entity = new Entity(hash(subject.value), subject, types);
 
       edgeId = Edge.generateId(hash(subject.value), originEntity.id, predicate.value, hash);
       Entity.prototype.addOrigin.call(originEntity, edgeId, predicate, entity.id);
@@ -32,12 +32,13 @@ var constructFromDescribe = function (originEntity, description) {
     }
 
     if (predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-      originEntity.type = object.value;
+      if (!originEntity.types) originEntity.types = [];
+      originEntity.types.push(object.value);
       return;
     }
 
-    type = (object.type === 'literal') ? 'literal' : null;
-    entity = new Entity(hash(object.value), object, type);
+    types.push((object.type === 'literal') ? 'literal' : null);
+    entity = new Entity(hash(object.value), object, types);
 
     entities.push(entity);
 
@@ -64,7 +65,7 @@ exports.query = function (socket) {
     app.logger.info('req:query, ' + query);
 
     app.sparql.query(query, function (err, result) {
-      if (err) return socket.emit('res:err', err);
+      if (err) return app.err(err, socket);
 
       var resMessage = {
         id: messageId,
@@ -87,12 +88,15 @@ exports.describe = function (socket) {
     var query = 'describe <' + entity.tuple.value + '>';
 
     app.sparql.query(query, function (err, result) {
-      if (err) return socket.emit('res:err', err);
+      if (err) return app.err(err, socket);
       var entities = constructFromDescribe(entity, result);
 
       message = {
         id: messageId,
-        data: entities
+        data: {
+          entities: entities,
+          originEntity: entity
+        }
       };
       socket.emit('res:' + messageId, message);
     });

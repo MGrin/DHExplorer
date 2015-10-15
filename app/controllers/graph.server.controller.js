@@ -16,9 +16,10 @@ exports.timerange = function (socket) {
 
     app.logger.info('req:timerange');
     app.sparql.query(queries.TIMERANGE, function (err, result) {
-      if (err) return socket.emit('res:err', err);
+      if (err) return app.err(err, socket);
 
       var data = result.results.bindings[0];
+
       var resMessage = {
         id: messageId,
         data: {
@@ -43,7 +44,7 @@ social.query = function (socket) {
     app.logger.info('req:graph:social, ' + minYear + ', ' + maxYear);
 
     app.sparql.query(queries.generateSocialGraphQuery(minYear, maxYear), function (err, result) {
-      if (err) return socket.emit('res:err', err);
+      if (err) return app.err(err, socket);
 
       var persons = {};
       var conections = {};
@@ -52,18 +53,27 @@ social.query = function (socket) {
 
       for (var i = 0; i < data.length; i++) {
         var binding = data[i];
+        var person, relationType, relation, connection, plabel, pgender, clabel, cgender;
 
-        var person = binding.person;
-        var plabel = binding.plabel.value;
-        var pgender = binding.pgender.value;
+        if (!binding.person
+              || !binding.plabel
+              || !binding.pgender
+              || !binding.connection
+              || !binding.clabel
+              || !binding.cgender
+              || !binding.relation
+              || !binding.relationType) continue;
 
-        var connection = binding.connection;
-        var clabel = binding.clabel.value;
-        var cgender = binding.cgender.value;
+        person = binding.person;
+        plabel = binding.plabel.value;
+        pgender = binding.pgender.value;
 
-        var ctype = binding.ctype.value;
+        connection = binding.connection;
+        clabel = binding.clabel.value;
+        cgender = binding.cgender.value;
 
-        if (!plabel || !clabel || !person || !connection) continue;
+        relation = binding.relation.value;
+        relationType = binding.relationType.value;
 
         var pid = hash(person);
         var cid = hash(connection);
@@ -72,11 +82,17 @@ social.query = function (socket) {
                                                                       label: plabel,
                                                                       gender: pgender
                                                                     });
-        if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {label: clabel, gender: cgender});
+        if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {
+                                                                          label: clabel,
+                                                                          gender: cgender
+                                                                        });
 
         var edgeId = [pid, cid].sort().join('-');
-        if (!conections[edgeId]) conections[edgeId] = [];
-        if (conections[edgeId].indexOf(ctype) === -1) conections[edgeId].push(ctype);
+        var directionId = [pid, cid].join('-');
+
+        if (!conections[edgeId]) conections[edgeId] = {};
+        if (!conections[edgeId][directionId]) conections[edgeId][directionId] = {};
+        if (!conections[edgeId][directionId][relationType]) conections[edgeId][directionId][relationType] = relation;
       }
 
       var resMessage = {

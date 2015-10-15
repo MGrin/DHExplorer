@@ -63,37 +63,17 @@
       }
     }
 
-    // console.log(directPredicates);
-
     this.name = directPredicates.label.content[0].tuple.value;
+    delete directPredicates.label;
     this.gender = directPredicates.gender ? directPredicates.gender.content[0].tuple.value : 'x';
+    delete directPredicates.gender;
     this.mentions = directPredicates.has_mention.content;
+    delete directPredicates.has_mention;
 
-    this.family = {};
-    for (var i = 0; i < familyRelations.length; i++) {
-      if (directPredicates[familyRelations[i]]) {
-        this.family[familyRelations[i]] = directPredicates[familyRelations[i]].content;
+    for (var key in directPredicates) {
+      if (directPredicates[key]) {
+        this[key] = directPredicates[key].content;
       }
-    }
-
-    this.situations = directPredicates.hasTimeIndexedSetting.content;
-  };
-
-  model.Connection = {
-    isKnows: function (c) {
-      return c === 'http://xmlns.com/foaf/0.1/knows';
-    },
-    isApprentice: function (c) {
-      return c === 'http://128.178.21.39:8080/garzoni/ontology#apprentice_of';
-    },
-    isColleague: function (c) {
-      return c === 'http://128.178.21.39:8080/garzoni/ontology#colleague_of';
-    },
-    isGuarantor: function (c) {
-      return c === 'http://128.178.21.39:8080/garzoni/ontology#guarantor_of';
-    },
-    isMaster: function (c) {
-      return c === 'http://128.178.21.39:8080/garzoni/ontology#has_apprentice';
     }
   };
 })(window.app);

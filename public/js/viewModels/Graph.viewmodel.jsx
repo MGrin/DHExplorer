@@ -168,8 +168,8 @@
     }
 
     for (i = 0; i < edges.length; i++) {
-      var source = edges[i].split('-')[0];
-      var target = edges[i].split('-')[1];
+      var source = edges[i].id.split('-')[0];
+      var target = edges[i].id.split('-')[1];
 
       scope.graph.addLink(source, target);
     }

@@ -12,7 +12,7 @@ exports.query = function (req, res) {
   var q = req.query.q;
 
   app.sparql.query(queries.generateSearchPersonQuery(q), function (err, result) {
-    if (err) return app.err(err, res);
+    if (err) return app.err(err, socket);
 
     var data = result.results.bindings;
 

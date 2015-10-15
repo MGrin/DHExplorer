@@ -191,14 +191,14 @@
     });
 
     statistics.People.Roles
-      .setTitle('Roles distribution per person mention')
+      .setTitle('Roles distribution per person entity')
       .setChartConfig({
         fillColor: 'rgba(151,205,187,0.5)',
         highlightFill: 'rgba(151,205,187,0.75)',
         barValueSpacing: 5
       })
       .setFilters({
-        'label-transform': app.React.helpers.transformRDFLabel('#')
+        'label-transform': app.React.helpers.transformRDFLabel('/')
       })
       .setListeners({
         onShowAsTableClick: app.React.helpers.showAsTableCb('Role vs person mention'),

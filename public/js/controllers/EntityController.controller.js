@@ -62,16 +62,16 @@
         }
 
         var entityId = objectHash(resource.value);
-        var entityType = (resource.type === 'literal') ? 'literal' : 'no-type';
+        var entityType = (resource.type === 'literal') ? 'literal' : null;
         var type = NodeType.update(entityType);
 
         var entity;
 
         if (Storage.Entity.has(entityId)) {
           entity = Storage.Entity.get(entityId);
-          if (entity.type === 'no-type' && type !== entity.type) entity.type = type;
+          if (!entity.hasType(type.rdfType)) entity.types.push(type);
         } else {
-          entity = new Entity(entityId, resource, type, variable);
+          entity = new Entity(entityId, resource, [type], variable);
           Storage.Entity.set(entity.id, entity);
           scope.variables.get(variable).count++;
         }
@@ -106,6 +106,7 @@
     else entityId = objectHash(params.tuple);
 
     var entity = app.Storage.Entity.get(entityId);
+
     if (!entity) {
       if (!params.tuple) return app.dom.showError('Entity not found: ' + params.id);
 
@@ -118,7 +119,17 @@
       return app.views.Entity.modal.show(entity);
     }
 
-    app.Socket.describeEntity(entity, function (entities) {
+    app.Socket.describeEntity(entity, function (data) {
+      var entities = data.entities;
+      var originEntity = data.originEntity;
+
+      var types = [];
+      for (var i = 0 ; i < originEntity.types.length; i++) {
+        types.push(NodeType.update(originEntity.types[i]));
+      }
+
+      entity.types = types;
+
       app.EntityController.onEntityDescribed(entity, entities);
       entity.completed = true;
       if (task) app.StatusController.completeTask(task);

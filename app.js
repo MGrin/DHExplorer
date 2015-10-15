@@ -10,7 +10,7 @@ var socket = require('socket.io');
 var app = express();
 
 app.config = require('./config/config.server');
-app.sparql = new sparql('http://128.178.21.39:8890', 'http://128.178.21.39:8080/garzoni-data');
+app.sparql = new sparql(app.config.default_sparql_endpoint, app.config.default_graph_name);
 
 require('./config/logger.server')(app);
 exports = module.exports = app;

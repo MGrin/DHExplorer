@@ -17,6 +17,10 @@
     }
   };
 
+  Type.prototype.isEqual = function (t) {
+    return t === this.label || t === this.rdfType;
+  };
+
   Type.types = new app.Storage('NodeType');
 
   Type.update = function (t) {

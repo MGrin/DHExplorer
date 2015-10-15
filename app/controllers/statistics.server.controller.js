@@ -62,7 +62,7 @@ exports.histogram = {
       var year = message.year;
 
       app.sparql.query(queries.generateContractsPerMonth(year), function (err, result) {
-        if (err) return socket.emit('res:err', err);
+        if (err) return app.err(err, socket);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -90,7 +90,7 @@ exports.histogram = {
       var month = message.month;
 
       app.sparql.query(queries.generateContractsPerDay(year, month), function (err, result) {
-        if (err) return socket.emit('res:err', err);
+        if (err) return app.err(err, socket);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -117,7 +117,7 @@ exports.histogram = {
       var year = message.year;
 
       app.sparql.query(queries.generateFoliaPerMonth(year), function (err, result) {
-        if (err) return socket.emit('res:err', err);
+        if (err) return app.err(err, socket);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -145,7 +145,7 @@ exports.histogram = {
       var month = message.month;
 
       app.sparql.query(queries.generateFoliaPerDay(year, month), function (err, result) {
-        if (err) return socket.emit('res:err', err);
+        if (err) return app.err(err, socket);
 
         var data = result.results.bindings;
         var res = constructResult(data, function (hist) {
@@ -301,6 +301,7 @@ exports.computeArchives = function (socket) {
           if (err) return next(err);
 
           var data = result.results.bindings;
+
           var res = constructResult(data, function (contractYearHist) {
             sortByLabel(contractYearHist);
           });
@@ -373,10 +374,7 @@ exports.computeArchives = function (socket) {
         });
       }
     ], function (err) {
-      if (err) {
-        console.log(err);
-        return socket.emit('res:err', err);
-      }
+      if (err) return app.err(err, socket);
       return fireResponse('final');
     });
   };
@@ -446,7 +444,7 @@ exports.computePeople = function (socket) {
           return next();
         });
       }, function (next) {
-        app.sparql.query(queries.PERSON_MENTION_DISTRIBUTION_ROLE, function (err, result) {
+        app.sparql.query(queries.PERSON_DISTRIBUTION_ROLE, function (err, result) {
           if (err) return next(err);
 
           var data = result.results.bindings;

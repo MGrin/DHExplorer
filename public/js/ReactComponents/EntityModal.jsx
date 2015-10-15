@@ -72,10 +72,8 @@
     render: function () {
       if (!this.state.entity) return (<div></div>);
 
-      var type = this.state.entity.getType();
       var typeStyles = {
-        float: 'right',
-        color: type.color
+        float: 'right'
       };
       var btnBackStyle = {
         float: 'left'
@@ -84,48 +82,55 @@
         marginRight: 0
       };
 
-      switch (type.rdfType) {
-        case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
-          var person = new app.DataModel.Person(this.state.entity);
+      if (this.state.entity.hasType('Person')) {
+        var person = new app.DataModel.Person(this.state.entity);
 
-          return (
-            <div>
-              {(function () {
-                if (modal.history.length > 1) {
-                  return (
-                    <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
-                      <i className="left arrow icon" style={iStyle}></i>
-                    </button>
-                  )
-                }
-              })()}
-              <div className="text">{person.name}</div>
-            </div>
-          )
-        }
-
-        default : {
-          return (
-            <div>
-              {(function () {
-                if (modal.history.length > 1) {
-                  return (
-                    <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
-                      <i className="left arrow icon" style={iStyle}></i>
-                    </button>
-                  )
-                }
-              })()}
-              <span className="text">
-                {this.state.entity.getLabel()}
-              </span>
-              <span style={typeStyles} className="text">
-                {type.label}
-              </span>
-            </div>
-          )
-        }
+        return (
+          <div>
+            {(function () {
+              if (modal.history.length > 1) {
+                return (
+                  <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
+                    <i className="left arrow icon" style={iStyle}></i>
+                  </button>
+                )
+              }
+            })()}
+            <div className="text">{person.name}</div>
+          </div>
+        )
       }
+
+      var types = this.state.entity.getTypes();
+
+      return (
+        <div>
+          {(function () {
+            if (modal.history.length > 1) {
+              return (
+                <button className="ui basic icon button" onClick={modal.goBack} style={btnBackStyle}>
+                  <i className="left arrow icon" style={iStyle}></i>
+                </button>
+              )
+            }
+          })()}
+          <span className="text">
+            {this.state.entity.getLabel()}
+          </span>
+          <span style={typeStyles} className="text">
+            {
+              types.map(function (type) {
+                var colorStyle = {
+                  color: type.color
+                };
+                return (
+                  <span className="text" key={type.label} style={colorStyle}>{type.label}</span>
+                )
+              })
+            }
+          </span>
+        </div>
+      )
     }
   });
 
@@ -138,23 +143,18 @@
     render: function () {
       if (!this.state.entity) return (<div></div>);
 
-      var type = this.state.entity.getType();
-
-      switch (type.rdfType) {
-        case 'http://128.178.21.39:8080/garzoni/ontology#Person' : {
-          var person = new app.DataModel.Person(this.state.entity);
-          return <app.React.PersonIDCard person={person} />
-        }
-        default : {
-          return (
-            <div className="row">
-              <div className="column">
-                <app.React.EntityTable entity={this.state.entity} />
-              </div>
-            </div>
-          )
-        }
+      if (this.state.entity.hasType('Person')) {
+        var person = new app.DataModel.Person(this.state.entity);
+        return <app.React.PersonIDCard person={person} />
       }
+
+      return (
+        <div className="row">
+          <div className="column">
+            <app.React.EntityTable entity={this.state.entity} />
+          </div>
+        </div>
+      )
     }
   });
 })(window.app);
