@@ -2,7 +2,7 @@
 var express = require('express');
 var async = require('async');
 var fs = require('fs');
-var sparql = require('./lib/sparql');
+var sparql = require('jsparql');
 
 var inflection = require('inflection');
 var socket = require('socket.io');
