@@ -3,7 +3,8 @@
     {
       "name"      : "Data Explorer",
       "script"    : "app.js",
-      "env": {},
+      "env": {
+      },
       "env_production" : {
         "NODE_ENV": "production"
       }
@@ -15,17 +16,17 @@
       "user" : "grishin",
       "host" : "128.178.21.39",
       "ref"  : "origin/master",
-      "repo" : "/home/grishin/git/data-explorer.git",
-      "path" : "/home/grishin/data-explorer",
-      "post-deploy" : "export PATH=/home/grishin/.nvm/versions/v0.12.7/bin/:$PATH && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
+      "repo" : "ssh://git@github.com/MGrin/DHExplorer.git",
+      "path" : "~/data-explorer",
+      "post-deploy" : "export PATH=$PATH:/home/grishin/.nvm/versions/v0.12.7/bin/ && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
     },
     "pc1" : {
       "user" : "nikita",
       "host" : "dhlabpc1.epfl.ch",
       "ref"  : "origin/master",
-      "repo" : "grishin@128.178.21.39:/home/grishin/git/data-explorer.git",
-      "path" : "/home/nikita/data-explorer",
-      "post-deploy" : "export PATH=/home/nikita/.nvm/versions/v0.12.7/bin/:$PATH && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
+      "repo" : "ssh://git@github.com/MGrin/DHExplorer.git",
+      "path" : "~/data-explorer",
+      "post-deploy" : "export PATH=$PATH:/home/nikita/.nvm/versions/v0.12.7/bin/ && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
     }
   }
 }
