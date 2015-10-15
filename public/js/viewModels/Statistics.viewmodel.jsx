@@ -16,13 +16,13 @@
     }
   };
 
-  var chartTypes = ['table', 'pie', 'bar'];
+  // var chartTypes = ['table', 'pie', 'bar'];
 
-  statistics.addChart = function (options) {
-    if (!options) throw new Error('No chart options provided!');
-    if (!options.chartType
-      || chartTypes.indexOf(options.chartType.toLowerCase()) < 0) throw new Error('Unknown chart type: ' + options.chartType);
-  };
+  // statistics.addChart = function (options) {
+  //   if (!options) throw new Error('No chart options provided!');
+  //   if (!options.chartType
+  //     || chartTypes.indexOf(options.chartType.toLowerCase()) < 0) throw new Error('Unknown chart type: ' + options.chartType);
+  // };
 
   statistics.init = function (view) {
     switch (view) {
@@ -77,7 +77,7 @@
   };
 
   statistics.initArchives = function () {
-    statistics.addChart();
+    // statistics.addChart();
 
     statistics.Archives = {
       Overview: ReactDOM.render(
