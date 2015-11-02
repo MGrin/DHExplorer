@@ -9,12 +9,12 @@
   };
 
   var EntityModal = function () {
-    this.header = React.render(
+    this.header = ReactDOM.render(
       <ModalHeader />,
       $('#entity-modal .header').get(0)
     );
 
-    this.content = React.render(
+    this.content = ReactDOM.render(
       <ModalContent />,
       $('#entity-modal .content').get(0)
     );

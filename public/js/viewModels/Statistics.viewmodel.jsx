@@ -35,15 +35,15 @@
 
   statistics.initDashboard = function () {
     statistics.Dashboard = {
-      Overview: React.render(
+      Overview: ReactDOM.render(
         <app.React.GraphOverviewTable />,
         $('#graph-overview').get(0)
       ),
-      Classes: React.render(
+      Classes: ReactDOM.render(
         <app.React.PieChart />,
         $('#classes-overview').get(0)
       ),
-      Properties: React.render(
+      Properties: ReactDOM.render(
         <app.React.PieChart />,
         $('#properties-overview').get(0)
       )
@@ -70,26 +70,26 @@
 
   statistics.initArchives = function () {
     statistics.Archives = {
-      Overview: React.render(
+      Overview: ReactDOM.render(
         <app.React.OverviewTable />,
         $('#archives-numeric-info').get(0)
       ),
       Contracts: {
-        PerDate: React.render(
+        PerDate: ReactDOM.render(
           <app.React.HistogramChart />,
           $('#archives-contracts-year').get(0)
         ),
-        PerRegister: React.render(
+        PerRegister: ReactDOM.render(
           <app.React.HistogramChart />,
           $('#archives-contracts-register').get(0)
         )
       },
       Folia: {
-        PerDate: React.render(
+        PerDate: ReactDOM.render(
           <app.React.HistogramChart />,
           $('#archives-folia-year').get(0)
         ),
-        PerRegister: React.render(
+        PerRegister: ReactDOM.render(
           <app.React.HistogramChart />,
           $('#archives-folia-register').get(0)
         )
@@ -172,15 +172,15 @@
 
   statistics.initPeople = function () {
     statistics.People = {
-      Overview: React.render(
+      Overview: ReactDOM.render(
         <app.React.OverviewTable />,
         $('#people-numeric-info').get(0)
       ),
-      Roles: React.render(
+      Roles: ReactDOM.render(
         <app.React.HistogramChart />,
         $('#people-roles-mentions').get(0)
       ),
-      Mentions: React.render(
+      Mentions: ReactDOM.render(
         <app.React.HistogramChart />,
         $('#people-mentions-entity').get(0)
       )

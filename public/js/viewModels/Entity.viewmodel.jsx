@@ -20,7 +20,7 @@
   };
 
   scope.init = function (cb) {
-    scope.list = React.render(
+    scope.list = ReactDOM.render(
       <app.React.EntitiesList />,
       $('#entity-container .entities-list').get(0)
     );
@@ -30,7 +30,7 @@
       predicate: scope.predicate
     });
 
-    scope.variables = React.render(
+    scope.variables = ReactDOM.render(
       <app.React.QueryVariablesMenu />,
       $('#entity-container .query .variables').get(0)
     );

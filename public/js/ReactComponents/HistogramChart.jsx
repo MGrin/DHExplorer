@@ -237,7 +237,7 @@
       };
 
       setTimeout(function () {
-        that.chart = new Chart($(React.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Bar(data, chartConfig);
+        that.chart = new Chart($(ReactDOM.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Bar(data, chartConfig);
         if (that.state.listeners.onBarClick) {
           that.chart.chart.canvas.onclick = function (e) {
             var activePoints = that.chart.getBarsAtEvent(e);

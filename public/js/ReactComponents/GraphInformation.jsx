@@ -78,7 +78,7 @@
       // </div>
     },
     componentDidMount: function () {
-      var domNode = React.findDOMNode(this);
+      var domNode = ReactDOM.findDOMNode(this);
       $(domNode).accordion({});
 
       $(domNode).find('.mg-animated').each(function () {

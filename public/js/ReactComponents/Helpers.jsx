@@ -2,7 +2,7 @@
   app.React.helpers = {};
   app.React.helpers.saveAsImage = function (node) {
     return function () {
-      var n = $(React.findDOMNode(node));
+      var n = $(ReactDOM.findDOMNode(node));
       var dataUrl;
       n.find('canvas').each(function () {
         dataUrl = $(this).get(0).toDataURL('image/png');
@@ -15,7 +15,7 @@
     return function (data) {
       return function () {
         $('#statistics-modal .header').text(title);
-        React.render(
+        ReactDOM.render(
           <app.React.HistogramTable data={data} />,
           $('#statistics-modal .content').get(0)
         );

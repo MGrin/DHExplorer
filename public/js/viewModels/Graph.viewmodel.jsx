@@ -16,7 +16,7 @@
   };
 
   scope.init = function (params) {
-    scope.information = React.render(
+    scope.information = ReactDOM.render(
       <app.React.GraphInformation />,
       $('#graph-container .graph-settings .statistics-wrapper').get(0)
     );
