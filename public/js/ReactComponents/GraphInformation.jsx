@@ -1,3 +1,10 @@
+/**
+ * React Component used to show Graph Information
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
 (function (app) {
   app.React.GraphInformation = React.createClass({
     getInitialState: function () {

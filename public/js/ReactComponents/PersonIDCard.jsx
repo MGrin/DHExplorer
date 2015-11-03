@@ -1,3 +1,10 @@
+/**
+ * React Component used to show a PersonID Card (something like an extension of EntityTable for Person Entity)
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
 (function (app, DataModel) {
   app.React.PersonIDCard = React.createClass({
     render: function () {

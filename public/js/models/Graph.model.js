@@ -1,3 +1,10 @@
+/**
+* An Graph model.
+* A simple Graph model with addNode, addEdge, clear and destroy functions
+*
+* Created by Nikita Grishin on 08.2015
+*/
+
 'use strict';
 
 (function (app, Storage) {
@@ -13,62 +20,6 @@
 
     return true;
   };
-
-  // Graph.prototype.updateVisibilities = function () {
-  //   var toRemove = {
-  //     nodes: [],
-  //     edges: [],
-  //     hiddenNodes: [],
-  //     hiddenEdges: []
-  //   };
-
-  //   var that = this;
-  //   var i, node, edge;
-
-  //   for (i = 0; i < that.nodes.length; i++) {
-  //     node = that.nodes[i];
-  //     if (!node.isVisible()) {
-  //       toRemove.nodes.push(i);
-  //       that.hiddenNodes.push(node);
-  //     }
-  //   }
-
-  //   for (i = 0; i < that.hiddenNodes.length; i++) {
-  //     node = that.hiddenNodes[i];
-  //     if (node.isVisible()) {
-  //       toRemove.hiddenNodes.push(i);
-  //       that.nodes.push(node);
-  //     }
-  //   }
-
-  //   for (i = 0; i < that.edges.length; i++) {
-  //     edge = that.edges[i];
-
-  //     if (!edge.source.isVisible() || !edge.target.isVisible()) {
-  //       toRemove.edges.push(i);
-  //       that.hiddenEdges.push(edge);
-  //     }
-  //   }
-
-  //   for (i = 0; i < that.hiddenEdges.length; i++) {
-  //     edge = that.hiddenEdges[i];
-
-  //     if (edge.source.isVisible() && edge.target.isVisible()) {
-  //       toRemove.hiddenEdges.push(i);
-  //       that.edges.push(edge);
-  //     }
-  //   }
-
-  //   for (var key in toRemove) {
-  //     if (toRemove[key] && that[key]) {
-  //       var offset = 0;
-  //       for (i = 0; i < toRemove[key].length; i++) {
-  //         that[key].splice(toRemove[key][i] - offset, 1);
-  //         offset++;
-  //       }
-  //     }
-  //   }
-  // };
 
   Graph.prototype.addNode = function (_node) {
     var node;
@@ -99,7 +50,7 @@
       this.edgesStorage.set(edge.id, edge);
       edge.source.addNeighbour(edge.target.id);
       edge.target.addNeighbour(edge.source.id);
-    }    
+    }
   };
 
   Graph.prototype.clear = function () {
@@ -107,7 +58,7 @@
       this.nodesStorage.remove(this.nodes[0].id);
       this.nodes.splice(0, 1);
     }
-    
+
     while (this.edges.length > 0) {
       this.edgesStorage.remove(this.edges[0].id);
       this.edges.splice(0, 1);

@@ -1,3 +1,12 @@
+/**
+* A Storage service.
+* Used to export the storing logic from the application
+* Can be then changed to use the browser LocalStorage or whatever
+* TODO: Verify if this storage is used everywhere where the storage is needed (I'm sure that not. Ex: Chart service)
+*
+* Created by Nikita Grishin on 08.2015
+*/
+
 'use strict';
 
 (function (app) {
@@ -40,6 +49,13 @@
     delete storage[this.name];
   };
 
+  /**
+   * Returns the storage's content as an array
+   * @param  {number} length - the maximum size of the returned array
+   * @param  {number} offset - the offset to be applied to the storage's content
+   * @param  {Function} predicate - a predicate function that should be verified for a storage element to accept this element in the resulting array
+   * @return {Array} Storage's content as an array
+   */
   storage.prototype.getArray = function (length, offset, predicate) {
     var arr = [];
 

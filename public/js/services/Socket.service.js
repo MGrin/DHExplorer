@@ -1,3 +1,10 @@
+/**
+* An Socket model.
+* Used to communicate with the server through sockets
+*
+* Created by Nikita Grishin on 08.2015
+*/
+
 'use strict';
 
 (function (app) {
@@ -16,6 +23,10 @@
     app.offline = false;
   });
 
+  /**
+   * @param  {string} event name
+   * @param  {Function} function to be called when the event occurs
+   */
   Socket.registerGlobalListener = function (event, listener) {
     if (!Socket.globalListeners[event]) {
       Socket.globalListeners[event] = [];
@@ -28,6 +39,8 @@
 
     Socket.globalListeners[event].push(listener);
   };
+
+  // Following functions are realisations of server communications for diffent parts of the application
 
   Socket.requestTimeRange = function (cb) {
     var message = {
@@ -103,41 +116,9 @@
     });
   };
 
-  Socket.requestHistogramPerMonthesForYear = function (year, type, cb) {
-    type = type.toLowerCase();
-
-    var message = {
-      id: generateMessageId(),
-      sparql: app.config.default_sparql_endpoint,
-      year: year
-    };
-
-    var path = 'req:statistics:' + type + ':year';
-    Socket.io.emit(path, message);
-    Socket.io.on('res:' + message.id, function (resMessage) {
-      Socket.io.removeListener('res:' + resMessage.id);
-      return cb(resMessage.data);
-    });
-  };
-
-  Socket.requestHistogramPerDayForMonth = function (year, month, type, cb) {
-    type = type.toLowerCase();
-
-    var message = {
-      id: generateMessageId(),
-      sparql: app.config.default_sparql_endpoint,
-      year: year,
-      month: month
-    };
-
-    var path = 'req:statistics:' + type + ':month';
-    Socket.io.emit(path, message);
-    Socket.io.on('res:' + message.id, function (resMessage) {
-      Socket.io.removeListener('res:' + resMessage.id);
-      return cb(resMessage.data);
-    });
-  };
-
+  // Easy and hacky random generator. =)
+  // TODO
+  // Assuming this will generate unique values. But certenaly should be changed to something more stable
   var generateMessageId = function () {
     var text = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

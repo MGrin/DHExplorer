@@ -1,7 +1,5 @@
 # Digita Humanities: Data Explorer
 
-blablabla about what is this repo about
-
 ## Installation and run in local
 * **Setup Virtuoso database: ask @ehrmama about how to do this**
 * **Install dependencies**

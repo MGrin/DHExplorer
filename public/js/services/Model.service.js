@@ -1,3 +1,10 @@
+/**
+ * TODO
+ * Refactor this service.
+ * It was supposed to reflect the schema of the RDF database to configure the visualisation of different entities
+ * Now only Person Schema is reflected (for the graph purposes), and probably is already wrong or incomplete
+ */
+
 'use strict';
 
 (function (app) {

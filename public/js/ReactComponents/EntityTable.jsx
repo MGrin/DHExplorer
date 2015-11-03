@@ -1,3 +1,9 @@
+/**
+ * React Component used to show Entities as a table (in the modal window, probably)
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 (function (app) {
   app.React.EntityTable = React.createClass({
     render: function () {

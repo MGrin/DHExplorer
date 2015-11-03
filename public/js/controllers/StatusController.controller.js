@@ -1,3 +1,10 @@
+/**
+ * Status Controller
+ * Handles all logic about current status and operations of application
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app, Dom) {

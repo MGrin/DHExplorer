@@ -14,16 +14,6 @@ module.exports = function (app) {
 
     socket.on('req:statistics:query', statistics.query(socket));
 
-    socket.on('req:statistics:dashboard', statistics.computeDashboard(socket));
-    socket.on('req:statistics:archives', statistics.computeArchives(socket));
-    socket.on('req:statistics:people', statistics.computePeople(socket));
-
-    socket.on('req:statistics:contracts:year', statistics.histogram.contractsForYear(socket));
-    socket.on('req:statistics:contracts:month', statistics.histogram.contractsForMonth(socket));
-
-    socket.on('req:statistics:folia:year', statistics.histogram.foliaForYear(socket));
-    socket.on('req:statistics:folia:month', statistics.histogram.foliaForMonth(socket));
-
     socket.on('disconnect', function () {
 
     });

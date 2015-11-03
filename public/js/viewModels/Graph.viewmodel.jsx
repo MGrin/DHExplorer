@@ -1,3 +1,9 @@
+/**
+ * Graph viewmodel
+ * Handling all processes needed to visualise elements related to Graph
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
 'use strict';
 
 (function (app) {
@@ -16,17 +22,18 @@
   };
 
   scope.init = function (params) {
+    // rendering the graph information element
     scope.information = ReactDOM.render(
       <app.React.GraphInformation />,
       $('#graph-container .graph-settings .statistics-wrapper').get(0)
     );
+    // Setting up the timerange slider
     $('.rangeSlider[slide-on="years"]').ionRangeSlider({
       min: params.min,
       max: params.max,
       from: params.from,
       to: params.to
     });
-
     $('.graph-settings form').submit(function (e) {
       e.preventDefault();
 
@@ -38,6 +45,7 @@
       scope.emit('onTimeRangeUpdate', {minYear: minYear, maxYear: maxYear});
     });
 
+    // Pause-Play button
     $('.graph-pause-play').click(function (e) {
       e.preventDefault();
       scope.togglePausePlay();
@@ -68,9 +76,11 @@
     });
   };
 
+  // Called on window resize in order to resize canvas
   scope.resizeCanvas = function () {
     $('.webgl-wrapper canvas').animate({width: $('.webgl-wrapper').width()}, 500);
   };
+  // TODO does not work =(
   // $(window).resize(scope.resizeCanvas);
 
   scope.togglePausePlay = function () {
@@ -109,7 +119,7 @@
   };
 
   scope.render = function () {
-    scope.graphics = Viva.Graph.View.webglGraphics();
+    scope.graphics = Viva.Graph.View.webglGraphics(); // Creating Viva graphics
 
     scope.events = Viva.Graph.webglInputEvents(scope.graphics, scope.graph);
     scope.events.mouseDown(function () {
@@ -131,6 +141,7 @@
       }
     });
 
+    // A shader used to render each node
     scope.NodeShader = new app.WebGL.NodeShader();
     scope.graphics.setNodeProgram(scope.NodeShader);
 
@@ -138,6 +149,7 @@
       return new app.WebGL.models.Circle(node);
     });
 
+    // General graph layoout
     scope.layout = Viva.Graph.Layout.forceDirected(scope.graph, {
       springLength: 30,
       springCoeff: 0.0008,

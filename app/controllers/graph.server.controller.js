@@ -1,7 +1,16 @@
 'use strict';
+/**
+ * Graph controller
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
 var hash = require('object-hash');
 var queries = require('../queries');
 
+/**
+ * Node model, the same for frontend and backend
+ * @type {Model}
+ */
 var GraphNode = require('../../public/js/models/Node.model');
 
 var app;
@@ -10,7 +19,17 @@ exports.init = function (myApp) {
   app = myApp;
 };
 
+/**
+ * Handles the request of the timerange, available in the database
+ *
+ * @param  {socket} a socket object to send the response
+ * @return {Function} a handler function
+ */
 exports.timerange = function (socket) {
+  /**
+   * @param  {Object} a request message. Should contain a message @id will be used to send the response
+   * @return {Null}
+   */
   return function (message) {
     var messageId = message.id;
 
@@ -34,7 +53,18 @@ exports.timerange = function (socket) {
 };
 var social = {};
 
+/**
+ * Handles the request for a social graph for provided parameters, passed in message
+ * @param  {socket} a socket object to send the response
+ * @return {Function} a handler function
+ */
 social.query = function (socket) {
+  /**
+   * @param  {Object} a request message. Should contain:
+   *                                      * @id will be used to send the response
+   *                                      * @data containing minYear and maxYear describing the request time window
+   * @return {Null}
+   */
   return function (message) {
     var messageId = message.id;
 
@@ -55,6 +85,7 @@ social.query = function (socket) {
         var binding = data[i];
         var person, relationType, relation, connection, plabel, pgender, clabel, cgender;
 
+        // If at least one field is mising, we do not append the current binding to the result
         if (!binding.person
               || !binding.plabel
               || !binding.pgender
@@ -75,19 +106,26 @@ social.query = function (socket) {
         relation = binding.relation.value;
         relationType = binding.relationType.value;
 
+        // id of an entity is just the hash of the entity
         var pid = hash(person);
         var cid = hash(connection);
 
+        // Constructing new Graph node if not existing yet
         if (!persons[pid]) persons[pid] = new GraphNode(pid, person, {
                                                                       label: plabel,
                                                                       gender: pgender
                                                                     });
+        // Constructing new Graph node if not existing yet
         if (!persons[cid]) persons[cid] = new GraphNode(cid, connection, {
                                                                           label: clabel,
                                                                           gender: cgender
                                                                         });
 
+        // an Edge id is composed of two entities ids, sorted and joined with '-'
+        // The sorting is used to preseve equality for two edges between same nodes but in the different direction
+        // So doing sort we lose the information about edge direction
         var edgeId = [pid, cid].sort().join('-');
+        // And here is the directional insformation preserved
         var directionId = [pid, cid].join('-');
 
         if (!conections[edgeId]) conections[edgeId] = {};

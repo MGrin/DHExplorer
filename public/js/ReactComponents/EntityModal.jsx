@@ -1,3 +1,10 @@
+/**
+ * React Component used to show Entities in a modal window
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
 (function (app) {
   var modal;
 

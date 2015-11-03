@@ -1,3 +1,10 @@
+/**
+ * Entity viewmodel
+ * Handling all processes needed to visualise elements related to Entity
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app) {
@@ -20,6 +27,7 @@
   };
 
   scope.init = function (cb) {
+    // Rendering the list of entities in the query view
     scope.list = ReactDOM.render(
       <app.React.EntitiesList />,
       $('#entity-container .entities-list').get(0)
@@ -30,11 +38,13 @@
       predicate: scope.predicate
     });
 
+    // Rendering the list of variables in query
     scope.variables = ReactDOM.render(
       <app.React.QueryVariablesMenu />,
       $('#entity-container .query .variables').get(0)
     );
 
+    // Getting an instance of entity modal window
     scope.modal = app.React.EntityModal.getInstance();
 
     $('#entity-container .tabular.menu .item').tab();
