@@ -11,8 +11,8 @@ html
 
     link(rel="stylesheet", href="/css/styles.css")
 
-    script(src="/lib/react/react.min.js")
-    script(src="/lib/react/react-dom.min.js")
+    script(src="/lib/react/react.js")
+    script(src="/lib/react/react-dom.js")
     script(src="/lib/jquery/dist/jquery.min.js")
     script(src="/lib/semantic-ui/dist/semantic.min.js")
     script(src="/lib/socket.io-client/socket.io.js")
@@ -26,22 +26,25 @@ html
     script(src="/cdn/js/services/Socket.service.js")
     script(src="/cdn/js/services/Storage.service.js")
     script(src="/cdn/js/services/Model.service.js")
+    script(src="/cdn/js/services/Charts.service.js")
 
     script(src="/cdn/js/models/Node.model.js")
     script(src="/cdn/js/models/Edge.model.js")
     script(src="/cdn/js/models/NodeType.model.js")
     script(src="/cdn/js/models/Entity.model.js")
     script(src="/cdn/js/models/Graph.model.js")
+    script(src="/cdn/js/models/Chart.model.js")
+
+    script(src="/cdn/js/ReactComponents/Charts/ChartHeader.js")
+    script(src="/cdn/js/ReactComponents/Charts/Chart.js")
+    script(src="/cdn/js/ReactComponents/Charts/ChartTable.js")
+    script(src="/cdn/js/ReactComponents/Charts/OverviewTable.js")
+    script(src="/cdn/js/ReactComponents/Charts/Container.js")
 
     script(src="/cdn/js/ReactComponents/Helpers.js")
-    script(src="/cdn/js/ReactComponents/ChartHeader.js")
     script(src="/cdn/js/ReactComponents/EntitiesList.js")
     script(src="/cdn/js/ReactComponents/EntityModal.js")
     script(src="/cdn/js/ReactComponents/EntityTable.js")
-    script(src="/cdn/js/ReactComponents/HistogramChart.js")
-    script(src="/cdn/js/ReactComponents/PieChart.js")
-    script(src="/cdn/js/ReactComponents/HistogramTable.js")
-    script(src="/cdn/js/ReactComponents/OverviewTable.js")
     script(src="/cdn/js/ReactComponents/GraphInformation.js")
     script(src="/cdn/js/ReactComponents/PersonIDCard.js")
 
@@ -119,33 +122,6 @@ html
 
       .explorer-view(data-view="statistics")
         .content.explorer-view-content#statistics-container
-          .ui.grid
-            //- .ui.stackable.container.grid#statistics-dashboard
-            //-   .row
-            //-     .column#graph-overview
-            //-   .ui.equal.width.equal.height.row
-            //-     .column#classes-overview
-            //-     .column#properties-overview
-
-            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-archives
-              .row#archives-numeric-info
-
-              .row
-                .column#archives-contracts-year
-                .column#archives-contracts-register
-
-              .row
-                .column#archives-folia-year
-                .column#archives-folia-register
-            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-people
-              .row#people-numeric-info
-
-              .row
-                .column#people-roles-mentions
-                .column#people-mentions-entity
-            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-economics
-            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-events
-            .ui.stackable.centered.container.equal.width.equal.height.grid.hide#statistics-geographics
 
       .bottom-menu.ui.bottom.fixed.inverted.menu.borderless
         #sidebar-toggle.item.icon.link

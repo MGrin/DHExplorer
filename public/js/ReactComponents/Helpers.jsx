@@ -16,7 +16,7 @@
       return function () {
         $('#statistics-modal .header').text(title);
         ReactDOM.render(
-          <app.React.HistogramTable data={data} />,
+          <app.React.ChartTable data={data} />,
           $('#statistics-modal .content').get(0)
         );
         $('#statistics-modal').modal('show');
@@ -57,11 +57,11 @@
   app.React.helpers.computeTop = function (threshold) {
     return function (data) {
       var max = Math.max.apply(null, data.map(function (el) {
-        return parseInt(el.value || el.count);
+        return parseInt(el.count);
       }));
 
       return function (el) {
-        return parseInt(el.value || el.count) > threshold * max;
+        return parseInt(el) > threshold * max;
       };
     };
   };
@@ -77,12 +77,12 @@
   var monthes = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Juin', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   app.React.helpers.MonthLabel = function (number) {
-    this.number = parseInt(number);
-    this.value = monthes[this.number - 1];
+    this.value = parseInt(number);
+    this.str = monthes[this.value - 1];
   };
 
   app.React.helpers.MonthLabel.prototype.toString = function () {
-    return this.value;
+    return this.str;
   };
 
   app.React.helpers.monthNumberToString = function (number) {

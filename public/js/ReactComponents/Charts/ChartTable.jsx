@@ -1,5 +1,5 @@
 (function (app) {
-  app.React.HistogramTable = React.createClass({
+  app.React.ChartTable = React.createClass({
     render: function () {
       this.props.data.sort(function (a, b) {
         var va = parseInt(a.value || a.count);

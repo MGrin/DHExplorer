@@ -25,13 +25,16 @@ gulp.task('compress', function() {
   gulp.src('./public/js/*/*.jsx')
         .pipe(react({harmony: true}))
         .pipe(gulp.dest('./public/cdn/js/'));
+  gulp.src('./public/js/*/*/*.jsx')
+        .pipe(react({harmony: true}))
+        .pipe(gulp.dest('./public/cdn/js/'));
 
   if (ENV === 'production') {
-    gulp.src(['./public/js/*.js', './public/js/*/*.js'])
+    gulp.src(['./public/js/*.js', './public/js/*/*.js', './public/js/*/*/*.js'])
       .pipe(jsmin())
       .pipe(gulp.dest('./public/cdn/js/'));
   } else {
-    gulp.src(['./public/js/*.js', './public/js/*/*.js'])
+    gulp.src(['./public/js/*.js', './public/js/*/*.js', './public/js/*/*/*.js'])
     .pipe(gulp.dest('./public/cdn/js/'));
   }
 });
@@ -47,6 +50,10 @@ gulp.task('default', ['clean', 'compile', 'compress'], function () {
   nodemon({
     watch: ['./', 'public/js', 'public/stylus', 'app'],
     script: 'app.js',
+    ignore: [
+      './public/res/*',
+    ],
+    ext: ['js', 'jsx', 'styl', 'json'].join(' '),
     tasks: ['clean', 'compile', 'compress']
   });
 });
