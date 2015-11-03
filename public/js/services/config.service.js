@@ -1,7 +1,6 @@
 'use strict';
 
 (function (app) {
-  app.env = 'development';
   if (typeof(Chart) !== 'undefined') Chart.defaults.global.responsive = true;
 
   app.config = {
