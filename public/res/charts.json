@@ -1,0 +1,309 @@
+{
+  "archives" : [{
+    "name" : "Contracts distribution per year",
+    "type" : "bar",
+    "sort" : {
+      "type" : "standart",
+      "value" : "label.number"
+    },
+    "options" : {
+      "scale": 20,
+      "complete": true
+    },
+    "listeners" : {
+      "onBarClick" : {
+        "type" : "standart",
+        "value" : "show.subplot",
+        "arguments" : ["Contracts distribution per month for year {{year}}"]
+      }
+    },
+    "query" : "SELECT (?year as ?label) (COUNT (?contract) as ?count) WHERE {?contract a grz-owl:Contract ; sem:hasTime ?time . ?time sem:hasBeginTimeStamp ?date . BIND (year(?date) AS ?year). } GROUP BY ?year",
+    "subplots" : [{
+      "name" : "Contracts distribution per month for year {{year}}",
+      "type" : "bar",
+      "sort" : {
+        "type" : "standart",
+        "value" : "label.number"
+      },
+      "options" : {
+        "complete": true
+      },
+      "listeners" : {
+        "onBarClick" : {
+          "type" : "standart",
+          "value" : "show.subplot",
+          "arguments" : ["Contracts distribution per day for {{month}}th month {{year}}"]
+        }
+      },
+      "transformations" : {
+        "label" : {
+          "type" : "standart",
+          "value" : "label.month"
+        }
+      },
+      "variable" : "year",
+      "query" : "SELECT ?label (count(?contract) as ?count) WHERE {?contract a grz-owl:Contract ; sem:hasTime ?time . ?time sem:hasBeginTimeStamp ?date . BIND (year(?date) AS ?year) . FILTER (?year = {{year}}) . BIND(month(?date) as ?label)} GROUP BY ?label ORDER BY asc(?label)",
+      "subplots" : [{
+        "name" : "Contracts distribution per day for {{month}}th month {{year}}",
+        "type" : "bar",
+        "sort" : {
+          "type" : "standart",
+          "value" : "label.number"
+        },
+        "options" : {
+          "complete": true
+        },
+        "variable" : "month",
+        "query" : "SELECT ?label (count(?contract) as ?count) WHERE {?contract a grz-owl:Contract ; sem:hasTime ?time . ?time sem:hasBeginTimeStamp ?date . BIND (year(?date) AS ?year) . BIND (month(?date) as ?month) FILTER (?year = {{year}}) . FILTER(?month = {{month}}) . BIND(day(?date) as ?label)} GROUP BY ?label ORDER BY asc(?label)"
+      }]
+    }]
+  }, {
+    "name" : "Contracts distribution per register",
+    "type" : "bar",
+    "sort" : {
+      "type" : "standart",
+      "value" : "label.register"
+    },
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.register"
+      }
+    },
+    "query" : "SELECT ?label (count(?contract) as ?count) WHERE {?label a grz-owl:Register ; grz-owl:has_document ?contract . } GROUP BY ?label"
+  }, {
+    "name" : "Folia distribution per year",
+    "type" : "bar",
+    "sort" : {
+      "type" : "standart",
+      "value" : "label.number"
+    },
+    "options" : {
+      "scale": 20,
+      "complete": true
+    },
+    "listeners" : {
+      "onBarClick" : {
+        "type" : "standart",
+        "value" : "show.subplot",
+        "arguments" : ["Folia distribution per month for year {{year}}"]
+      }
+    },
+    "query" : "SELECT (?year as ?label) (count(?folia) as ?count) WHERE {?reg a grz-owl:Register . ?reg grz-owl:has_folia ?folia . ?reg grz-owl:has_document ?contract . ?contract a grz-owl:Contract ; sem:hasTime ?time . ?time sem:hasBeginTimeStamp ?date . BIND (year(?date) AS ?year). } GROUP BY ?year ",
+    "subplots" : [{
+      "name" : "Folia distribution per month for year {{year}}",
+      "type" : "bar",
+      "sort" : {
+        "type" : "standart",
+        "value" : "label.number"
+      },
+      "options" : {
+        "complete": true
+      },
+      "listeners" : {
+        "onBarClick" : {
+          "type" : "standart",
+          "value" : "show.subplot",
+          "arguments" : ["Folia distribution per day for {{month}}th month {{year}}"]
+        }
+      },
+      "transformations" : {
+        "label" : {
+          "type" : "standart",
+          "value" : "label.month"
+        }
+      },
+      "listeners" : {
+        "onBarClick" : {
+          "type" : "standart",
+          "value" : "show.subplot",
+          "arguments" : ["Folia distribution per day for {{month}}th month {{year}}"]
+        }
+      },
+      "variable" : "year",
+      "query" : "SELECT ?label (count(?folia) as ?count) WHERE {?reg a grz-owl:Register . ?reg grz-owl:has_folia ?folia . ?reg grz-owl:has_document ?contract . ?contract a grz-owl:Contract ; sem:hasTime ?time . ?time sem:hasBeginTimeStamp ?date . BIND (year(?date) AS ?year) . FILTER (?year = {{year}}) . BIND(month(?date) as ?label)} GROUP BY ?label ORDER BY asc(?label)",
+      "subplots" : [{
+        "name" : "Folia distribution per day for {{month}}th month {{year}}",
+        "type" : "bar",
+        "sort" : {
+          "type" : "standart",
+          "value" : "label.number"
+        },
+        "options" : {
+          "complete": true
+        },
+        "variable" : "month",
+        "query" : "SELECT ?label (count(?folia) as ?count) WHERE {?reg a grz-owl:Register . ?reg grz-owl:has_folia ?folia . ?reg grz-owl:has_document ?contract . ?contract a grz-owl:Contract ; sem:hasTime ?time . ?time sem:hasBeginTimeStamp ?date . BIND (year(?date) AS ?year) . BIND(month(?date) as ?month) . FILTER (?year = {{year}}) . FILTER(?month = {{month}}) BIND(day(?date) as ?label)} GROUP BY ?label ORDER BY asc(?label)"
+      }]
+    }]
+  }, {
+    "name" : "Folia distribution per register",
+    "type" : "bar",
+    "sort" : {
+      "type" : "standart",
+      "value" : "label.register"
+    },
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.register"
+      }
+    },
+    "query" : "SELECT ?label (count(?contract) as ?count) WHERE {?label a grz-owl:Register ; grz-owl:has_document ?contract . } GROUP BY ?label"
+  }],
+  "people" : [{
+    "name" : "Roles distribution per person entity",
+    "type" : "bar",
+    "options" : {
+      "fillColor": "rgba(151,205,187,0.5)",
+      "highlightFill": "rgba(151,205,187,0.75)",
+      "barValueSpacing": 5
+    },
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.RDF",
+        "arguments" : ["/"]
+      }
+    },
+    "query" : "SELECT ?label COUNT (distinct ?pm) as ?count WHERE {?pm a grz-owl:Person . ?pm grz-owl:role/grz-owl:value ?label . } GROUP BY ?label"
+  }, {
+    "name" : "Top mentioned persons",
+    "type" : "bar",
+    "options" : {
+      "fillColor": "rgba(151,205,187,0.5)",
+      "highlightFill": "rgba(151,205,187,0.75)",
+      "barValueSpacing": 0
+    },
+    "transformations" : {
+      "value" : {
+        "type" : "standart",
+        "value" : "top",
+        "arguments" : [0.55]
+      }
+    },
+    "listeners" : {
+      "onBarClick" : {
+        "type" : "standart",
+        "value" : "show.entity",
+        "arguments" : []
+      }
+    },
+    "query" : "SELECT ?person ?label (count(distinct ?pm) as ?count) WHERE {?pm a grz-owl:PersonMention ; grz-owl:hasEntityLink ?link . ?link grz-owl:refers_to ?person . ?person a grz-owl:Person ; rdfs:label ?label . } GROUP BY ?person ?label ORDER BY desc(?count)"
+  }, {
+    "name" : "Top masters by number of apprentices",
+    "type" : "bar",
+    "query" : "SELECT (?master as ?label) (COUNT (distinct ?appStatement) as ?count) WHERE {?master grz-owl:has_apprentice ?appStatement . } GROUP BY ?master ORDER BY DESC(?count)",
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.RDF",
+        "arguments" : ["/"]
+      },
+      "value" : {
+        "type" : "standart",
+        "value" : "top",
+        "arguments" : [0.70]
+      }
+    },
+    "options" : {
+      "fillColor": "rgba(151,205,187,0.5)",
+      "highlightFill": "rgba(151,205,187,0.75)",
+      "barValueSpacing": 0
+    }
+  }, {
+    "name" : "Apprentices age distribution",
+    "type" : "bar",
+    "options" : {
+      "fillColor": "rgba(151,205,187,0.5)",
+      "highlightFill": "rgba(151,205,187,0.75)",
+      "barValueSpacing": 0
+    },
+    "query" : "SELECT (COUNT (distinct ?app) as ?count) (?age as ?label) WHERE {?app  a grz-owl:PersonMention . ?app grz-owl:role/grz-owl:roleType  grz-owl:apprentice . ?app grz-owl:age ?age . } GROUP BY ?age ORDER BY ASC (?age)"
+  }, {
+    "name" : "Gender distribution for apprentices",
+    "type" : "pie",
+    "query" : "SELECT (COUNT (distinct ?app) as ?count) (?gender as ?label) WHERE {?app  a grz-owl:Person . ?app grz-owl:role/grz-owl:value/grz-owl:roleType  grz-owl:apprentice . ?app grz-owl:gender ?gender . } GROUP BY ?gender"
+  }, {
+    "name" : "Top mentioned apprentices",
+    "type" : "bar",
+    "options" : {
+      "fillColor": "rgba(151,205,187,0.5)",
+      "highlightFill": "rgba(151,205,187,0.75)",
+      "barValueSpacing": 0
+    },
+    "sort" : {
+      "type" : "standart",
+      "value" : "value.number.inverse"
+    },
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.RDF",
+        "arguments" : ["/"]
+      },
+      "value" : {
+        "type" : "standart",
+        "value" : "top",
+        "arguments" : [0.70]
+      }
+    },
+    "query" : "SELECT (?app as ?label) (COUNT (distinct ?link) as ?count) WHERE {?app  a grz-owl:Person . ?app grz-owl:role/grz-owl:value/grz-owl:roleType  grz-owl:apprentice . ?app grz-owl:has_mention ?link . ?link grz-owl:isEntityLinkOf ?appMention . ?appMention grz-owl:role/grz-owl:roleType  grz-owl:apprentice . } GROUP BY ?app HAVING  COUNT (distinct ?link) > 1"
+  }, {
+    "name" : "Top-10 of guarantors with most apprentices",
+    "type" : "bar",
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.RDF",
+        "arguments" : ["_"]
+      }
+    },
+    "options" : {
+      "fillColor": "rgba(151,205,187,0.5)",
+      "highlightFill": "rgba(151,205,187,0.75)",
+      "barValueSpacing": 0
+    },
+    "query" : "SELECT (?g as ?label) (COUNT (distinct ?app) as ?count) WHERE {?g  a grz-owl:Person . ?g grz-owl:role/grz-owl:value/grz-owl:roleType  grz-owl:guarantor . ?g grz-owl:has_apprentice ?app . } GROUP BY ?g ORDER BY DESC (COUNT (distinct ?app)) LIMIT 10"
+  }],
+  "economics" : [{
+    "name" : "Which kind of charges and to which frequency",
+    "type" : "pie",
+    "query" : "SELECT (COUNT (?c) as ?count) (str(?wf) as ?label) WHERE {?c a grz-owl:ChargeMention . ?c grz-owl:writtenForm ?wf . } GROUP BY (str(?wf))"
+  }, {
+    "name" : "Who pays the salary?",
+    "type" : "bar",
+    "sort" : {
+      "type" : "standart",
+      "value" : "value.number.inverse"
+    },
+    "query" : "SELECT (?payer as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?sal a grz-owl:Salary . ?sal grz-owl:payedBy ?payer . } GROUP BY (?payer)"
+  }, {
+    "name" : "In which profession the salary is payed by apprentice?",
+    "type" : "pie",
+    "query" : "SELECT (?profSF as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?c grz-owl:reports ?finCond . ?finCond grz-owl:hasConditionComponent ?sal . ?sal a grz-owl:Salary . ?sal grz-owl:payedBy \"Apprentice\". ?c grz-owl:introduces ?master . ?master grz-owl:role/grz-owl:roleType grz-owl:master . ?master grz-owl:profession/grz-owl:standardForm  ?profSF . } GROUP BY (?profSF)",
+    "sort" : {
+      "type" : "standart",
+      "value" : "value.number"
+    }
+  }, {
+    "name" : "How many contracts have which type of financial conditions?",
+    "type" : "bar",
+    "sort" : {
+      "type" : "standart",
+      "value" : "value.number.inverse"
+    },
+    "transformations" : {
+      "label" : {
+        "type" : "standart",
+        "value" : "label.RDF",
+        "arguments" : ["#"]
+      }
+    },
+    "query" : "SELECT (?type as ?label) (COUNT (distinct ?c) as ?count) WHERE {?c grz-owl:reports ?finCond . ?finCond grz-owl:hasConditionComponent ?cc . ?cc rdf:type ?type . } GROUP BY (?type)"
+  }, {
+    "name" : "Number of contracts per professions",
+    "type" : "pie",
+    "query" : "SELECT (?profSF as ?label) (COUNT (distinct ?contract) as ?count) WHERE {?contract grz-owl:introduces ?master . ?master grz-owl:role/grz-owl:roleType grz-owl:master . ?master grz-owl:profession/grz-owl:standardForm ?profSF . } GROUP BY ?profSF"
+  }]
+}

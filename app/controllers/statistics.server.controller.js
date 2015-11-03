@@ -14,7 +14,7 @@ var getRegisterNumber = function (reg) {
   return parseFloat(reg.label.split('_')[1]);
 };
 
-var constructResult = function (data, map) {
+var constructResult = function (data) {
   var res = [];
   _.each(data, function (d) {
     res.push({
@@ -24,35 +24,28 @@ var constructResult = function (data, map) {
     });
   });
 
-  if (map) map(res);
   return res;
 };
 
-var sortByLabel = function (data) {
-  data.sort(function (a, b) {
-    return parseInt(a.label) - parseInt(b.label);
-  });
-};
 
-var completeMissing = function (data, min, max) {
-  var i = 0;
-  var previousValue = min;
+exports.query = function (socket) {
+  return function (message) {
+    app.logger.info('req:statistics:query');
+    app.sparql.query(message.query, function (err, result) {
+      if (err) return app.err(err, socket);
 
-  var newData = [];
-  while (i < data.length && previousValue < max + 1) {
-    if (previousValue < parseInt(data[i].label)) {
-      newData.push({
-        label: previousValue,
-        count: 0
-      });
-    } else {
-      newData.push(data[i]);
-      i++;
-    }
-    previousValue++;
-  }
+      var data = result.results.bindings;
 
-  return newData;
+      var res = constructResult(data);
+
+      var msg = {
+        id: message.id,
+        data: data
+      };
+
+      socket.emit('res:' + msg.id, msg);
+    });
+  };
 };
 
 exports.histogram = {

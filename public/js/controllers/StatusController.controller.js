@@ -6,11 +6,12 @@
   status.runningTasks = [];
 
   app.Socket.registerGlobalListener('res:err', function (err) {
-    console.log(err);
+    console.error(err);
     status.showError(err);
   });
 
   status.showError = function (err) {
+    console.error(err);
     status.runningTasks.map(function (t) {
       status.completeTask(t);
     });

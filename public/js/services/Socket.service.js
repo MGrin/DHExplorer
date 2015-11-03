@@ -89,22 +89,17 @@
     });
   };
 
-  Socket.requestStatistics = function (view, initCb, cbFactory, finalCb) {
+  Socket.statisticsQuery = function (query, cb) {
     var message = {
       id: generateMessageId(),
+      query: query,
       sparql: app.config.default_sparql_endpoint
     };
 
-    Socket.io.emit('req:statistics:' + view, message);
+    Socket.io.emit('req:statistics:query', message);
     Socket.io.on('res:' + message.id, function (resMessage) {
-      if (resMessage.status === 'initial') return initCb(resMessage.data);
-
-      if (resMessage.status === 'final') {
-        Socket.io.removeListener('res:' + resMessage.id);
-        return finalCb(resMessage.data);
-      }
-
-      return cbFactory(resMessage.status, resMessage.data);
+      Socket.io.removeListener('res:' + resMessage.id);
+      cb(resMessage.data);
     });
   };
 

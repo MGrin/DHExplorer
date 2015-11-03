@@ -12,6 +12,8 @@ module.exports = function (app) {
     socket.on('req:timerange', graph.timerange(socket));
     socket.on('req:graph:social', graph.social.query(socket));
 
+    socket.on('req:statistics:query', statistics.query(socket));
+
     socket.on('req:statistics:dashboard', statistics.computeDashboard(socket));
     socket.on('req:statistics:archives', statistics.computeArchives(socket));
     socket.on('req:statistics:people', statistics.computePeople(socket));
