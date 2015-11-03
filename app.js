@@ -1,9 +1,13 @@
+/**
+* DHExplorer server entry point
+*
+* Created by Nikita Grishin on 08.2015
+*/
 'use strict';
 var express = require('express');
 var async = require('async');
 var fs = require('fs');
 var sparql = require('jsparql');
-
 var inflection = require('inflection');
 var socket = require('socket.io');
 
@@ -16,6 +20,7 @@ require('./config/logger.server')(app);
 exports = module.exports = app;
 
 async.series([
+  // Configuring Express.js, controllers, routes, socket.io and starting the server
   function (next) {
     require('./config/express')(app);
 

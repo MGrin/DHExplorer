@@ -1,3 +1,12 @@
+/**
+ * Node shader
+ * Shaders magic going on!
+ * Well, the shader draws the node as a circle in 2 different colors (male and female)
+ * Taken from https://github.com/anvaka/VivaGraphJS/blob/master/demos/other/webglCustomNode.html and a little bit modified
+ *
+ * by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app) {

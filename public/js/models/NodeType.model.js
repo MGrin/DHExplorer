@@ -1,6 +1,15 @@
+/**
+* A Node Type model.
+*
+* Created by Nikita Grishin on 08.2015
+*/
+
 'use strict';
 
 (function (app) {
+  /**
+   * @param {string} a node type as it is described in rdf
+   */
   var Type = app.models.NodeType = function (rdfType) {
     this.rdfType = rdfType;
     this.label = Type.generateLabel(rdfType);
@@ -9,6 +18,7 @@
     this.isVisible = true;
   };
 
+  // TODO for graph...
   Type.prototype.getIconClass = function () {
     switch (this.label) {
       case 'no-type': {
@@ -23,6 +33,10 @@
 
   Type.types = new app.Storage('NodeType');
 
+  /**
+   * @param  {NodeType} type to update (or create) in the NodeTypes storage
+   * @return {string} the id of the type
+   */
   Type.update = function (t) {
     var typeId;
     if (app.Storage.NodeType.has(t)) {

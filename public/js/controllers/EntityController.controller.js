@@ -1,3 +1,10 @@
+/**
+ * Entities Controller
+ * Handles all logic about entities
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app, Socket, Storage, Entity, NodeType) {
@@ -7,6 +14,11 @@
 
   scope.variables = new Storage('Variables');
 
+  /**
+   * Open the Entity view page
+   *
+   * @param  {Function} callback to be called when the Entity view is completely open
+   */
   scope.open = function (cb) {
     if (!scope.inited) {
       app.views.Entity.init();
@@ -17,6 +29,11 @@
     return;
   };
 
+  /**
+   * Handle the query. Called when clicked on query button
+   *
+   * @param  {string} sending query to server and handling the response
+   */
   scope.onQueryClick = function (query) {
     var task = app.StatusController.createTask('EntityController', 'Executing query', true);
     app.StatusController.addTask(task);
@@ -36,6 +53,11 @@
     });
   };
 
+  /**
+   * Updating stored entities by those received from the server
+   *
+   * @param  {object} the RDF query result
+   */
   scope.updateEntities = function (result) {
     var vars = result.head.vars;
     var data = result.results.bindings;
@@ -79,6 +101,10 @@
     }
   };
 
+  /**
+   * @param  {Entity} entity that was described
+   * @param  {Array} array of entities that describes the given entity
+   */
   scope.onEntityDescribed = function (entity, entities) {
     for (var i = 0; i < entities.length; i++) {
       var ent = entities[i];
@@ -98,6 +124,10 @@
     }
   };
 
+  /**
+   * @param  {Object} an entity to be shown (an object with entity id or entity tuple)
+   * @param  {Task} a task that should be done when the entity is shown
+   */
   scope.show = function (params, task) {
     if (!scope.inited) scope.open();
 

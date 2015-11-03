@@ -1,9 +1,21 @@
+/**
+ * Graph Controller
+ * Handles all logic about graph
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app, Socket) {
   var scope = app.GraphController = {};
   scope.setup = {};
 
+  /**
+   * Open the graph view
+   *
+   * @param  {Function} callback function
+   */
   scope.open = function (cb) {
     if (!scope.inited) scope.init();
     if (scope.inited && scope.changedAnimation) {
@@ -14,6 +26,9 @@
     return;
   };
 
+  /**
+   * Close the graph view, stops the graph if needed
+   */
   scope.close = function () {
     if (!app.views.Graph.paused) {
       app.views.Graph.pause();
@@ -23,6 +38,12 @@
     }
   };
 
+  /**
+   * Is called when user changes the timerange
+   *
+   * @param  {object} new time range
+   * @return {[type]}
+   */
   scope.onTimeRangeUpdate = function (data) {
     scope.setup.minYear = data.minYear;
     scope.setup.maxYear = data.maxYear;

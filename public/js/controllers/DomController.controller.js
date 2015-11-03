@@ -1,14 +1,23 @@
+/**
+ * Dom controller
+ * A controller that handles all (if possible) dom manipulations.
+ * TODO Change the application design in order to completely remove this controller.
+ * Its existance is a big hack on Semantic-ui framework
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app) {
   var dom = app.dom = {};
 
-  var firstView = 'graph';
+  var firstView = 'graph'; // The application starting view
 
   dom.onDomReady = function () {
     $('#graph-container').height($('body').height() - 80);
 
-    $('.explorer-view').not('[data-view="' + firstView + '"]').transition('scale');
+    $('.explorer-view').not('[data-view="' + firstView + '"]').transition('scale'); // making other views invisible
     $('.top-menu .dropdown').dropdown({
       action: 'nothing'
     });
@@ -34,6 +43,7 @@
     $('#sidebar .item[data-toggle-view="' + firstView + '"]').trigger('click');
   };
 
+  // Handles the sidebar buttons click, view is the name of the clicked view (entity, graph, statistics)
   dom.onSidebarClick = function (view) {
     var onSwitchDone = function () {
       $('#sidebar').sidebar('hide');
@@ -80,6 +90,8 @@
     };
   };
 
+  // Function that handles the error display.
+  // IT SHOULD BE USED EVERYTIME YOU WANT TO SHOW AN ERROR!!!
   dom.showError = function (err) {
     if (err.length < 20) dom.status.html('<span class="ui red horizontal label"><i class="icon warning sign"></i>' + err + '</span>');
     else {

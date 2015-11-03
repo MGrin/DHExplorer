@@ -1,3 +1,11 @@
+/**
+ * React Component holding all statistical charts
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
+
 (function (app) {
   app.React.ChartsContainer = React.createClass({
     setView: function (view) {

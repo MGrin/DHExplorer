@@ -1,5 +1,15 @@
+/**
+* DHExplorer frontend entry point
+*
+* Created by Nikita Grishin on 08.2015
+*/
 'use strict';
 
+/**
+ * Generates a random color
+ *
+ * @return {string} a random color
+ */
 var getRandomColor = function () {
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
@@ -11,6 +21,7 @@ var getRandomColor = function () {
 
 (function (window) {
   var app = window.app = {};
+  // Setting up the environment. Suppose that if we are on localhost of 127.0.0.1 - development, otherwise - production
   if (window.location.href.indexOf('localhost') === -1 && window.location.href.indexOf('127.0.0.1') === -1) {
     app.env = 'production';
   } else {
@@ -29,6 +40,8 @@ var getRandomColor = function () {
     order: 1
   };
 
+  // A list of helper functions to handle the order of initialisation of client scripts
+  // TODO probably can be removed
   app.addOnDocumentReady = function (name, cb, deps) {
     if (!cb) console.log(name);
     if (app.require.domLoadedCallbacks[name]) return;

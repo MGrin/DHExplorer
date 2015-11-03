@@ -1,3 +1,9 @@
+/**
+ * WebGL models
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
 'use strict';
 
 (function (app) {
@@ -9,6 +15,7 @@
   var maleActiveColor = 0x7e73e8;
   var femaleActiveColor = 0xea2d74;
 
+  // Define a Circle model for the graph node
   models.Circle = function (node) {
     this.node = node;
     this.gender = node.data.data.gender;

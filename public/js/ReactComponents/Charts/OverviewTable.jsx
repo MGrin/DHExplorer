@@ -1,3 +1,11 @@
+/**
+ * React Component used to show the overview of a statistical section
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
+
 (function (app) {
   app.React.OverviewTable = React.createClass({
     setData: function (data) {

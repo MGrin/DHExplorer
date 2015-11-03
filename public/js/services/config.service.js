@@ -1,3 +1,9 @@
+/**
+* An Config service.
+*
+* Created by Nikita Grishin on 08.2015
+*/
+
 'use strict';
 
 (function (app) {

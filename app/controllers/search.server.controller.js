@@ -1,6 +1,10 @@
 'use strict';
+/**
+ * Search controller
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
 var queries = require('../queries');
-var hash = require('object-hash');
 
 var app;
 
@@ -8,11 +12,17 @@ exports.init = function (myApp) {
   app = myApp;
 };
 
+/**
+ * Handles the search request
+ * @param  {Object} request object
+ * @param  {Object} response object
+ * @return {null}
+ */
 exports.query = function (req, res) {
-  var q = req.query.q;
+  var q = req.query.q; // the search query is passed in request parameters
 
   app.sparql.query(queries.generateSearchPersonQuery(q), function (err, result) {
-    if (err) return app.err(err, socket);
+    if (err) return app.err(err, res);
 
     var data = result.results.bindings;
 

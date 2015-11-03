@@ -1,3 +1,10 @@
+/**
+ * React Component used to show Entities in list (on the Entity view)
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
 (function (app) {
   app.React.QueryVariablesMenu = React.createClass({
     getInitialState: function () {

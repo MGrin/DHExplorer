@@ -1,3 +1,11 @@
+/**
+ * React Component used to show chart data in table
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
+
 (function (app) {
   app.React.ChartTable = React.createClass({
     render: function () {

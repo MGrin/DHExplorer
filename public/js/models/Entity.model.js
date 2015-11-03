@@ -1,6 +1,19 @@
+/**
+* An Entity model.
+*
+* Created by Nikita Grishin on 08.2015
+*/
+
+
 'use strict';
 
 (function (app) {
+  /**
+   * @param {string} an entity id
+   * @param {object} a RDF tuple
+   * @param {Array}  entity types
+   * @param {string} a variable that were used to retrieve this entity
+   */
   var Entity = function (id, tuple, types, variable) {
     this.id = id;
     this.tuple = tuple;
@@ -15,6 +28,11 @@
     this.completed = this.isLiteral();
   };
 
+  /**
+   * Casting the JSON object to Entity object
+   * @param  {object} the JSON representation of entity
+   * @return {Entity}
+   */
   Entity.castFromObject = function (obj) {
     var entity = new Entity(obj.id, obj.tuple, obj.types);
     entity.predicates = obj.predicates;
@@ -25,6 +43,9 @@
     return entity;
   };
 
+  /**
+   * Updating all connections of this entity
+   */
   Entity.prototype.updateAllConnections = function () {
     for (var predIdx in this.predicates) {
       if (this.predicates[predIdx]) {
@@ -49,6 +70,13 @@
     }
   };
 
+  /**
+   * Adding the relation to this entity. In the rdf triplet format: (this, predicate, target)
+   *
+   * @param {string} an relation id
+   * @param {any} a realtion between this entity and an object entity
+   * @param {object} an object entity
+   */
   Entity.prototype.addRelation = function (id, predicate, target) {
     if (this.predicates[id] || this.objects[id]) {
       return;
@@ -58,6 +86,13 @@
     this.objects[id] = target;
   };
 
+  /**
+   * Adding the origin to this entity. In the rdf triplet format: (origin, predicate, this)
+   *
+   * @param {string} an relation id
+   * @param {any} a realtion between this entity and an object entity
+   * @param {object} an object entity
+   */
   Entity.prototype.addOrigin = function (id, predicate, origin) {
     if (this.origins[id]) {
       return;
@@ -67,6 +102,9 @@
     this.origins[id] = origin;
   };
 
+  /**
+   * @return {string} a well formatted label of the entity
+   */
   Entity.prototype.getLabel = function () {
     var graphNameRegexp = new RegExp(app.config.default_graph_name + '/?(.*)', 'i');
 
@@ -79,6 +117,9 @@
     return label;
   };
 
+  /**
+   * @return {Boolean} true if the entity is described (and probably some other information)
+   */
   Entity.prototype.isCompleted = function () {
     return this.completed;
   };

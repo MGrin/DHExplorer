@@ -1,5 +1,14 @@
+/**
+ * React Component Helper - some useful functions used everywhere in react componenets
+ *
+ * Created by Nikita Grishin on 08.2015
+ */
+
+'use strict';
+
 (function (app) {
   app.React.helpers = {};
+  // Saving the chart as an image
   app.React.helpers.saveAsImage = function (node) {
     return function () {
       var n = $(ReactDOM.findDOMNode(node));
@@ -11,6 +20,7 @@
     };
   };
 
+  // Showing chart data as table
   app.React.helpers.showAsTableCb = function (title) {
     return function (data) {
       return function () {
@@ -24,6 +34,7 @@
     };
   };
 
+  // Creates a hidden label for charts
   app.React.helpers.HiddenLabel = function (label) {
     this.value = label;
   };
@@ -32,6 +43,7 @@
     return '';
   };
 
+  // Helper function that transforms RDF lable to more user-friendly
   app.React.helpers.transformRDFLabel = function (sym) {
     return function (value) {
       var spl = value.split(sym);
@@ -39,6 +51,7 @@
     };
   };
 
+  // Helper function that transforms register name to more user-friendly
   app.React.helpers.transformRegisterLabel = function (value) {
     var index = value.indexOf(app.config.default_graph_name);
     if (index === -1) return value;
@@ -64,14 +77,6 @@
         return parseInt(el) > threshold * max;
       };
     };
-  };
-
-  app.React.helpers.onBarClick = function (event, emit, info) {
-    return function (activePoints) {
-      if (!activePoints || activePoints.length === 0) return;
-
-      emit(event, {point: activePoints[0], info: info});
-    }
   };
 
   var monthes = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Juin', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
