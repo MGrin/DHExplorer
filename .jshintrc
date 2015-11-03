@@ -82,7 +82,8 @@
     "alertify": true,
     "Viva": true,
     "objectHash": true,
-    "Chart": true
+    "Chart": true,
+    "io" : true
   }
 
   // Other potential :
