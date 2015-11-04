@@ -3,7 +3,7 @@
     "name" : "Contracts distribution per year",
     "type" : "bar",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "label.number"
     },
     "options" : {
@@ -12,7 +12,7 @@
     },
     "listeners" : {
       "onBarClick" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "show.subplot",
         "arguments" : ["Contracts distribution per month for year {{year}}"]
       }
@@ -22,7 +22,7 @@
       "name" : "Contracts distribution per month for year {{year}}",
       "type" : "bar",
       "sort" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.number"
       },
       "options" : {
@@ -30,14 +30,14 @@
       },
       "listeners" : {
         "onBarClick" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "show.subplot",
           "arguments" : ["Contracts distribution per day for {{month}}th month {{year}}"]
         }
       },
       "transformations" : {
         "label" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "label.month"
         }
       },
@@ -47,7 +47,7 @@
         "name" : "Contracts distribution per day for {{month}}th month {{year}}",
         "type" : "bar",
         "sort" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "label.number"
         },
         "options" : {
@@ -61,12 +61,12 @@
     "name" : "Contracts distribution per register",
     "type" : "bar",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "label.register"
     },
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.register"
       }
     },
@@ -75,7 +75,7 @@
     "name" : "Folia distribution per year",
     "type" : "bar",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "label.number"
     },
     "options" : {
@@ -84,7 +84,7 @@
     },
     "listeners" : {
       "onBarClick" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "show.subplot",
         "arguments" : ["Folia distribution per month for year {{year}}"]
       }
@@ -94,7 +94,7 @@
       "name" : "Folia distribution per month for year {{year}}",
       "type" : "bar",
       "sort" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.number"
       },
       "options" : {
@@ -102,20 +102,20 @@
       },
       "listeners" : {
         "onBarClick" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "show.subplot",
           "arguments" : ["Folia distribution per day for {{month}}th month {{year}}"]
         }
       },
       "transformations" : {
         "label" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "label.month"
         }
       },
       "listeners" : {
         "onBarClick" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "show.subplot",
           "arguments" : ["Folia distribution per day for {{month}}th month {{year}}"]
         }
@@ -126,7 +126,7 @@
         "name" : "Folia distribution per day for {{month}}th month {{year}}",
         "type" : "bar",
         "sort" : {
-          "type" : "standart",
+          "type" : "standard",
           "value" : "label.number"
         },
         "options" : {
@@ -140,12 +140,12 @@
     "name" : "Folia distribution per register",
     "type" : "bar",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "label.register"
     },
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.register"
       }
     },
@@ -161,7 +161,7 @@
     },
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.RDF",
         "arguments" : ["/"]
       }
@@ -177,14 +177,14 @@
     },
     "transformations" : {
       "value" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "top",
         "arguments" : [0.55]
       }
     },
     "listeners" : {
       "onBarClick" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "show.entity",
         "arguments" : []
       }
@@ -196,12 +196,12 @@
     "query" : "SELECT (?master as ?label) (COUNT (distinct ?appStatement) as ?count) WHERE {?master grz-owl:has_apprentice ?appStatement . } GROUP BY ?master ORDER BY DESC(?count)",
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.RDF",
         "arguments" : ["/"]
       },
       "value" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "top",
         "arguments" : [0.70]
       }
@@ -233,17 +233,17 @@
       "barValueSpacing": 0
     },
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "value.number.inverse"
     },
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.RDF",
         "arguments" : ["/"]
       },
       "value" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "top",
         "arguments" : [0.70]
       }
@@ -254,7 +254,7 @@
     "type" : "bar",
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.RDF",
         "arguments" : ["_"]
       }
@@ -274,7 +274,7 @@
     "name" : "Who pays the salary?",
     "type" : "bar",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "value.number.inverse"
     },
     "query" : "SELECT (?payer as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?sal a grz-owl:Salary . ?sal grz-owl:payedBy ?payer . } GROUP BY (?payer)"
@@ -283,19 +283,19 @@
     "type" : "pie",
     "query" : "SELECT (?profSF as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?c grz-owl:reports ?finCond . ?finCond grz-owl:hasConditionComponent ?sal . ?sal a grz-owl:Salary . ?sal grz-owl:payedBy \"Apprentice\". ?c grz-owl:introduces ?master . ?master grz-owl:role/grz-owl:roleType grz-owl:master . ?master grz-owl:profession/grz-owl:standardForm  ?profSF . } GROUP BY (?profSF)",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "value.number"
     }
   }, {
     "name" : "How many contracts have which type of financial conditions?",
     "type" : "bar",
     "sort" : {
-      "type" : "standart",
+      "type" : "standard",
       "value" : "value.number.inverse"
     },
     "transformations" : {
       "label" : {
-        "type" : "standart",
+        "type" : "standard",
         "value" : "label.RDF",
         "arguments" : ["#"]
       }

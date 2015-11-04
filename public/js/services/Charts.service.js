@@ -103,28 +103,28 @@
     chart.setVariables(chartDesc.variable);
 
     if (chartDesc.sort) {
-      if (chartDesc.sort.type === 'standart') chart.sort(sorters[chartDesc.sort.value]);
+      if (chartDesc.sort.type === 'standard') chart.sort(sorters[chartDesc.sort.value]);
     }
 
     if (chartDesc.filter) {
-      if (chartDesc.filter.type === 'standart') chart.filter(filters[chartDesc.filter.value]);
+      if (chartDesc.filter.type === 'standard') chart.filter(filters[chartDesc.filter.value]);
     }
 
     if (chartDesc.transformations) {
       var args;
       if (chartDesc.transformations.label) {
         args = chartDesc.transformations.label.arguments || [];
-        if (chartDesc.transformations.label.type === 'standart') chart.transformLabel(transformations.label[chartDesc.transformations.label.value].apply({}, args));
+        if (chartDesc.transformations.label.type === 'standard') chart.transformLabel(transformations.label[chartDesc.transformations.label.value].apply({}, args));
       }
       if (chartDesc.transformations.value) {
         args = chartDesc.transformations.value.arguments || [];
-        if (chartDesc.transformations.value.type === 'standart') chart.transformValue(transformations.value[chartDesc.transformations.value.value].apply({}, args));
+        if (chartDesc.transformations.value.type === 'standard') chart.transformValue(transformations.value[chartDesc.transformations.value.value].apply({}, args));
       }
     }
 
     if (chartDesc.listeners) {
       Object.keys(chartDesc.listeners).map(function (l) {
-        if (chartDesc.listeners[l].type === 'standart') {
+        if (chartDesc.listeners[l].type === 'standard') {
           var args = chartDesc.listeners[l].arguments || [];
           chart.addListener(l, listeners[chartDesc.listeners[l].value].apply({description: chartDesc, chart: chart}, args));
         }
