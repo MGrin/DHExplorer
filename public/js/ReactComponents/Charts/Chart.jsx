@@ -167,11 +167,12 @@
         });
 
         var chartConfig = {
+          animation : false,
           barStrokeWidth : barStrokeWidth,
           barValueSpacing : barValueSpacing,
           scaleOverride : true,
           scaleSteps : 10,
-          scaleStepWidth : Math.ceil(maxValue / 10),
+          scaleStepWidth : Math.ceil(maxValue / 10), // TODO round to make the steps beautiful
           scaleStartValue : 0
         };
 
