@@ -196,7 +196,10 @@
           });
         }
 
-        that.state.chart.setPlot(new Chart($(ReactDOM.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Doughnut(data));
+        var chartConfig = {
+          animation : false
+        }
+        that.state.chart.setPlot(new Chart($(ReactDOM.findDOMNode(that)).find('canvas').get(0).getContext('2d')).Doughnut(data, chartConfig));
         $(window).trigger('resize');
       }
     },

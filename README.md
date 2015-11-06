@@ -49,7 +49,7 @@ The applocation will run on [http://localhost:7890/](http://localhost:7890/)
 * [Socket.io](http://socket.io/): sockets are used to fetch data from server
 * [VivaGraph](https://github.com/anvaka/VivaGraphJS): wrapper around canvas and WebGL for Graph visualization
 * [Semantic-ui](http://semantic-ui.com/): user interface framework
-* [ReactJS](https://facebook.github.io/react/index.html): used to render dinamic content inside charts, tables, etc... Basically makes the visualization of queries results easy
+* [ReactJS](https://facebook.github.io/react/index.html): used to render dynamic content inside charts, tables, etc... Basically makes the visualization of queries results easy
 * [ChartJS](http://www.chartjs.org/): used to plot charts
 * [Jade](http://jade-lang.com/): Template engine
 * [Stylus](https://learnboost.github.io/stylus/): Expressive, dynamic, robust CSS

@@ -8,6 +8,7 @@ html
     link(rel="stylesheet", href="/lib/ionrangeslider/css/normalize.css")
     link(rel="stylesheet", href="/lib/ionrangeslider/css/ion.rangeSlider.css")
     link(rel="stylesheet", href="/lib/ionrangeslider/css/ion.rangeSlider.skinFlat.css")
+    //- link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css")
 
     link(rel="stylesheet", href="/css/styles.css")
 
@@ -20,6 +21,7 @@ html
     script(src="/lib/Chart.js/Chart.min.js")
     script(src="/lib/vivagraphjs/dist/vivagraph.min.js")
     script(src="/lib/ionrangeslider/js/ion.rangeSlider.min.js")
+
     script(src="/cdn/js/app.js")
 
     script(src="/cdn/js/services/config.service.js")
@@ -69,8 +71,8 @@ html
         i.grid.layout.icon
         span.text Entity view
       .item.link(data-toggle-view="graph")
-        i.fork.icon
-        span.text Graph view
+        i.icon(style="background: url(/img/network.icon.png); background-size: 100%;")
+        span.text Network
       .item.link(data-toggle-view="statistics")
         i.bar.chart.icon
         span.text Statistics view
@@ -135,7 +137,7 @@ html
           i.users.icon
           span.text People
         .item.statistics-selection.link(stats-click="economics")
-          i.euro.icon
+          i.money.icon
           span.text Economy
         .item.statistics-selection.link(stats-click="events")
           i.calendar.icon
