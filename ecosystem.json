@@ -4,6 +4,7 @@
       "name"      : "Data Explorer",
       "script"    : "app.js",
       "env": {
+
       },
       "env_production" : {
         "NODE_ENV": "production"
@@ -12,21 +13,40 @@
   ],
 
   "deploy" : {
-    "pc5" : {
+    "dev" : {
+      "user" : "grishin",
+      "host" : "128.178.21.22",
+      "ref"  : "origin/master",
+      "repo" : "ssh://git@github.com/dhlab-epfl/DHExplorer.git",
+      "path" : "/srv/http/dhlabdev.org/dhexplorer",
+      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7891 pm2 startOrRestart ecosystem.json --env production"
+    },
+
+    "test" : {
+      "user" : "grishin",
+      "host" : "128.178.21.22",
+      "ref"  : "origin/test",
+      "repo" : "ssh://git@github.com/dhlab-epfl/DHExplorer.git",
+      "path" : "/srv/http/dhlabtest.org/dhexplorer",
+      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7892 pm2 startOrRestart ecosystem.json --env production"
+    },
+
+    "demo" : {
+      "user" : "grishin",
+      "host" : "128.178.21.22",
+      "ref"  : "origin/demo",
+      "repo" : "ssh://git@github.com/dhlab-epfl/DHExplorer.git",
+      "path" : "/srv/http/dhlabdemo.org/dhexplorer",
+      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7893 pm2 startOrRestart ecosystem.json --env production"
+    },
+
+    "prod" : {
       "user" : "grishin",
       "host" : "128.178.21.39",
-      "ref"  : "origin/master",
-      "repo" : "ssh://git@github.com/MGrin/DHExplorer.git",
+      "ref"  : "origin/prod",
+      "repo" : "ssh://git@github.com/dhlab-epfl/DHExplorer.git",
       "path" : "~/data-explorer",
-      "post-deploy" : "export PATH=$PATH:/home/grishin/.nvm/versions/v0.12.7/bin/ && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
-    },
-    "pc1" : {
-      "user" : "nikita",
-      "host" : "dhlabpc1.epfl.ch",
-      "ref"  : "origin/master",
-      "repo" : "ssh://git@github.com/MGrin/DHExplorer.git",
-      "path" : "~/data-explorer",
-      "post-deploy" : "export PATH=$PATH:/home/nikita/.nvm/versions/v0.12.7/bin/ && npm install && NODE_ENV=production gulp && pm2 startOrRestart ecosystem.json --env production"
+      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7890 pm2 startOrRestart ecosystem.json --env production"
     }
   }
 }
