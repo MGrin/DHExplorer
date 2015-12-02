@@ -12,7 +12,8 @@
 (function (app) {
   var dom = app.dom = {};
 
-  var firstView = 'graph'; // The application starting view
+  var views = ['entity', 'graph', 'statistics'];
+  var firstView = (window.location.hash && views.indexOf(window.location.hash.replace('#', '')) > -1) ? window.location.hash.replace('#', '') : 'graph'; // The application starting view
 
   dom.onDomReady = function () {
     $('#graph-container').height($('body').height() - 80);

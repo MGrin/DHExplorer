@@ -17,6 +17,7 @@
     render: function () {
       if (!this.state.view) return (<div>Loading</div>);
 
+      console.log(this.state.view);
       return (
         <div className="ui grid">
           <div className="ui stackable centered container two column width equal height grid">

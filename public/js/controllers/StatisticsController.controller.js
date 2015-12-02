@@ -27,8 +27,14 @@
   scope.switchView = function (newView, cb) {
     if (scope.view === newView) return cb();
     scope.view = newView;
-    app.views.Statistics.show(scope.view);
-    cb();
+    var open = function () {
+      if (app.Charts[scope.view]) {
+        app.views.Statistics.show(scope.view);
+        return cb();
+      }
+      setTimeout(open, 50);
+    };
+    open();
   };
 
   scope.sectionClick = function (el, section) {

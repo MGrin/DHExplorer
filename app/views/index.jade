@@ -1,0 +1,68 @@
+doctype html
+html
+  head
+    title Data Explorer
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
+
+    link(rel="stylesheet", href="/lib/semantic-ui/dist/semantic.min.css")
+
+    script(src="/lib/jquery/dist/jquery.min.js")
+    script(src="/lib/semantic-ui/dist/semantic.min.js")
+
+  body
+    .ui.padded.stackable.grid
+      .ui.grid.center.aligned.page(style="background-color: #1b1c1d;")
+        .row
+          h1.ui.header.inverted(style="padding-top: 50px; font-size: 3em !important;") Garzoni
+        .row
+          .ui.segment.inverted
+            .ui.image.right.floated
+              img(src="img/logo.jpg")
+            p The Grazoni dataset contains information about contractual relationships between Venetian masters and their apprentices during the 16th and 17th centuries, which can give us an insight into the lives of Venice’s citizens at that time. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla.
+
+      .ui.five.column.stackable.grid.center.aligned.page(style="text-align: center; width: 100%")
+        .row
+          h1.ui.header(style="padding-top: 50px; font-size: 3em !important;") Explorer the dataset
+        .row
+          .column
+          a.column(href="/dashboard#entity")
+            .ui.card
+              .image
+                img(src="/img/entity_img_landing.jpg" style="padding: 20px")
+              .content
+                .header
+                  span Entity
+                .description
+                  span Make queries directly to the SPARQL endpoint, search people by name.
+          a.column(href="/dashboard#graph")
+            .ui.card
+              .image
+                img(src="/img/graph_img_landing.png" style="padding: 20px")
+              .content
+                .header
+                  span Graph
+                .description
+                  span Visualize the social graph of the Garzoni database.
+          a.column(href="/dashboard#statistics")
+            .ui.card
+              .image
+                img(src="/img/statistics_img_landing.png" style="padding: 20px")
+              .content
+                .header
+                  span Statistics
+                .description
+                  span Explore statistics on the Garzoni dataset, discover, enjoy!
+          .column
+
+      .ui.grid.center.aligned.page(style="background-color: #eeeeee; width: 100%")
+        .row
+          h1.ui.header(style="padding-top: 50px; font-size: 3em !important;") Access to the SPARQL endpoint
+        .row
+          p Garzoni SPARQL endpoint is accessible for everyone on the following address:
+        .row
+          a.ui.segment(href="http://128.178.21.22:8890/sparql" style="font-size: 2em !important") http://128.178.21.22:8890/sparql
+
+      .ui.grid.center.aligned.page(style="background-color: #1b1c1d; width: 100%")
+        .row
+          p(style="color: #bbbbbb") Digital Humanities Laboratory, EPFL.
+            a(href="http://dhlab.epfl.ch/" target="_blank")  dhlab.epfl.ch
