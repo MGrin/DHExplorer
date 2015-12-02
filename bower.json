@@ -9,6 +9,6 @@
     "Chart.js": "latest",
     "semantic-ui": "latest",
     "vivagraphjs": "https://github.com/anvaka/VivaGraphJS.git#latest",
-    "ionrangeslider": "~2.0.13"
+    "ionrangeslider": "latest"
   }
 }
