@@ -19,7 +19,7 @@
       "ref"  : "origin/master",
       "repo" : "-b master ssh://git@github.com/dhlab-epfl/DHExplorer.git",
       "path" : "/srv/http/dhlabdev.org/dhexplorer",
-      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7891 pm2 startOrRestart ecosystem.json --env production"
+      "post-deploy" : "npm install && NODE_ENV=production gulp && PORT=7891 pm2 startOrRestart ecosystem.json --env production"
     },
 
     "test" : {
@@ -28,7 +28,7 @@
       "ref"  : "origin/test",
       "repo" : "-b test ssh://git@github.com/dhlab-epfl/DHExplorer.git",
       "path" : "/srv/http/dhlabtest.org/dhexplorer",
-      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7892 pm2 startOrRestart ecosystem.json --env production"
+      "post-deploy" : "npm install && NODE_ENV=production gulp && PORT=7892 pm2 startOrRestart ecosystem.json --env production"
     },
 
     "demo" : {
@@ -37,7 +37,7 @@
       "ref"  : "origin/demo",
       "repo" : "-b demo ssh://git@github.com/dhlab-epfl/DHExplorer.git",
       "path" : "/srv/http/dhlabdemo.org/dhexplorer",
-      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7893 pm2 startOrRestart ecosystem.json --env production"
+      "post-deploy" : "npm install && NODE_ENV=production gulp && PORT=7893 pm2 startOrRestart ecosystem.json --env production"
     },
 
     "prod" : {
@@ -46,7 +46,7 @@
       "ref"  : "origin/prod",
       "repo" : "-b prod ssh://git@github.com/dhlab-epfl/DHExplorer.git",
       "path" : "~/data-explorer",
-      "post-deploy" : "rm -rf node_modules && npm install && NODE_ENV=production gulp && PORT=7890 pm2 startOrRestart ecosystem.json --env production"
+      "post-deploy" : "npm install && NODE_ENV=production gulp && PORT=7890 pm2 startOrRestart ecosystem.json --env production"
     }
   }
 }
