@@ -3,8 +3,8 @@
 var gulp = require('gulp');
 var jsmin = require('gulp-jsmin');
 var stylus = require('gulp-stylus');
-var nodemon = require('gulp-nodemon');
 var react = require('gulp-react');
+var supervisor = require('gulp-supervisor');
 
 var fs = require('fs-extra');
 
@@ -47,13 +47,8 @@ gulp.task('clean', function () {
 gulp.task('default', ['clean', 'compile', 'compress'], function () {
   if (process.env.NODE_ENV === 'production') return;
 
-  nodemon({
-    watch: ['./', 'public/js', 'public/stylus', 'app'],
-    script: 'app.js',
-    ignore: [
-      './public/res/*',
-    ],
-    ext: ['js', 'jsx', 'styl', 'json'].join(' '),
-    tasks: ['clean', 'compile', 'compress']
+  supervisor('app.js', {
+    watch: ['app', 'public', 'app.js', 'gulpfile.js'],
+    extensions: ['js', 'jade', 'jsx', 'json']
   });
 });

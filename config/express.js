@@ -16,7 +16,7 @@ module.exports = function (app) {
   var config = app.config;
 
   app.set('showStackError', true);
-  // app.use(favicon(app.config.root + '/public/img/favicon.ico'));
+  app.use(favicon(app.config.root + '/public/img/favicon.ico'));
 
   // should be placed before express.static
   app.use(compress({
