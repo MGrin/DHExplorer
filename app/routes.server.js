@@ -5,6 +5,9 @@ module.exports = function (app) {
   var search = app.controllers.Search;
 
   app.route('/')
+    .get(index.home);
+    
+  app.route('/dashboard')
     .get(index.dashboard);
 
   app.route('/search/:entity')
