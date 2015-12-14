@@ -1,4 +1,4 @@
-# Digita Humanities: Data Explorer
+# Digital Humanities: Data Explorer
 
 ## Installation and run in local
 * **Setup Virtuoso database: ask @ehrmama about how to do this**
