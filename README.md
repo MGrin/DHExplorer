@@ -123,7 +123,9 @@ Deployment is done using [PM2](https://github.com/Unitech/pm2).
 
 The `ecosystem.js` file contains configurations for the deployment such as servers to deploy, the repository url and commands to execute before/after deploy.
 
-Read more on the wiki page
+```
+pm2 deploy dev
+```
 
 ## Guidelines
 
