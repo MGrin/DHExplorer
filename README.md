@@ -102,6 +102,9 @@ public/
   |-- app.js              # entry frontend script
   |
   |--img/                 # images are here
+  |--res/
+  |   |-- charts.json     # Charts description file.
+  |
   |--lib/                 # external libraries are here
   |--stylus/              # .styl files are here (the styles)
   |--js/
