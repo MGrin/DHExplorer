@@ -13,16 +13,22 @@ html
     .ui.padded.stackable.grid
       .ui.grid.center.aligned.page(style="background-color: #1b1c1d;")
         .row
-          h1.ui.header.inverted(style="padding-top: 50px; font-size: 3em !important;") Garzoni
+          h1.ui.header.inverted(style="padding-top: 50px; text-align:justify; font-size: 3em !important;") Accordi dei Garzoni
         .row
           .ui.segment.inverted
             .ui.image.right.floated
               img(src="img/logo.jpg")
-            p The Grazoni dataset contains information about contractual relationships between Venetian masters and their apprentices during the 16th and 17th centuries, which can give us an insight into the lives of Venice’s citizens at that time. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla. BlaBlaBla.
+            p.text(style = "font-size: 1.1em; text-align:justify") The <i>Accordi dei Garzoni</i> document series consists of several thousands of apprenticeship contracts recorded from 1573 to 1772 in Venice. Composed of 30 registers kept at the Venetian State Archive, this document series offers a rich body of information and thereby bears the potential of unveiling many aspects of e.g. the economy of apprenticeship, the transmission of skills and worker migration flows during modern times.
 
+            p.text(style = "font-size: 1.1em; text-align:justify") Who were these <i>garzoni</i> enroled as apprentices in Venice? Which professions were they learning? What was their wages? A real salary or simply a pair of schoes for the year? Where did they come from? From the next street, the neighbouring province, another country?
+ 
+     
+            p.text(style = "font-size: 1.1em; text-align:justify") This portal allows to explore (part of) the Garzoni data set, published as Linked Data, according to three perspectives: <i>Entity view</i>, to look closely at individuals, <i>Network view</i>, to see how people are connected and <i>Statistical dashboard</i>, to get an overview of different aspects of the data.
+
+            
       .ui.five.column.stackable.grid.center.aligned.page(style="text-align: center; width: 100%")
         .row
-          h1.ui.header(style="padding-top: 50px; font-size: 3em !important;") Explorer the dataset
+          h1.ui.header(style="padding-top: 50px; font-size: 3em !important;") Explore the dataset
         .row
           .column
           a.column(href="/dashboard#entity")
@@ -33,7 +39,7 @@ html
                 .header
                   span Entity
                 .description
-                  span Make queries directly to the SPARQL endpoint, search people by name.
+                  span Search people by name, Query the SPARQL endpoint
           a.column(href="/dashboard#graph")
             .ui.card
               .image
@@ -42,7 +48,7 @@ html
                 .header
                   span Graph
                 .description
-                  span Visualize the social graph of the Garzoni database.
+                  span Visualize the social graph
           a.column(href="/dashboard#statistics")
             .ui.card
               .image
@@ -51,16 +57,14 @@ html
                 .header
                   span Statistics
                 .description
-                  span Explore statistics on the Garzoni dataset, discover, enjoy!
+                  span Explore descriptive statistics
           .column
 
       .ui.grid.center.aligned.page(style="background-color: #eeeeee; width: 100%")
         .row
-          h1.ui.header(style="padding-top: 50px; font-size: 3em !important;") Access to the SPARQL endpoint
+          h1.ui.header(style="padding-top: 50px; font-size: 3em !important;") SPARQL endpoint
         .row
-          p Garzoni SPARQL endpoint is accessible for everyone on the following address:
-        .row
-          a.ui.segment(href="http://128.178.21.22:8890/sparql" style="font-size: 2em !important") http://128.178.21.22:8890/sparql
+          a.ui.segment(href="http://128.178.21.22:8890/sparql" style="font-size: 1em !important") http://128.178.21.22:8890/sparql
 
       .ui.grid.center.aligned.page(style="background-color: #1b1c1d; width: 100%")
         .row
