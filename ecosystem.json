@@ -14,7 +14,7 @@
 
   "deploy" : {
     "dev" : {
-      "user" : "grishin",
+      "user" : "ehrmann,
       "host" : "128.178.21.22",
       "ref"  : "origin/master",
       "repo" : "-b master ssh://git@github.com/dhlab-epfl/DHExplorer.git",
