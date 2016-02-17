@@ -302,7 +302,7 @@
       "type" : "standard",
       "value" : "value.number.inverse"
     },
-    "query" : "SELECT (?payer as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?sal a grz-owl:Salary . ?sal grz-owl:payedBy ?payer . } GROUP BY (?payer)"
+    "query" : "SELECT (?payer as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?sal a grz-owl:Salary . ?sal grz-owl:§By ?payer . } GROUP BY (?payer)"
   }, {
    "name" : "Progressive (1) vs. non-progressive (0) salaries",
     "type" : "pie",
@@ -312,9 +312,9 @@
     "type" : "pie",
     "query" : "SELECT COUNT (distinct ?sal) AS ?count ?label WHERE { ?sal a grz-owl:Salary .  ?sal grz-owl:inGood ?label .}"
     }, {
-    "name" : "In which profession the salary is payed by the apprentice?",
+    "name" : "In which profession the salary is paid by the apprentice?",
     "type" : "pie",
-    "query" : "SELECT (?profSF as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?c grz-owl:reports ?finCond . ?finCond grz-owl:hasConditionComponent ?sal . ?sal a grz-owl:Salary . ?sal grz-owl:payedBy \"Apprentice\". ?c grz-owl:introduces ?master . ?master grz-owl:role/grz-owl:roleType grz-owl:master . ?master grz-owl:profession/grz-owl:standardForm  ?profSF . } GROUP BY (?profSF)",
+    "query" : "SELECT (?profSF as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?c grz-owl:reports ?finCond . ?finCond grz-owl:hasConditionComponent ?sal . ?sal a grz-owl:Salary . ?sal grz-owl:paidBy \"Apprentice\". ?c grz-owl:introduces ?master . ?master grz-owl:role/grz-owl:roleType grz-owl:master . ?master grz-owl:profession/grz-owl:standardForm  ?profSF . } GROUP BY (?profSF)",
     "sort" : {
       "type" : "standard",
       "value" : "value.number"
