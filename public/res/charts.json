@@ -302,7 +302,7 @@
       "type" : "standard",
       "value" : "value.number.inverse"
     },
-    "query" : "SELECT (?payer as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?sal a grz-owl:Salary . ?sal grz-owl:§By ?payer . } GROUP BY (?payer)"
+    "query" : "SELECT (?payer as ?label) (COUNT (distinct ?sal) as ?count) WHERE {?sal a grz-owl:Salary . ?sal grz-owl:paidBy ?payer . } GROUP BY (?payer)"
   }, {
    "name" : "Progressive (1) vs. non-progressive (0) salaries",
     "type" : "pie",
